@@ -4,8 +4,32 @@
   "target": "postgres",
   "profileHash": "3916f444a8a17ad749191acf9e08dad97d1a327b88c2f1d45d12f240296aa8b2",
   "roots": {
-    "Post": {
-      "model": "Post",
+    "AttendanceRecord": {
+      "model": "AttendanceRecord",
+      "namespace": "public"
+    },
+    "Class": {
+      "model": "Class",
+      "namespace": "public"
+    },
+    "Guardian": {
+      "model": "Guardian",
+      "namespace": "public"
+    },
+    "Notification": {
+      "model": "Notification",
+      "namespace": "public"
+    },
+    "NotificationAttempt": {
+      "model": "NotificationAttempt",
+      "namespace": "public"
+    },
+    "Student": {
+      "model": "Student",
+      "namespace": "public"
+    },
+    "TeacherClass": {
+      "model": "TeacherClass",
       "namespace": "public"
     },
     "User": {
@@ -16,38 +40,105 @@
   "domain": {
     "namespaces": {
       "public": {
+        "enum": {
+          "AttendanceStatus": {
+            "codecId": "pg/text@1",
+            "members": [
+              {
+                "name": "PRESENT",
+                "value": "PRESENT"
+              },
+              {
+                "name": "ABSENT",
+                "value": "ABSENT"
+              },
+              {
+                "name": "LEAVE",
+                "value": "LEAVE"
+              },
+              {
+                "name": "LATE",
+                "value": "LATE"
+              }
+            ]
+          },
+          "NotificationStatus": {
+            "codecId": "pg/text@1",
+            "members": [
+              {
+                "name": "PENDING",
+                "value": "PENDING"
+              },
+              {
+                "name": "SENDING",
+                "value": "SENDING"
+              },
+              {
+                "name": "ACCEPTED",
+                "value": "ACCEPTED"
+              },
+              {
+                "name": "DELIVERED",
+                "value": "DELIVERED"
+              },
+              {
+                "name": "FAILED",
+                "value": "FAILED"
+              }
+            ]
+          },
+          "Role": {
+            "codecId": "pg/text@1",
+            "members": [
+              {
+                "name": "ADMIN",
+                "value": "ADMIN"
+              },
+              {
+                "name": "TEACHER",
+                "value": "TEACHER"
+              }
+            ]
+          }
+        },
         "models": {
-          "Post": {
+          "AttendanceRecord": {
             "fields": {
-              "authorId": {
+              "date": {
                 "nullable": false,
                 "type": {
-                  "codecId": "pg/int4@1",
-                  "kind": "scalar"
-                }
-              },
-              "content": {
-                "nullable": true,
-                "type": {
-                  "codecId": "pg/text@1",
-                  "kind": "scalar"
-                }
-              },
-              "createdAt": {
-                "nullable": false,
-                "type": {
-                  "codecId": "pg/timestamptz-string@1",
+                  "codecId": "pg/date-temporal@1",
                   "kind": "scalar"
                 }
               },
               "id": {
                 "nullable": false,
                 "type": {
-                  "codecId": "pg/int4@1",
+                  "codecId": "pg/text@1",
                   "kind": "scalar"
                 }
               },
-              "title": {
+              "markedById": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "status": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                },
+                "valueSet": {
+                  "entityKind": "enum",
+                  "entityName": "AttendanceStatus",
+                  "namespaceId": "public",
+                  "plane": "domain"
+                }
+              },
+              "studentId": {
                 "nullable": false,
                 "type": {
                   "codecId": "pg/text@1",
@@ -57,18 +148,600 @@
               "updatedAt": {
                 "nullable": false,
                 "type": {
-                  "codecId": "pg/timestamptz-string@1",
+                  "codecId": "pg/timestamptz-temporal@1",
                   "kind": "scalar"
                 }
               }
             },
             "relations": {
-              "author": {
+              "markedBy": {
                 "cardinality": "N:1",
                 "nullable": false,
                 "on": {
                   "localFields": [
-                    "authorId"
+                    "markedById"
+                  ],
+                  "targetFields": [
+                    "id"
+                  ]
+                },
+                "to": {
+                  "model": "User",
+                  "namespace": "public"
+                }
+              },
+              "notifications": {
+                "cardinality": "1:N",
+                "on": {
+                  "localFields": [
+                    "id"
+                  ],
+                  "targetFields": [
+                    "attendanceId"
+                  ]
+                },
+                "to": {
+                  "model": "Notification",
+                  "namespace": "public"
+                }
+              },
+              "student": {
+                "cardinality": "N:1",
+                "nullable": false,
+                "on": {
+                  "localFields": [
+                    "studentId"
+                  ],
+                  "targetFields": [
+                    "id"
+                  ]
+                },
+                "to": {
+                  "model": "Student",
+                  "namespace": "public"
+                }
+              }
+            },
+            "storage": {
+              "fields": {
+                "date": {
+                  "column": "date"
+                },
+                "id": {
+                  "column": "id"
+                },
+                "markedById": {
+                  "column": "markedById"
+                },
+                "status": {
+                  "column": "status"
+                },
+                "studentId": {
+                  "column": "studentId"
+                },
+                "updatedAt": {
+                  "column": "updatedAt"
+                }
+              },
+              "namespaceId": "public",
+              "table": "AttendanceRecord"
+            }
+          },
+          "Class": {
+            "fields": {
+              "id": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "name": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              }
+            },
+            "relations": {
+              "students": {
+                "cardinality": "1:N",
+                "on": {
+                  "localFields": [
+                    "id"
+                  ],
+                  "targetFields": [
+                    "classId"
+                  ]
+                },
+                "to": {
+                  "model": "Student",
+                  "namespace": "public"
+                }
+              },
+              "teachers": {
+                "cardinality": "1:N",
+                "on": {
+                  "localFields": [
+                    "id"
+                  ],
+                  "targetFields": [
+                    "classId"
+                  ]
+                },
+                "to": {
+                  "model": "TeacherClass",
+                  "namespace": "public"
+                }
+              }
+            },
+            "storage": {
+              "fields": {
+                "id": {
+                  "column": "id"
+                },
+                "name": {
+                  "column": "name"
+                }
+              },
+              "namespaceId": "public",
+              "table": "Class"
+            }
+          },
+          "Guardian": {
+            "fields": {
+              "id": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "isPrimary": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/bool@1",
+                  "kind": "scalar"
+                }
+              },
+              "name": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "phone": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "studentId": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              }
+            },
+            "relations": {
+              "student": {
+                "cardinality": "N:1",
+                "nullable": false,
+                "on": {
+                  "localFields": [
+                    "studentId"
+                  ],
+                  "targetFields": [
+                    "id"
+                  ]
+                },
+                "to": {
+                  "model": "Student",
+                  "namespace": "public"
+                }
+              }
+            },
+            "storage": {
+              "fields": {
+                "id": {
+                  "column": "id"
+                },
+                "isPrimary": {
+                  "column": "isPrimary"
+                },
+                "name": {
+                  "column": "name"
+                },
+                "phone": {
+                  "column": "phone"
+                },
+                "studentId": {
+                  "column": "studentId"
+                }
+              },
+              "namespaceId": "public",
+              "table": "Guardian"
+            }
+          },
+          "Notification": {
+            "fields": {
+              "attendanceId": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "body": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "createdAt": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/timestamptz-temporal@1",
+                  "kind": "scalar"
+                }
+              },
+              "guardianPhone": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "id": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "providerRef": {
+                "nullable": true,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "status": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                },
+                "valueSet": {
+                  "entityKind": "enum",
+                  "entityName": "NotificationStatus",
+                  "namespaceId": "public",
+                  "plane": "domain"
+                }
+              },
+              "type": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              }
+            },
+            "relations": {
+              "attempts": {
+                "cardinality": "1:N",
+                "on": {
+                  "localFields": [
+                    "id"
+                  ],
+                  "targetFields": [
+                    "notificationId"
+                  ]
+                },
+                "to": {
+                  "model": "NotificationAttempt",
+                  "namespace": "public"
+                }
+              },
+              "attendance": {
+                "cardinality": "N:1",
+                "nullable": false,
+                "on": {
+                  "localFields": [
+                    "attendanceId"
+                  ],
+                  "targetFields": [
+                    "id"
+                  ]
+                },
+                "to": {
+                  "model": "AttendanceRecord",
+                  "namespace": "public"
+                }
+              }
+            },
+            "storage": {
+              "fields": {
+                "attendanceId": {
+                  "column": "attendanceId"
+                },
+                "body": {
+                  "column": "body"
+                },
+                "createdAt": {
+                  "column": "createdAt"
+                },
+                "guardianPhone": {
+                  "column": "guardianPhone"
+                },
+                "id": {
+                  "column": "id"
+                },
+                "providerRef": {
+                  "column": "providerRef"
+                },
+                "status": {
+                  "column": "status"
+                },
+                "type": {
+                  "column": "type"
+                }
+              },
+              "namespaceId": "public",
+              "table": "Notification"
+            }
+          },
+          "NotificationAttempt": {
+            "fields": {
+              "attemptedAt": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/timestamptz-temporal@1",
+                  "kind": "scalar"
+                }
+              },
+              "error": {
+                "nullable": true,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "httpStatus": {
+                "nullable": true,
+                "type": {
+                  "codecId": "pg/int4@1",
+                  "kind": "scalar"
+                }
+              },
+              "id": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "notificationId": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "rawResponse": {
+                "nullable": true,
+                "type": {
+                  "codecId": "pg/json@1",
+                  "kind": "scalar"
+                }
+              },
+              "success": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/bool@1",
+                  "kind": "scalar"
+                }
+              }
+            },
+            "relations": {
+              "notification": {
+                "cardinality": "N:1",
+                "nullable": false,
+                "on": {
+                  "localFields": [
+                    "notificationId"
+                  ],
+                  "targetFields": [
+                    "id"
+                  ]
+                },
+                "to": {
+                  "model": "Notification",
+                  "namespace": "public"
+                }
+              }
+            },
+            "storage": {
+              "fields": {
+                "attemptedAt": {
+                  "column": "attemptedAt"
+                },
+                "error": {
+                  "column": "error"
+                },
+                "httpStatus": {
+                  "column": "httpStatus"
+                },
+                "id": {
+                  "column": "id"
+                },
+                "notificationId": {
+                  "column": "notificationId"
+                },
+                "rawResponse": {
+                  "column": "rawResponse"
+                },
+                "success": {
+                  "column": "success"
+                }
+              },
+              "namespaceId": "public",
+              "table": "NotificationAttempt"
+            }
+          },
+          "Student": {
+            "fields": {
+              "active": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/bool@1",
+                  "kind": "scalar"
+                }
+              },
+              "admissionNo": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "classId": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "fullName": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "id": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              }
+            },
+            "relations": {
+              "attendance": {
+                "cardinality": "1:N",
+                "on": {
+                  "localFields": [
+                    "id"
+                  ],
+                  "targetFields": [
+                    "studentId"
+                  ]
+                },
+                "to": {
+                  "model": "AttendanceRecord",
+                  "namespace": "public"
+                }
+              },
+              "class": {
+                "cardinality": "N:1",
+                "nullable": false,
+                "on": {
+                  "localFields": [
+                    "classId"
+                  ],
+                  "targetFields": [
+                    "id"
+                  ]
+                },
+                "to": {
+                  "model": "Class",
+                  "namespace": "public"
+                }
+              },
+              "guardians": {
+                "cardinality": "1:N",
+                "on": {
+                  "localFields": [
+                    "id"
+                  ],
+                  "targetFields": [
+                    "studentId"
+                  ]
+                },
+                "to": {
+                  "model": "Guardian",
+                  "namespace": "public"
+                }
+              }
+            },
+            "storage": {
+              "fields": {
+                "active": {
+                  "column": "active"
+                },
+                "admissionNo": {
+                  "column": "admissionNo"
+                },
+                "classId": {
+                  "column": "classId"
+                },
+                "fullName": {
+                  "column": "fullName"
+                },
+                "id": {
+                  "column": "id"
+                }
+              },
+              "namespaceId": "public",
+              "table": "Student"
+            }
+          },
+          "TeacherClass": {
+            "fields": {
+              "classId": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "userId": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              }
+            },
+            "relations": {
+              "class": {
+                "cardinality": "N:1",
+                "nullable": false,
+                "on": {
+                  "localFields": [
+                    "classId"
+                  ],
+                  "targetFields": [
+                    "id"
+                  ]
+                },
+                "to": {
+                  "model": "Class",
+                  "namespace": "public"
+                }
+              },
+              "user": {
+                "cardinality": "N:1",
+                "nullable": false,
+                "on": {
+                  "localFields": [
+                    "userId"
                   ],
                   "targetFields": [
                     "id"
@@ -82,38 +755,19 @@
             },
             "storage": {
               "fields": {
-                "authorId": {
-                  "column": "authorId"
+                "classId": {
+                  "column": "classId"
                 },
-                "content": {
-                  "column": "content"
-                },
-                "createdAt": {
-                  "column": "createdAt"
-                },
-                "id": {
-                  "column": "id"
-                },
-                "title": {
-                  "column": "title"
-                },
-                "updatedAt": {
-                  "column": "updatedAt"
+                "userId": {
+                  "column": "userId"
                 }
               },
               "namespaceId": "public",
-              "table": "Post"
+              "table": "TeacherClass"
             }
           },
           "User": {
             "fields": {
-              "createdAt": {
-                "nullable": false,
-                "type": {
-                  "codecId": "pg/timestamptz-string@1",
-                  "kind": "scalar"
-                }
-              },
               "email": {
                 "nullable": false,
                 "type": {
@@ -124,54 +778,72 @@
               "id": {
                 "nullable": false,
                 "type": {
-                  "codecId": "pg/int4@1",
+                  "codecId": "pg/text@1",
                   "kind": "scalar"
                 }
               },
               "name": {
-                "nullable": true,
-                "type": {
-                  "codecId": "pg/text@1",
-                  "kind": "scalar"
-                }
-              },
-              "updatedAt": {
                 "nullable": false,
                 "type": {
-                  "codecId": "pg/timestamptz-string@1",
+                  "codecId": "pg/text@1",
                   "kind": "scalar"
                 }
               },
-              "username": {
-                "nullable": true,
+              "passwordHash": {
+                "nullable": false,
                 "type": {
                   "codecId": "pg/text@1",
                   "kind": "scalar"
+                }
+              },
+              "role": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                },
+                "valueSet": {
+                  "entityKind": "enum",
+                  "entityName": "Role",
+                  "namespaceId": "public",
+                  "plane": "domain"
                 }
               }
             },
             "relations": {
-              "posts": {
+              "classes": {
                 "cardinality": "1:N",
                 "on": {
                   "localFields": [
                     "id"
                   ],
                   "targetFields": [
-                    "authorId"
+                    "userId"
                   ]
                 },
                 "to": {
-                  "model": "Post",
+                  "model": "TeacherClass",
+                  "namespace": "public"
+                }
+              },
+              "marked": {
+                "cardinality": "1:N",
+                "on": {
+                  "localFields": [
+                    "id"
+                  ],
+                  "targetFields": [
+                    "markedById"
+                  ]
+                },
+                "to": {
+                  "model": "AttendanceRecord",
                   "namespace": "public"
                 }
               }
             },
             "storage": {
               "fields": {
-                "createdAt": {
-                  "column": "createdAt"
-                },
                 "email": {
                   "column": "email"
                 },
@@ -181,11 +853,11 @@
                 "name": {
                   "column": "name"
                 },
-                "updatedAt": {
-                  "column": "updatedAt"
+                "passwordHash": {
+                  "column": "passwordHash"
                 },
-                "username": {
-                  "column": "username"
+                "role": {
+                  "column": "role"
                 }
               },
               "namespaceId": "public",
@@ -201,43 +873,48 @@
       "public": {
         "entries": {
           "table": {
-            "Post": {
+            "AttendanceRecord": {
+              "checks": [
+                {
+                  "expression": "\"status\" IN ('PRESENT', 'ABSENT', 'LEAVE', 'LATE')",
+                  "name": "AttendanceRecord_status_check_1d6db941",
+                  "prefix": "AttendanceRecord_status_check"
+                }
+              ],
               "columns": {
-                "authorId": {
-                  "codecId": "pg/int4@1",
-                  "dataType": "pg/int4",
-                  "nullable": false
-                },
-                "content": {
-                  "codecId": "pg/text@1",
-                  "dataType": "pg/text",
-                  "nullable": true
-                },
-                "createdAt": {
-                  "codecId": "pg/timestamptz-string@1",
-                  "dataType": "pg/timestamptz",
-                  "default": {
-                    "expression": "now()",
-                    "kind": "function"
-                  },
+                "date": {
+                  "codecId": "pg/date-temporal@1",
+                  "dataType": "pg/date",
                   "nullable": false
                 },
                 "id": {
-                  "codecId": "pg/int4@1",
-                  "dataType": "pg/int4",
-                  "default": {
-                    "expression": "autoincrement()",
-                    "kind": "function"
-                  },
+                  "codecId": "pg/text@1",
+                  "dataType": "pg/text",
                   "nullable": false
                 },
-                "title": {
+                "markedById": {
+                  "codecId": "pg/text@1",
+                  "dataType": "pg/text",
+                  "nullable": false
+                },
+                "status": {
+                  "codecId": "pg/text@1",
+                  "dataType": "pg/text",
+                  "nullable": false,
+                  "valueSet": {
+                    "entityKind": "valueSet",
+                    "entityName": "AttendanceStatus",
+                    "namespaceId": "public",
+                    "plane": "storage"
+                  }
+                },
+                "studentId": {
                   "codecId": "pg/text@1",
                   "dataType": "pg/text",
                   "nullable": false
                 },
                 "updatedAt": {
-                  "codecId": "pg/timestamptz-string@1",
+                  "codecId": "pg/timestamptz-temporal@1",
                   "dataType": "pg/timestamptz",
                   "nullable": false
                 }
@@ -245,14 +922,33 @@
               "foreignKeys": [
                 {
                   "index": {
-                    "name": "Post_authorId_idx_e47547ed"
+                    "name": "AttendanceRecord_studentId_idx_bf255322"
                   },
                   "source": {
                     "columns": [
-                      "authorId"
+                      "studentId"
                     ],
                     "namespaceId": "public",
-                    "tableName": "Post"
+                    "tableName": "AttendanceRecord"
+                  },
+                  "target": {
+                    "columns": [
+                      "id"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "Student"
+                  }
+                },
+                {
+                  "index": {
+                    "name": "AttendanceRecord_markedById_idx_114ec907"
+                  },
+                  "source": {
+                    "columns": [
+                      "markedById"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "AttendanceRecord"
                   },
                   "target": {
                     "columns": [
@@ -266,10 +962,123 @@
               "indexes": [
                 {
                   "columns": [
-                    "authorId"
+                    "markedById"
                   ],
-                  "name": "Post_authorId_idx_e47547ed",
-                  "prefix": "Post_authorId_idx",
+                  "name": "AttendanceRecord_markedById_idx_114ec907",
+                  "prefix": "AttendanceRecord_markedById_idx",
+                  "unique": false
+                },
+                {
+                  "columns": [
+                    "studentId"
+                  ],
+                  "name": "AttendanceRecord_studentId_idx_bf255322",
+                  "prefix": "AttendanceRecord_studentId_idx",
+                  "unique": false
+                }
+              ],
+              "primaryKey": {
+                "columns": [
+                  "id"
+                ]
+              },
+              "uniques": [
+                {
+                  "columns": [
+                    "studentId",
+                    "date"
+                  ]
+                }
+              ]
+            },
+            "Class": {
+              "columns": {
+                "id": {
+                  "codecId": "pg/text@1",
+                  "dataType": "pg/text",
+                  "nullable": false
+                },
+                "name": {
+                  "codecId": "pg/text@1",
+                  "dataType": "pg/text",
+                  "nullable": false
+                }
+              },
+              "foreignKeys": [],
+              "indexes": [],
+              "primaryKey": {
+                "columns": [
+                  "id"
+                ]
+              },
+              "uniques": [
+                {
+                  "columns": [
+                    "name"
+                  ]
+                }
+              ]
+            },
+            "Guardian": {
+              "columns": {
+                "id": {
+                  "codecId": "pg/text@1",
+                  "dataType": "pg/text",
+                  "nullable": false
+                },
+                "isPrimary": {
+                  "codecId": "pg/bool@1",
+                  "dataType": "pg/bool",
+                  "default": {
+                    "kind": "literal",
+                    "value": true
+                  },
+                  "nullable": false
+                },
+                "name": {
+                  "codecId": "pg/text@1",
+                  "dataType": "pg/text",
+                  "nullable": false
+                },
+                "phone": {
+                  "codecId": "pg/text@1",
+                  "dataType": "pg/text",
+                  "nullable": false
+                },
+                "studentId": {
+                  "codecId": "pg/text@1",
+                  "dataType": "pg/text",
+                  "nullable": false
+                }
+              },
+              "foreignKeys": [
+                {
+                  "index": {
+                    "name": "Guardian_studentId_idx_bf255322"
+                  },
+                  "source": {
+                    "columns": [
+                      "studentId"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "Guardian"
+                  },
+                  "target": {
+                    "columns": [
+                      "id"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "Student"
+                  }
+                }
+              ],
+              "indexes": [
+                {
+                  "columns": [
+                    "studentId"
+                  ],
+                  "name": "Guardian_studentId_idx_bf255322",
+                  "prefix": "Guardian_studentId_idx",
                   "unique": false
                 }
               ],
@@ -280,10 +1089,27 @@
               },
               "uniques": []
             },
-            "User": {
+            "Notification": {
+              "checks": [
+                {
+                  "expression": "\"status\" IN ('PENDING', 'SENDING', 'ACCEPTED', 'DELIVERED', 'FAILED')",
+                  "name": "Notification_status_check_45b50018",
+                  "prefix": "Notification_status_check"
+                }
+              ],
               "columns": {
+                "attendanceId": {
+                  "codecId": "pg/text@1",
+                  "dataType": "pg/text",
+                  "nullable": false
+                },
+                "body": {
+                  "codecId": "pg/text@1",
+                  "dataType": "pg/text",
+                  "nullable": false
+                },
                 "createdAt": {
-                  "codecId": "pg/timestamptz-string@1",
+                  "codecId": "pg/timestamptz-temporal@1",
                   "dataType": "pg/timestamptz",
                   "default": {
                     "expression": "now()",
@@ -291,34 +1117,366 @@
                   },
                   "nullable": false
                 },
+                "guardianPhone": {
+                  "codecId": "pg/text@1",
+                  "dataType": "pg/text",
+                  "nullable": false
+                },
+                "id": {
+                  "codecId": "pg/text@1",
+                  "dataType": "pg/text",
+                  "nullable": false
+                },
+                "providerRef": {
+                  "codecId": "pg/text@1",
+                  "dataType": "pg/text",
+                  "nullable": true
+                },
+                "status": {
+                  "codecId": "pg/text@1",
+                  "dataType": "pg/text",
+                  "default": {
+                    "kind": "literal",
+                    "value": "PENDING"
+                  },
+                  "nullable": false,
+                  "valueSet": {
+                    "entityKind": "valueSet",
+                    "entityName": "NotificationStatus",
+                    "namespaceId": "public",
+                    "plane": "storage"
+                  }
+                },
+                "type": {
+                  "codecId": "pg/text@1",
+                  "dataType": "pg/text",
+                  "default": {
+                    "kind": "literal",
+                    "value": "ABSENCE"
+                  },
+                  "nullable": false
+                }
+              },
+              "foreignKeys": [
+                {
+                  "index": {
+                    "name": "Notification_attendanceId_idx_b259ff3f"
+                  },
+                  "source": {
+                    "columns": [
+                      "attendanceId"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "Notification"
+                  },
+                  "target": {
+                    "columns": [
+                      "id"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "AttendanceRecord"
+                  }
+                }
+              ],
+              "indexes": [
+                {
+                  "columns": [
+                    "attendanceId"
+                  ],
+                  "name": "Notification_attendanceId_idx_b259ff3f",
+                  "prefix": "Notification_attendanceId_idx",
+                  "unique": false
+                }
+              ],
+              "primaryKey": {
+                "columns": [
+                  "id"
+                ]
+              },
+              "uniques": [
+                {
+                  "columns": [
+                    "attendanceId",
+                    "guardianPhone",
+                    "type"
+                  ]
+                }
+              ]
+            },
+            "NotificationAttempt": {
+              "columns": {
+                "attemptedAt": {
+                  "codecId": "pg/timestamptz-temporal@1",
+                  "dataType": "pg/timestamptz",
+                  "default": {
+                    "expression": "now()",
+                    "kind": "function"
+                  },
+                  "nullable": false
+                },
+                "error": {
+                  "codecId": "pg/text@1",
+                  "dataType": "pg/text",
+                  "nullable": true
+                },
+                "httpStatus": {
+                  "codecId": "pg/int4@1",
+                  "dataType": "pg/int4",
+                  "nullable": true
+                },
+                "id": {
+                  "codecId": "pg/text@1",
+                  "dataType": "pg/text",
+                  "nullable": false
+                },
+                "notificationId": {
+                  "codecId": "pg/text@1",
+                  "dataType": "pg/text",
+                  "nullable": false
+                },
+                "rawResponse": {
+                  "codecId": "pg/json@1",
+                  "dataType": "pg/json",
+                  "nullable": true
+                },
+                "success": {
+                  "codecId": "pg/bool@1",
+                  "dataType": "pg/bool",
+                  "nullable": false
+                }
+              },
+              "foreignKeys": [
+                {
+                  "index": {
+                    "name": "NotificationAttempt_notificationId_idx_adfe2654"
+                  },
+                  "source": {
+                    "columns": [
+                      "notificationId"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "NotificationAttempt"
+                  },
+                  "target": {
+                    "columns": [
+                      "id"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "Notification"
+                  }
+                }
+              ],
+              "indexes": [
+                {
+                  "columns": [
+                    "notificationId"
+                  ],
+                  "name": "NotificationAttempt_notificationId_idx_adfe2654",
+                  "prefix": "NotificationAttempt_notificationId_idx",
+                  "unique": false
+                }
+              ],
+              "primaryKey": {
+                "columns": [
+                  "id"
+                ]
+              },
+              "uniques": []
+            },
+            "Student": {
+              "columns": {
+                "active": {
+                  "codecId": "pg/bool@1",
+                  "dataType": "pg/bool",
+                  "default": {
+                    "kind": "literal",
+                    "value": true
+                  },
+                  "nullable": false
+                },
+                "admissionNo": {
+                  "codecId": "pg/text@1",
+                  "dataType": "pg/text",
+                  "nullable": false
+                },
+                "classId": {
+                  "codecId": "pg/text@1",
+                  "dataType": "pg/text",
+                  "nullable": false
+                },
+                "fullName": {
+                  "codecId": "pg/text@1",
+                  "dataType": "pg/text",
+                  "nullable": false
+                },
+                "id": {
+                  "codecId": "pg/text@1",
+                  "dataType": "pg/text",
+                  "nullable": false
+                }
+              },
+              "foreignKeys": [
+                {
+                  "index": {
+                    "name": "Student_classId_idx_0089e5e7"
+                  },
+                  "source": {
+                    "columns": [
+                      "classId"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "Student"
+                  },
+                  "target": {
+                    "columns": [
+                      "id"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "Class"
+                  }
+                }
+              ],
+              "indexes": [
+                {
+                  "columns": [
+                    "classId"
+                  ],
+                  "name": "Student_classId_idx_0089e5e7",
+                  "prefix": "Student_classId_idx",
+                  "unique": false
+                }
+              ],
+              "primaryKey": {
+                "columns": [
+                  "id"
+                ]
+              },
+              "uniques": [
+                {
+                  "columns": [
+                    "admissionNo"
+                  ]
+                }
+              ]
+            },
+            "TeacherClass": {
+              "columns": {
+                "classId": {
+                  "codecId": "pg/text@1",
+                  "dataType": "pg/text",
+                  "nullable": false
+                },
+                "userId": {
+                  "codecId": "pg/text@1",
+                  "dataType": "pg/text",
+                  "nullable": false
+                }
+              },
+              "foreignKeys": [
+                {
+                  "index": {
+                    "name": "TeacherClass_userId_idx_a489d58a"
+                  },
+                  "source": {
+                    "columns": [
+                      "userId"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "TeacherClass"
+                  },
+                  "target": {
+                    "columns": [
+                      "id"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "User"
+                  }
+                },
+                {
+                  "index": {
+                    "name": "TeacherClass_classId_idx_0089e5e7"
+                  },
+                  "source": {
+                    "columns": [
+                      "classId"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "TeacherClass"
+                  },
+                  "target": {
+                    "columns": [
+                      "id"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "Class"
+                  }
+                }
+              ],
+              "indexes": [
+                {
+                  "columns": [
+                    "classId"
+                  ],
+                  "name": "TeacherClass_classId_idx_0089e5e7",
+                  "prefix": "TeacherClass_classId_idx",
+                  "unique": false
+                },
+                {
+                  "columns": [
+                    "userId"
+                  ],
+                  "name": "TeacherClass_userId_idx_a489d58a",
+                  "prefix": "TeacherClass_userId_idx",
+                  "unique": false
+                }
+              ],
+              "primaryKey": {
+                "columns": [
+                  "userId",
+                  "classId"
+                ]
+              },
+              "uniques": []
+            },
+            "User": {
+              "checks": [
+                {
+                  "expression": "\"role\" IN ('ADMIN', 'TEACHER')",
+                  "name": "User_role_check_19abef7c",
+                  "prefix": "User_role_check"
+                }
+              ],
+              "columns": {
                 "email": {
                   "codecId": "pg/text@1",
                   "dataType": "pg/text",
                   "nullable": false
                 },
                 "id": {
-                  "codecId": "pg/int4@1",
-                  "dataType": "pg/int4",
-                  "default": {
-                    "expression": "autoincrement()",
-                    "kind": "function"
-                  },
+                  "codecId": "pg/text@1",
+                  "dataType": "pg/text",
                   "nullable": false
                 },
                 "name": {
                   "codecId": "pg/text@1",
                   "dataType": "pg/text",
-                  "nullable": true
-                },
-                "updatedAt": {
-                  "codecId": "pg/timestamptz-string@1",
-                  "dataType": "pg/timestamptz",
                   "nullable": false
                 },
-                "username": {
+                "passwordHash": {
                   "codecId": "pg/text@1",
                   "dataType": "pg/text",
-                  "nullable": true
+                  "nullable": false
+                },
+                "role": {
+                  "codecId": "pg/text@1",
+                  "dataType": "pg/text",
+                  "nullable": false,
+                  "valueSet": {
+                    "entityKind": "valueSet",
+                    "entityName": "Role",
+                    "namespaceId": "public",
+                    "plane": "storage"
+                  }
                 }
               },
               "foreignKeys": [],
@@ -336,45 +1494,135 @@
                 }
               ]
             }
+          },
+          "valueSet": {
+            "AttendanceStatus": {
+              "kind": "valueSet",
+              "values": [
+                "PRESENT",
+                "ABSENT",
+                "LEAVE",
+                "LATE"
+              ]
+            },
+            "NotificationStatus": {
+              "kind": "valueSet",
+              "values": [
+                "PENDING",
+                "SENDING",
+                "ACCEPTED",
+                "DELIVERED",
+                "FAILED"
+              ]
+            },
+            "Role": {
+              "kind": "valueSet",
+              "values": [
+                "ADMIN",
+                "TEACHER"
+              ]
+            }
           }
         },
         "id": "public",
         "kind": "postgres-schema"
       }
     },
-    "storageHash": "a51b4833fdaffe730572670ccc27dd89af7e0726ab3de7f428d21702d687cc15"
+    "storageHash": "67b9b0c9f6a49b7c317a33926bef6ad01be668e04a47d0bd240a349e560f7132"
   },
   "execution": {
-    "executionHash": "4e88564095b5e0ba7904ffdba3c563ef916d87688c8c483c67055f71a9194f0f",
+    "executionHash": "174c2745cf01de554abd6e09fca1b3821e0adcb4c85768ad1e12883d4e8dccc1",
     "mutations": {
       "defaults": [
         {
           "onCreate": {
-            "id": "timestampNow",
-            "kind": "generator"
-          },
-          "onUpdate": {
-            "id": "timestampNow",
+            "id": "cuid2",
             "kind": "generator"
           },
           "ref": {
-            "entry": "Post",
+            "entry": "AttendanceRecord",
+            "field": "id",
+            "namespace": "public"
+          }
+        },
+        {
+          "onCreate": {
+            "id": "instantNow",
+            "kind": "generator"
+          },
+          "onUpdate": {
+            "id": "instantNow",
+            "kind": "generator"
+          },
+          "ref": {
+            "entry": "AttendanceRecord",
             "field": "updatedAt",
             "namespace": "public"
           }
         },
         {
           "onCreate": {
-            "id": "timestampNow",
+            "id": "cuid2",
             "kind": "generator"
           },
-          "onUpdate": {
-            "id": "timestampNow",
+          "ref": {
+            "entry": "Class",
+            "field": "id",
+            "namespace": "public"
+          }
+        },
+        {
+          "onCreate": {
+            "id": "cuid2",
+            "kind": "generator"
+          },
+          "ref": {
+            "entry": "Guardian",
+            "field": "id",
+            "namespace": "public"
+          }
+        },
+        {
+          "onCreate": {
+            "id": "cuid2",
+            "kind": "generator"
+          },
+          "ref": {
+            "entry": "Notification",
+            "field": "id",
+            "namespace": "public"
+          }
+        },
+        {
+          "onCreate": {
+            "id": "cuid2",
+            "kind": "generator"
+          },
+          "ref": {
+            "entry": "NotificationAttempt",
+            "field": "id",
+            "namespace": "public"
+          }
+        },
+        {
+          "onCreate": {
+            "id": "cuid2",
+            "kind": "generator"
+          },
+          "ref": {
+            "entry": "Student",
+            "field": "id",
+            "namespace": "public"
+          }
+        },
+        {
+          "onCreate": {
+            "id": "cuid2",
             "kind": "generator"
           },
           "ref": {
             "entry": "User",
-            "field": "updatedAt",
+            "field": "id",
             "namespace": "public"
           }
         }

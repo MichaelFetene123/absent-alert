@@ -1,21 +1,107 @@
 // use prisma-8
 
-model User {
-  id        Int      @id @default(autoincrement())
-  email     String   @unique
-  username  String?
-  name      String?
-  posts     Post[]
-  createdAt TimestamptzString @default(now())
-  updatedAt temporal.updatedAtString()
+enum Role {
+  ADMIN
+  TEACHER
 }
 
-model Post {
-  id        Int      @id @default(autoincrement())
-  title     String
-  content   String?
-  author    User     @relation(fields: [authorId], references: [id])
-  authorId  Int
-  createdAt TimestamptzString @default(now())
-  updatedAt temporal.updatedAtString()
+enum AttendanceStatus {
+  PRESENT
+  ABSENT
+  LEAVE
+  LATE
+}
+
+enum NotificationStatus {
+  PENDING
+  SENDING
+  ACCEPTED
+  DELIVERED
+  FAILED
+}
+
+model User {
+  id           String             @id @default(cuid(2))
+  email        String             @unique
+  name         String
+  passwordHash String
+  role         Role
+  classes      TeacherClass[]
+  marked       AttendanceRecord[]
+}
+
+model Class {
+  id       String         @id @default(cuid(2))
+  name     String         @unique
+  students Student[]
+  teachers TeacherClass[]
+}
+
+model TeacherClass {
+  userId  String
+  classId String
+  user    User   @relation(fields: [userId], references: [id])
+  class   Class  @relation(fields: [classId], references: [id])
+
+  @@id([userId, classId])
+}
+
+model Student {
+  id          String             @id @default(cuid(2))
+  admissionNo String             @unique
+  fullName    String
+  classId     String
+  active      Boolean            @default(true)
+  class       Class              @relation(fields: [classId], references: [id])
+  guardians   Guardian[]
+  attendance  AttendanceRecord[]
+}
+
+model Guardian {
+  id        String  @id @default(cuid(2))
+  studentId String
+  name      String
+  phone     String
+  isPrimary Boolean @default(true)
+  student   Student @relation(fields: [studentId], references: [id])
+}
+
+model AttendanceRecord {
+  id            String           @id @default(cuid(2))
+  studentId     String
+  date          Date
+  status        AttendanceStatus
+  markedById    String
+  updatedAt     temporal.updatedAt()
+  student       Student          @relation(fields: [studentId], references: [id])
+  markedBy      User             @relation(fields: [markedById], references: [id])
+  notifications Notification[]
+
+  @@unique([studentId, date])
+}
+
+model Notification {
+  id            String                @id @default(cuid(2))
+  attendanceId  String
+  guardianPhone String
+  type          String                @default("ABSENCE")
+  body          String
+  status        NotificationStatus    @default(PENDING)
+  providerRef   String?
+  createdAt     DateTime              @default(now())
+  attendance    AttendanceRecord      @relation(fields: [attendanceId], references: [id])
+  attempts      NotificationAttempt[]
+
+  @@unique([attendanceId, guardianPhone, type])
+}
+
+model NotificationAttempt {
+  id             String       @id @default(cuid(2))
+  notificationId String
+  attemptedAt    DateTime     @default(now())
+  httpStatus     Int?
+  success        Boolean
+  rawResponse    Json?
+  error          String?
+  notification   Notification @relation(fields: [notificationId], references: [id])
 }
