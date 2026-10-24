@@ -1,4 +1,9 @@
 import "server-only";
+import * as TemporalPolyfill from "temporal-polyfill";
+if (typeof globalThis !== "undefined" && !(globalThis as any).Temporal) {
+  (globalThis as any).Temporal = TemporalPolyfill.Temporal;
+}
+
 import postgres from "@prisma/orm-postgres/runtime";
 import type { Contract } from "../prisma/contract.d";
 import contractJson from "../prisma/contract.json" with { type: "json" };
