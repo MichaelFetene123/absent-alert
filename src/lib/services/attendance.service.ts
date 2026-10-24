@@ -166,3 +166,19 @@ export async function getClassAttendance(params: {
     };
   });
 }
+
+/**
+ * Returns the classes accessible by the current user based on their role:
+ * - ADMIN: Returns all classes
+ * - TEACHER: Returns only classes linked to the teacher in TeacherClass
+ */
+export async function getAccessibleClasses(userId: string, role: "ADMIN" | "TEACHER") {
+  if (role === "ADMIN") {
+    return db.orm.public.Class.all();
+  }
+  const links = await db.orm.public.TeacherClass.where({ userId }).all();
+  const classes = await Promise.all(
+    links.map((l) => db.orm.public.Class.where({ id: l.classId }).first())
+  );
+  return classes.filter((c): c is NonNullable<typeof c> => c !== null);
+}
