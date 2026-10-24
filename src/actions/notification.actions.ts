@@ -1,63 +1,81 @@
 "use server";
 
 import { db } from "@/lib/db";
-import { requireAdmin, requireUser } from "@/lib/guards";
-import { sendSms } from "@/lib/sms/smshub";
+import { requireUser } from "@/lib/guards";
+import {
+  dispatchNotifications,
+  sendOne,
+  type NotificationDispatchResult,
+} from "@/lib/services/notification.service";
 import { revalidatePath } from "next/cache";
 
-export type DispatchResult = {
+export type DispatchActionResult = {
   success: boolean;
   sentCount?: number;
   failedCount?: number;
+  total?: number;
   error?: string;
 };
 
-export async function dispatchPendingNotificationsAction(): Promise<DispatchResult> {
+/**
+ * Dispatches all pending notifications.
+ */
+export async function dispatchPendingNotificationsAction(): Promise<DispatchActionResult> {
   try {
     await requireUser();
 
-    // Fetch pending notifications
     const pending = await db.orm.public.Notification.where({
       status: "PENDING",
     }).all();
 
-    let sentCount = 0;
-    let failedCount = 0;
-
-    for (const notif of pending) {
-      // Mark as SENDING
-      await db.orm.public.Notification.where({ id: notif.id }).update({
-        status: "SENDING",
-      });
-
-      const res = await sendSms(notif.guardianPhone, notif.body);
-
-      // Record attempt
-      await db.orm.public.NotificationAttempt.create({
-        notificationId: notif.id,
-        success: res.accepted,
-        httpStatus: res.httpStatus ?? null,
-        rawResponse: res.raw as any,
-        error: res.error ?? null,
-      });
-
-      if (res.accepted) {
-        await db.orm.public.Notification.where({ id: notif.id }).update({
-          status: "ACCEPTED",
-          providerRef: res.providerRef ?? null,
-        });
-        sentCount++;
-      } else {
-        await db.orm.public.Notification.where({ id: notif.id }).update({
-          status: "FAILED",
-        });
-        failedCount++;
-      }
+    if (pending.length === 0) {
+      return { success: true, sentCount: 0, failedCount: 0, total: 0 };
     }
 
+    const ids = pending.map((n) => n.id);
+    const result: NotificationDispatchResult = await dispatchNotifications(ids);
+
     revalidatePath("/notifications");
-    return { success: true, sentCount, failedCount };
+    revalidatePath("/dashboard");
+
+    return {
+      success: true,
+      sentCount: result.sent,
+      failedCount: result.failed,
+      total: result.total,
+    };
   } catch (error: any) {
-    return { success: false, error: error.message || "Failed to dispatch notifications" };
+    return {
+      success: false,
+      error: error.message || "Failed to dispatch notifications",
+    };
+  }
+}
+
+/**
+ * Retries sending a failed or pending notification.
+ */
+export async function retryNotificationAction(notificationId: string): Promise<{
+  success: boolean;
+  error?: string;
+  providerRef?: string;
+}> {
+  try {
+    await requireUser();
+
+    const res = await sendOne(notificationId);
+    revalidatePath("/notifications");
+    revalidatePath("/dashboard");
+
+    return {
+      success: res.ok,
+      error: res.error,
+      providerRef: res.providerRef,
+    };
+  } catch (error: any) {
+    return {
+      success: false,
+      error: error.message || "Failed to retry notification",
+    };
   }
 }

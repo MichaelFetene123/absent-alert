@@ -8,6 +8,10 @@ import {
   type AttendanceQueryInput,
 } from "@/lib/validations/attendance";
 import { saveAttendance, getClassAttendance } from "@/lib/services/attendance.service";
+import {
+  queueAbsenceNotifications,
+  dispatchNotifications,
+} from "@/lib/services/notification.service";
 import { revalidatePath } from "next/cache";
 
 export type ActionResult<T = unknown> = {
@@ -22,13 +26,18 @@ export type ActionResult<T = unknown> = {
  * - Validates input with markAttendanceSchema (PRESENT, ABSENT, LEAVE, LATE).
  * - Enforces class authorization: Admins have universal access; Teachers must be assigned to the class.
  * - Idempotently handles existing records to prevent duplicate @@unique([studentId, date]) errors.
- * - Saves attendance independently of SMS delivery (Step 7 requirement: no SMS sent here).
+ * - Saves attendance first (independent of SMS delivery).
+ * - Queues and dispatches SMS notifications for absent students to their primary guardians.
+ * - If SMS transmission fails or is skipped, attendance remains safely saved in the database.
  */
 export async function markAttendance(input: unknown): Promise<ActionResult<{
   saved: number;
   created: number;
   updated: number;
   newlyAbsentCount: number;
+  smsQueued: number;
+  smsSent: number;
+  smsFailed: number;
 }>> {
   try {
     // 1. Zod validation
@@ -47,7 +56,7 @@ export async function markAttendance(input: unknown): Promise<ActionResult<{
     const user = await requireClassAccess(classId);
 
     // 3. Prevent marking attendance for future dates
-    const todayStr = new Date().toISOString().split("T")[0];
+    const todayStr = new Date().toISOString().split("T")[0]!;
     if (date > todayStr) {
       return {
         ok: false,
@@ -64,8 +73,34 @@ export async function markAttendance(input: unknown): Promise<ActionResult<{
       entries,
     });
 
+    // 5. Queue and dispatch SMS notifications for absent students
+    let smsQueued = 0;
+    let smsSent = 0;
+    let smsFailed = 0;
+
+    try {
+      const absentRecords = result.records.filter((r) => r.status === "ABSENT");
+      if (absentRecords.length > 0) {
+        const queuedIds = await queueAbsenceNotifications(
+          absentRecords.map((r) => ({ id: r.id, studentId: r.studentId })),
+          date
+        );
+        smsQueued = queuedIds.length;
+
+        if (queuedIds.length > 0) {
+          const dispatchRes = await dispatchNotifications(queuedIds);
+          smsSent = dispatchRes.sent;
+          smsFailed = dispatchRes.failed;
+        }
+      }
+    } catch (smsError: any) {
+      console.error("SMS notification processing error:", smsError);
+      // Attendance is already saved; SMS failure never undoes attendance.
+    }
+
     revalidatePath("/attendance");
     revalidatePath("/dashboard");
+    revalidatePath("/notifications");
 
     return {
       ok: true,
@@ -75,6 +110,9 @@ export async function markAttendance(input: unknown): Promise<ActionResult<{
         created: result.createdCount,
         updated: result.updatedCount,
         newlyAbsentCount: result.newlyAbsent.length,
+        smsQueued,
+        smsSent,
+        smsFailed,
       },
     };
   } catch (error: any) {
