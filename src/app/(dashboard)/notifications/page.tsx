@@ -1,35 +1,43 @@
 import { requireUser } from "@/lib/guards";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
-import { History } from "lucide-react";
+import { getNotificationHistory } from "@/lib/services/notification.service";
+import { NotificationsManager } from "@/components/notifications-manager";
 
-export default async function NotificationsPage() {
+type SearchParamsPromise = Promise<{
+  status?: string;
+  classId?: string;
+  search?: string;
+  page?: string;
+}>;
+
+export default async function NotificationsPage({
+  searchParams,
+}: {
+  searchParams: SearchParamsPromise;
+}) {
   const user = await requireUser();
+  const resolvedParams = await searchParams;
+
+  const validStatuses = ["PENDING", "SENDING", "ACCEPTED", "DELIVERED", "FAILED"] as const;
+  const statusParam = resolvedParams.status?.toUpperCase();
+  const status = validStatuses.includes(statusParam as any)
+    ? (statusParam as (typeof validStatuses)[number])
+    : undefined;
+
+  const historyResult = await getNotificationHistory({
+    userId: user.id,
+    role: user.role,
+    status,
+    classId: resolvedParams.classId,
+    search: resolvedParams.search,
+    page: resolvedParams.page ? parseInt(resolvedParams.page, 10) : 1,
+    pageSize: 100, // Fetch up to 100 for interactive client-side filtering and instant search
+  });
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white flex items-center gap-2">
-          <History className="size-6 text-purple-600" />
-          SMS Notification Logs
-        </h1>
-        <p className="text-sm text-slate-500 mt-1">
-          SMSHub status & retry · Protected by <code className="text-xs bg-slate-100 dark:bg-slate-800 px-1 py-0.5 rounded">requireUser()</code>
-        </p>
-      </div>
-
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-base">Staff Access Verified</CardTitle>
-          <CardDescription>
-            Signed in as {user.role}: {user.email}
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <p className="text-sm text-slate-600 dark:text-slate-400">
-            SMS notification history, attempt logs, and retry actions will be implemented in Step 9 and 10.
-          </p>
-        </CardContent>
-      </Card>
-    </div>
+    <NotificationsManager
+      initialData={historyResult}
+      selectedStatus={status}
+      selectedClassId={resolvedParams.classId}
+    />
   );
 }

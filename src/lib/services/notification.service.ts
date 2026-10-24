@@ -174,3 +174,293 @@ export async function dispatchNotifications(ids: string[]): Promise<Notification
 export async function retryNotification(notificationId: string) {
   return sendOne(notificationId);
 }
+
+export type NotificationHistoryAttempt = {
+  id: string;
+  attemptedAt: string;
+  httpStatus: number | null;
+  success: boolean;
+  rawResponse: any;
+  error: string | null;
+};
+
+export type NotificationHistoryItem = {
+  id: string;
+  attendanceId: string;
+  guardianPhone: string;
+  type: string;
+  body: string;
+  status: "PENDING" | "SENDING" | "ACCEPTED" | "DELIVERED" | "FAILED";
+  providerRef: string | null;
+  createdAt: string;
+  needsReview: boolean;
+  student: {
+    id: string;
+    fullName: string;
+    admissionNo: string;
+    classId: string;
+    className: string;
+  };
+  attendance: {
+    id: string;
+    date: string;
+    status: string;
+  };
+  attempts: NotificationHistoryAttempt[];
+};
+
+export type NotificationHistorySummary = {
+  total: number;
+  accepted: number;
+  failed: number;
+  pending: number;
+  sending: number;
+  delivered: number;
+  needsReview: number;
+};
+
+export type NotificationHistoryParams = {
+  userId: string;
+  role: "ADMIN" | "TEACHER";
+  status?: "PENDING" | "SENDING" | "ACCEPTED" | "DELIVERED" | "FAILED";
+  classId?: string;
+  search?: string;
+  page?: number;
+  pageSize?: number;
+};
+
+export type NotificationHistoryResult = {
+  items: NotificationHistoryItem[];
+  total: number;
+  page: number;
+  pageSize: number;
+  totalPages: number;
+  summary: NotificationHistorySummary;
+  accessibleClasses: Array<{ id: string; name: string }>;
+  isAdmin: boolean;
+};
+
+/**
+ * Retrieves enriched notification history for a user:
+ * - Enforces role-based class visibility (teachers only see notifications for students in their assigned classes)
+ * - Masks guardian phone numbers for teachers (preserves full phone for admins)
+ * - Joins AttendanceRecord, Student, Class, and all NotificationAttempts
+ * - Flags notifications in SENDING for >5 minutes as needsReview
+ * - Returns pagination and status counts
+ */
+export async function getNotificationHistory(
+  params: NotificationHistoryParams
+): Promise<NotificationHistoryResult> {
+  // 1. Determine accessible classes
+  let accessibleClasses: Array<{ id: string; name: string }> = [];
+  let allowedClassIds: Set<string> | null = null;
+
+  if (params.role === "ADMIN") {
+    const allClasses = await db.orm.public.Class.all();
+    accessibleClasses = allClasses.map((c) => ({ id: c.id, name: c.name }));
+  } else {
+    const links = await db.orm.public.TeacherClass.where({ userId: params.userId }).all();
+    const classIds = links.map((l) => l.classId);
+    allowedClassIds = new Set(classIds);
+
+    const classes = await Promise.all(
+      classIds.map((id) => db.orm.public.Class.where({ id }).first())
+    );
+    accessibleClasses = classes
+      .filter((c): c is NonNullable<typeof c> => c !== null)
+      .map((c) => ({ id: c.id, name: c.name }));
+  }
+
+  // If teacher has no assigned classes, return empty immediately
+  if (params.role === "TEACHER" && (!allowedClassIds || allowedClassIds.size === 0)) {
+    return {
+      items: [],
+      total: 0,
+      page: 1,
+      pageSize: params.pageSize || 25,
+      totalPages: 1,
+      summary: {
+        total: 0,
+        accepted: 0,
+        failed: 0,
+        pending: 0,
+        sending: 0,
+        delivered: 0,
+        needsReview: 0,
+      },
+      accessibleClasses: [],
+      isAdmin: false,
+    };
+  }
+
+  // 2. Fetch all raw data for enrichment
+  const [allNotifs, allAttendances, allStudents, allClasses, allAttempts] = await Promise.all([
+    db.orm.public.Notification.all(),
+    db.orm.public.AttendanceRecord.all(),
+    db.orm.public.Student.all(),
+    db.orm.public.Class.all(),
+    db.orm.public.NotificationAttempt.all(),
+  ]);
+
+  // Index references for rapid lookup
+  const attendanceMap = new Map<string, (typeof allAttendances)[0]>();
+  for (const a of allAttendances) {
+    attendanceMap.set(a.id, a);
+  }
+
+  const studentMap = new Map<string, (typeof allStudents)[0]>();
+  for (const s of allStudents) {
+    studentMap.set(s.id, s);
+  }
+
+  const classMap = new Map<string, string>();
+  for (const c of allClasses) {
+    classMap.set(c.id, c.name);
+  }
+
+  const attemptsByNotifId = new Map<string, (typeof allAttempts)>();
+  for (const att of allAttempts) {
+    const list = attemptsByNotifId.get(att.notificationId) || [];
+    list.push(att);
+    attemptsByNotifId.set(att.notificationId, list);
+  }
+
+  // 3. Filter and enrich notifications
+  const now = Date.now();
+  const summary: NotificationHistorySummary = {
+    total: 0,
+    accepted: 0,
+    failed: 0,
+    pending: 0,
+    sending: 0,
+    delivered: 0,
+    needsReview: 0,
+  };
+
+  const enrichedItems: NotificationHistoryItem[] = [];
+
+  for (const notif of allNotifs) {
+    const att = attendanceMap.get(notif.attendanceId);
+    if (!att) continue;
+
+    const student = studentMap.get(att.studentId);
+    if (!student) continue;
+
+    // Teacher class security boundary
+    if (allowedClassIds && !allowedClassIds.has(student.classId)) {
+      continue;
+    }
+
+    const className = classMap.get(student.classId) || "—";
+
+    // Track status counts across all accessible notifications
+    summary.total++;
+    if (notif.status === "ACCEPTED") summary.accepted++;
+    else if (notif.status === "FAILED") summary.failed++;
+    else if (notif.status === "PENDING") summary.pending++;
+    else if (notif.status === "SENDING") summary.sending++;
+    else if (notif.status === "DELIVERED") summary.delivered++;
+
+    // Calculate elapsed time for SENDING rows
+    const createdStr = notif.createdAt ? notif.createdAt.toString() : new Date().toISOString();
+    const createdMs = Date.parse(createdStr) || now;
+    const isStuck = notif.status === "SENDING" && now - createdMs > 5 * 60 * 1000;
+    if (isStuck) summary.needsReview++;
+
+    // Check query filters
+    if (params.classId && student.classId !== params.classId) {
+      continue;
+    }
+
+    if (params.status && notif.status !== params.status) {
+      continue;
+    }
+
+    if (params.search) {
+      const q = params.search.toLowerCase().trim();
+      const matchName = student.fullName.toLowerCase().includes(q);
+      const matchAdm = student.admissionNo.toLowerCase().includes(q);
+      const matchPhone = notif.guardianPhone.toLowerCase().includes(q);
+      const matchRef = notif.providerRef?.toLowerCase().includes(q) ?? false;
+      const matchBody = notif.body.toLowerCase().includes(q);
+
+      if (!matchName && !matchAdm && !matchPhone && !matchRef && !matchBody) {
+        continue;
+      }
+    }
+
+    // Mask phone for non-admin
+    let guardianPhone = notif.guardianPhone;
+    if (params.role !== "ADMIN" && guardianPhone.length > 4) {
+      guardianPhone = guardianPhone.slice(0, 4) + "****" + guardianPhone.slice(-2);
+    }
+
+    // Sort attempts chronologically
+    const rawAttempts = attemptsByNotifId.get(notif.id) || [];
+    rawAttempts.sort((a, b) => {
+      const timeA = Date.parse(a.attemptedAt ? a.attemptedAt.toString() : "") || 0;
+      const timeB = Date.parse(b.attemptedAt ? b.attemptedAt.toString() : "") || 0;
+      return timeA - timeB;
+    });
+
+    const attempts: NotificationHistoryAttempt[] = rawAttempts.map((a) => ({
+      id: a.id,
+      attemptedAt: a.attemptedAt ? a.attemptedAt.toString() : new Date().toISOString(),
+      httpStatus: a.httpStatus ?? null,
+      success: a.success,
+      rawResponse: a.rawResponse,
+      error: a.error ?? null,
+    }));
+
+    enrichedItems.push({
+      id: notif.id,
+      attendanceId: notif.attendanceId,
+      guardianPhone,
+      type: notif.type,
+      body: notif.body,
+      status: notif.status as NotificationHistoryItem["status"],
+      providerRef: notif.providerRef ?? null,
+      createdAt: createdStr,
+      needsReview: isStuck,
+      student: {
+        id: student.id,
+        fullName: student.fullName,
+        admissionNo: student.admissionNo,
+        classId: student.classId,
+        className,
+      },
+      attendance: {
+        id: att.id,
+        date: att.date ? att.date.toString() : "",
+        status: att.status,
+      },
+      attempts,
+    });
+  }
+
+  // 4. Sort newest first
+  enrichedItems.sort((a, b) => {
+    const timeA = Date.parse(a.createdAt) || 0;
+    const timeB = Date.parse(b.createdAt) || 0;
+    return timeB - timeA;
+  });
+
+  // 5. Pagination
+  const page = Math.max(1, params.page || 1);
+  const pageSize = Math.min(100, Math.max(1, params.pageSize || 25));
+  const total = enrichedItems.length;
+  const totalPages = Math.max(1, Math.ceil(total / pageSize));
+  const start = (page - 1) * pageSize;
+  const items = enrichedItems.slice(start, start + pageSize);
+
+  return {
+    items,
+    total,
+    page,
+    pageSize,
+    totalPages,
+    summary,
+    accessibleClasses,
+    isAdmin: params.role === "ADMIN",
+  };
+}
