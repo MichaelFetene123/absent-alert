@@ -46,6 +46,13 @@ export const updateStudentSchema = z.object({
     .max(100, "Student full name must not exceed 100 characters")
     .optional(),
   classId: idSchema.optional(),
+  guardianName: z
+    .string()
+    .trim()
+    .min(2, "Guardian name must be at least 2 characters")
+    .max(100, "Guardian name must not exceed 100 characters")
+    .optional(),
+  guardianPhone: phoneSchema.optional(),
   active: z.boolean().optional(),
 });
 

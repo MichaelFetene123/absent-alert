@@ -2,6 +2,7 @@ import { requireUser } from "@/lib/guards";
 import { logoutAction } from "@/actions/auth.actions";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { ThemeToggle } from "@/components/theme-toggle";
 import {
   Bell,
   LayoutDashboard,
@@ -38,7 +39,7 @@ export default async function DashboardLayout({
       title: "Students",
       href: "/students",
       icon: Users,
-      adminOnly: user.role !== "ADMIN", // Note: shown differently or admin only
+      adminOnly: false,
     },
     {
       title: "Daily Attendance",
@@ -59,17 +60,22 @@ export default async function DashboardLayout({
       {/* Sidebar Navigation */}
       <aside className="w-full md:w-64 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 flex flex-col justify-between shrink-0">
         <div>
-          {/* Brand */}
-          <div className="p-6 border-b border-slate-100 dark:border-slate-800 flex items-center gap-3">
-            <div className="size-9 rounded-lg bg-blue-600 text-white flex items-center justify-center shadow-md shadow-blue-500/20">
-              <Bell className="size-5" />
+          {/* Brand & Theme Toggle */}
+          <div className="p-5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="size-9 rounded-lg bg-blue-600 text-white flex items-center justify-center shadow-md shadow-blue-500/20">
+                <Bell className="size-5" />
+              </div>
+              <div>
+                <h1 className="font-bold text-slate-900 dark:text-white leading-tight">
+                  AbsentAlert
+                </h1>
+                <p className="text-xs text-slate-500 dark:text-slate-400">School Portal</p>
+              </div>
             </div>
-            <div>
-              <h1 className="font-bold text-slate-900 dark:text-white leading-tight">
-                AbsentAlert
-              </h1>
-              <p className="text-xs text-slate-500 dark:text-slate-400">School Portal</p>
-            </div>
+
+            {/* Dark / Light Mode Toggle Button */}
+            <ThemeToggle />
           </div>
 
           {/* User Profile Card */}
@@ -118,8 +124,8 @@ export default async function DashboardLayout({
           </nav>
         </div>
 
-        {/* Footer / Sign Out */}
-        <div className="p-4 border-t border-slate-100 dark:border-slate-800">
+        {/* Footer with Theme Row & Sign Out */}
+        <div className="p-4 border-t border-slate-100 dark:border-slate-800 space-y-2">
           <form action={logoutAction}>
             <Button
               variant="outline"
