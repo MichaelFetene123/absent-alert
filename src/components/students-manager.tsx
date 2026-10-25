@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { StudentForm, type StudentItem } from "@/components/student-form";
+import { BulkImportModal } from "@/components/bulk-import-modal";
 import { toggleStudentActive } from "@/actions/student.actions";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
@@ -34,6 +35,7 @@ import {
   Check,
   ShieldCheck,
   Smartphone,
+  FileSpreadsheet,
 } from "lucide-react";
 
 interface StudentsManagerProps {
@@ -53,6 +55,7 @@ export function StudentsManager({
   const [selectedClassId, setSelectedClassId] = React.useState<string>("ALL");
   const [showInactive, setShowInactive] = React.useState(false);
   const [isFormOpen, setIsFormOpen] = React.useState(false);
+  const [isBulkImportOpen, setIsBulkImportOpen] = React.useState(false);
   const [editingStudent, setEditingStudent] = React.useState<StudentItem | null>(null);
   const [isTogglingId, setIsTogglingId] = React.useState<string | null>(null);
   const [copiedPhoneId, setCopiedPhoneId] = React.useState<string | null>(null);
@@ -164,14 +167,25 @@ export function StudentsManager({
         </div>
 
         {isAdmin && (
-          <Button
-            onClick={handleCreate}
-            size="sm"
-            className="h-8 px-3 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-medium text-xs gap-1.5 shrink-0"
-          >
-            <UserPlus className="size-3.5" />
-            <span>Add Student</span>
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button
+              onClick={() => setIsBulkImportOpen(true)}
+              variant="outline"
+              size="sm"
+              className="h-8 px-3 rounded-lg border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 font-medium text-xs gap-1.5 shrink-0"
+            >
+              <FileSpreadsheet className="size-3.5 text-emerald-600" />
+              <span>Import CSV</span>
+            </Button>
+            <Button
+              onClick={handleCreate}
+              size="sm"
+              className="h-8 px-3 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-medium text-xs gap-1.5 shrink-0"
+            >
+              <UserPlus className="size-3.5" />
+              <span>Add Student</span>
+            </Button>
+          </div>
         )}
       </div>
 
@@ -432,15 +446,26 @@ export function StudentsManager({
 
       {/* Slide-over Sheet for Create / Edit */}
       {isAdmin && (
-        <StudentForm
-          open={isFormOpen}
-          onOpenChange={setIsFormOpen}
-          classes={classes}
-          student={editingStudent}
-          onSuccess={() => {
-            // State revalidated via router.refresh()
-          }}
-        />
+        <>
+          <StudentForm
+            open={isFormOpen}
+            onOpenChange={setIsFormOpen}
+            classes={classes}
+            student={editingStudent}
+            onSuccess={() => {
+              // State revalidated via router.refresh()
+            }}
+          />
+
+          <BulkImportModal
+            open={isBulkImportOpen}
+            onOpenChange={setIsBulkImportOpen}
+            classes={classes}
+            onSuccess={() => {
+              // State revalidated via router.refresh()
+            }}
+          />
+        </>
       )}
     </div>
   );

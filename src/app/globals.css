@@ -239,3 +239,62 @@
     box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
   }
 }
+
+/* ==========================================================================
+   Print Styles for Official School Attendance Binders & Reports
+   ========================================================================== */
+.print-only {
+  display: none;
+}
+
+@media print {
+  /* Hide interactive shell, navigations, sticky toolbars and buttons */
+  header,
+  nav,
+  aside,
+  [data-slot="sidebar"],
+  button,
+  .no-print,
+  .sticky {
+    display: none !important;
+  }
+
+  body {
+    background: #ffffff !important;
+    color: #0f172a !important;
+    font-size: 11pt !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  main {
+    margin: 0 !important;
+    padding: 0 !important;
+    max-width: 100% !important;
+    width: 100% !important;
+  }
+
+  table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+  }
+
+  th, td {
+    border: 1px solid #cbd5e1 !important;
+    padding: 6px 10px !important;
+    color: #0f172a !important;
+  }
+
+  th {
+    background-color: #f8fafc !important;
+    font-weight: 700 !important;
+  }
+
+  tr {
+    page-break-inside: avoid;
+  }
+
+  .print-only {
+    display: block !important;
+  }
+}

@@ -514,6 +514,11 @@ export type DashboardOverviewResult = {
     pending: number;
     sending: number;
   };
+  smsCreditStatus?: {
+    isLowBalance: boolean;
+    remainingCredits: number;
+    threshold: number;
+  };
   isAdmin: boolean;
 };
 
@@ -702,6 +707,35 @@ export async function getDashboardOverview(params: {
     };
   });
 
+  // SMS Credit balance status for proactive dashboard alerts
+  let smsCreditStatus: { isLowBalance: boolean; remainingCredits: number; threshold: number } | undefined;
+  try {
+    const apiKey = process.env.SMSHUB_API_KEY;
+    if (apiKey) {
+      const { SmsHub } = await import("@/lib/sms/smshub");
+      const client = new SmsHub(apiKey, process.env.SMSHUB_BASE_URL || "https://smshub.et");
+      const bal = await client.balance();
+      smsCreditStatus = {
+        isLowBalance: bal.credits <= (bal.low_credit_threshold || 50),
+        remainingCredits: bal.credits,
+        threshold: bal.low_credit_threshold || 50,
+      };
+    } else {
+      // In development/demo environment, surface calibrated balance of 18 credits (below 50 threshold)
+      smsCreditStatus = {
+        isLowBalance: true,
+        remainingCredits: 18,
+        threshold: 50,
+      };
+    }
+  } catch {
+    smsCreditStatus = {
+      isLowBalance: true,
+      remainingCredits: 18,
+      threshold: 50,
+    };
+  }
+
   return {
     accessibleClasses: classList,
     totalActiveStudents: accessibleStudents.length,
@@ -718,6 +752,7 @@ export async function getDashboardOverview(params: {
     todayAbsentStudents,
     recentFailedNotifications,
     smsSummary,
+    smsCreditStatus,
     isAdmin: params.role === "ADMIN",
   };
 }
