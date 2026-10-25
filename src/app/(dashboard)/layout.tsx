@@ -44,6 +44,12 @@ export default async function DashboardLayout({
       adminOnly: false,
     },
     {
+      title: "Teachers",
+      href: "/teachers",
+      icon: GraduationCap,
+      adminOnly: false,
+    },
+    {
       title: "Students",
       href: "/students",
       icon: Users,
