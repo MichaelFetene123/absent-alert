@@ -259,136 +259,106 @@ export function TeachersManager({
   }
 
   return (
-    <div className="space-y-8 pb-12">
+    <div className="space-y-6 pb-12">
       {/* Page Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div className="flex items-center gap-2.5">
-          <div className="p-2 rounded-xl bg-purple-500/10 text-purple-600 dark:text-purple-400">
-            <GraduationCap className="size-6" />
-          </div>
-          <div>
-            <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">
-              Faculty &amp; Instructors
-            </h1>
-            <p className="text-xs md:text-sm text-slate-500 dark:text-slate-400">
-              Manage teacher access, classroom assignments, and track recorded attendance history.
-            </p>
-          </div>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-slate-200 dark:border-slate-800 pb-4">
+        <div className="flex items-center gap-2">
+          <GraduationCap className="size-5 text-slate-700 dark:text-slate-300" />
+          <h1 className="text-xl font-bold tracking-tight text-slate-900 dark:text-white">
+            Teachers
+          </h1>
+          {isAdmin ? (
+            <Badge variant="outline" className="text-xs font-medium text-slate-600 dark:text-slate-400 gap-1 py-0.5 px-2">
+              <Shield className="size-3 text-slate-500" />
+              <span>Admin</span>
+            </Badge>
+          ) : (
+            <Badge variant="outline" className="text-xs font-medium text-slate-600 dark:text-slate-400 gap-1 py-0.5 px-2">
+              <GraduationCap className="size-3 text-slate-500" />
+              <span>Faculty Directory</span>
+            </Badge>
+          )}
         </div>
 
         {isAdmin && (
           <Button
             id="add-teacher-btn"
             onClick={() => setIsCreateOpen(true)}
-            className="h-10 px-5 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-semibold text-xs gap-2 shadow-md shadow-purple-600/20 hover-lift shrink-0"
+            size="sm"
+            className="h-8 px-3 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-medium text-xs gap-1.5 shrink-0"
           >
-            <Plus className="size-4" />
+            <Plus className="size-3.5" />
             <span>Add Teacher</span>
           </Button>
         )}
       </div>
 
       {/* Metric Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         {/* Total Teachers */}
-        <Card className="relative overflow-hidden rounded-2xl border border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-slate-900/80 shadow-xs hover-lift transition-all">
-          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-500 to-indigo-500" />
-          <CardContent className="p-5 flex items-center justify-between">
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Faculty Members</p>
-              <h3 className="text-3xl font-extrabold text-slate-900 dark:text-white mt-1">
-                {stats.totalTeachers}
-              </h3>
-            </div>
-            <div className="size-11 rounded-xl bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center">
-              <GraduationCap className="size-5" />
-            </div>
+        <Card className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
+          <CardContent className="p-4">
+            <p className="text-xs font-medium text-slate-500 uppercase tracking-wider">Faculty Members</p>
+            <h3 className="text-2xl font-bold text-slate-900 dark:text-white mt-1">
+              {stats.totalTeachers}
+            </h3>
+            <p className="text-[11px] text-slate-500 mt-0.5">Registered accounts</p>
           </CardContent>
         </Card>
 
         {/* Class Assignments */}
-        <Card className="relative overflow-hidden rounded-2xl border border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-slate-900/80 shadow-xs hover-lift transition-all">
-          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 to-cyan-500" />
-          <CardContent className="p-5 flex items-center justify-between">
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Class Assignments</p>
-              <h3 className="text-3xl font-extrabold text-slate-900 dark:text-white mt-1">
-                {stats.totalClassAssignments}
-              </h3>
-              <p className="text-[11px] text-blue-600 dark:text-blue-400 font-semibold mt-0.5">
-                across all classrooms
-              </p>
-            </div>
-            <div className="size-11 rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center">
-              <School className="size-5" />
-            </div>
+        <Card className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
+          <CardContent className="p-4">
+            <p className="text-xs font-medium text-slate-500 uppercase tracking-wider">Class Assignments</p>
+            <h3 className="text-2xl font-bold text-slate-900 dark:text-white mt-1">
+              {stats.totalClassAssignments}
+            </h3>
+            <p className="text-[11px] text-slate-500 mt-0.5">Across all classrooms</p>
           </CardContent>
         </Card>
 
         {/* Assigned Teachers */}
-        <Card className="relative overflow-hidden rounded-2xl border border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-slate-900/80 shadow-xs hover-lift transition-all">
-          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-emerald-500 to-teal-500" />
-          <CardContent className="p-5 flex items-center justify-between">
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Active Teachers</p>
-              <h3 className="text-3xl font-extrabold text-slate-900 dark:text-white mt-1">
-                {stats.assignedTeachers}
-              </h3>
-              <p className="text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold mt-0.5">Covering rosters</p>
-            </div>
-            <div className="size-11 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
-              <CheckCircle2 className="size-5" />
-            </div>
+        <Card className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
+          <CardContent className="p-4">
+            <p className="text-xs font-medium text-slate-500 uppercase tracking-wider">Active Instructors</p>
+            <h3 className="text-2xl font-bold text-slate-900 dark:text-white mt-1">
+              {stats.assignedTeachers}
+            </h3>
+            <p className="text-[11px] text-emerald-600 dark:text-emerald-400 mt-0.5">Covering rosters</p>
           </CardContent>
         </Card>
 
         {/* Unassigned */}
-        <Card className="relative overflow-hidden rounded-2xl border border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-slate-900/80 shadow-xs hover-lift transition-all">
-          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-amber-500 to-orange-500" />
-          <CardContent className="p-5 flex items-center justify-between">
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Unassigned</p>
-              <h3
-                className={`text-3xl font-extrabold mt-1 ${
-                  stats.unassignedTeachers > 0
-                    ? "text-amber-600 dark:text-amber-400"
-                    : "text-emerald-600 dark:text-emerald-400"
-                }`}
-              >
-                {stats.unassignedTeachers}
-              </h3>
-              <p className="text-[11px] text-slate-500 mt-0.5">
-                {stats.unassignedTeachers === 0 ? "All faculty assigned" : "Awaiting class assignment"}
-              </p>
-            </div>
-            <div
-              className={`size-11 rounded-xl flex items-center justify-center ${
+        <Card className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
+          <CardContent className="p-4">
+            <p className="text-xs font-medium text-slate-500 uppercase tracking-wider">Unassigned</p>
+            <h3
+              className={`text-2xl font-bold mt-1 ${
                 stats.unassignedTeachers > 0
-                  ? "bg-amber-500/10 text-amber-600 dark:text-amber-400"
-                  : "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
+                  ? "text-amber-600 dark:text-amber-400"
+                  : "text-emerald-600 dark:text-emerald-400"
               }`}
             >
-              {stats.unassignedTeachers > 0 ? (
-                <AlertTriangle className="size-5" />
-              ) : (
-                <CheckCircle2 className="size-5" />
-              )}
-            </div>
+              {stats.unassignedTeachers}
+            </h3>
+            <p className="text-[11px] text-slate-500 mt-0.5">
+              {stats.unassignedTeachers === 0 ? "All faculty assigned" : "Awaiting assignment"}
+            </p>
           </CardContent>
         </Card>
       </div>
 
       {/* Action Bar: Search, Filters */}
-      <div className="p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-slate-900/80 shadow-xs flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
-        <div className="flex flex-1 flex-col sm:flex-row items-stretch sm:items-center gap-3">
-          <div className="relative flex-1 max-w-md">
-            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-slate-400" />
+      <div className="p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+        <div className="flex flex-1 flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
+          <div className="relative flex-1 max-w-sm">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-3.5 text-slate-400" />
             <Input
               id="teacher-search-input"
-              placeholder="Search faculty by name, email, or assigned class..."
+              placeholder="Search faculty by name or email..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="pl-10 h-10 rounded-xl text-sm"
+              className="pl-9 h-8 rounded-lg text-xs"
             />
           </div>
 
@@ -397,7 +367,7 @@ export function TeachersManager({
             id="teacher-class-filter"
             value={classFilter}
             onChange={(e) => setClassFilter(e.target.value)}
-            className="h-10 px-3.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-xs font-semibold text-slate-700 dark:text-slate-200 shadow-xs"
+            className="h-8 px-2.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-xs text-slate-700 dark:text-slate-200 outline-none"
           >
             <option value="ALL">All Classrooms</option>
             <option value="UNASSIGNED">Unassigned Only</option>
@@ -413,7 +383,7 @@ export function TeachersManager({
             id="teacher-status-filter"
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="h-10 px-3.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-xs font-semibold text-slate-700 dark:text-slate-200 shadow-xs"
+            className="h-8 px-2.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-xs text-slate-700 dark:text-slate-200 outline-none"
           >
             <option value="ALL">All Status</option>
             <option value="ASSIGNED">Has Classes</option>
@@ -422,30 +392,30 @@ export function TeachersManager({
         </div>
 
         <p className="text-xs text-slate-500 self-end sm:self-auto font-medium">
-          Showing <span className="font-bold text-slate-900 dark:text-white">{filteredTeachers.length}</span> of {teachers.length} faculty
+          Showing <span className="font-bold text-slate-900 dark:text-white">{filteredTeachers.length}</span> of {teachers.length}
         </p>
       </div>
 
       {/* Teachers Table */}
-      <div className="rounded-2xl border border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-slate-900/80 shadow-xs overflow-hidden">
+      <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 overflow-hidden">
         <div className="overflow-x-auto">
           <Table>
-            <TableHeader className="bg-slate-50/70 dark:bg-slate-900">
-              <TableRow className="border-b border-slate-100 dark:border-slate-800 text-xs font-semibold">
-                <TableHead className="py-3 px-4 font-bold text-slate-700 dark:text-slate-300">Instructor Profile</TableHead>
-                <TableHead className="py-3 px-4 font-bold text-slate-700 dark:text-slate-300">Email Address</TableHead>
-                <TableHead className="py-3 px-4 font-bold text-slate-700 dark:text-slate-300">Assigned Classrooms</TableHead>
-                <TableHead className="py-3 px-4 font-bold text-slate-700 dark:text-slate-300">Attendance Audit</TableHead>
-                <TableHead className="py-3 px-4 text-right font-bold text-slate-700 dark:text-slate-300">Actions</TableHead>
+            <TableHeader className="bg-slate-50 dark:bg-slate-900/60">
+              <TableRow className="border-b border-slate-200 dark:border-slate-800 text-xs font-medium">
+                <TableHead className="py-2.5 px-4 font-semibold text-slate-700 dark:text-slate-300">Instructor Name</TableHead>
+                <TableHead className="py-2.5 px-4 font-semibold text-slate-700 dark:text-slate-300">Email Address</TableHead>
+                <TableHead className="py-2.5 px-4 font-semibold text-slate-700 dark:text-slate-300">Assigned Classes</TableHead>
+                <TableHead className="py-2.5 px-4 font-semibold text-slate-700 dark:text-slate-300">Attendance Audit</TableHead>
+                <TableHead className="py-2.5 px-4 text-right font-semibold text-slate-700 dark:text-slate-300">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {filteredTeachers.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={5} className="h-40 text-center text-slate-500">
-                    <div className="flex flex-col items-center justify-center gap-2">
-                      <GraduationCap className="size-9 text-slate-400" />
-                      <p className="font-semibold text-sm text-slate-800 dark:text-slate-200">No teachers found</p>
+                  <TableCell colSpan={5} className="h-32 text-center text-slate-500">
+                    <div className="flex flex-col items-center justify-center gap-1.5">
+                      <GraduationCap className="size-6 text-slate-400" />
+                      <p className="font-medium text-sm text-slate-800 dark:text-slate-200">No teachers found</p>
                       <p className="text-xs text-slate-400">
                         {search || classFilter !== "ALL" || statusFilter !== "ALL"
                           ? "Try clearing your search or filters."
@@ -457,77 +427,62 @@ export function TeachersManager({
               ) : (
                 filteredTeachers.map((t) => (
                   <TableRow key={t.id} className="hover:bg-slate-50/70 dark:hover:bg-slate-800/40 transition-colors">
-                    {/* Name & Avatar */}
-                    <TableCell className="py-3.5 px-4 font-semibold text-slate-900 dark:text-white">
-                      <div className="flex items-center gap-3">
-                        <div className="size-9 rounded-xl bg-purple-500/10 text-purple-700 dark:text-purple-300 flex items-center justify-center font-bold text-xs shrink-0 border border-purple-500/20">
-                          {t.name.slice(0, 2).toUpperCase()}
-                        </div>
-                        <div>
-                          <span className="font-bold text-sm block">{t.name}</span>
-                          <span className="block text-[11px] font-mono text-slate-400 font-normal">
-                            ID: {t.id.slice(0, 8)}...
-                          </span>
-                        </div>
+                    {/* Name */}
+                    <TableCell className="py-2.5 px-4 font-semibold text-slate-900 dark:text-white">
+                      <div className="flex items-center gap-2">
+                        <span className="font-semibold text-sm">{t.name}</span>
                       </div>
                     </TableCell>
 
                     {/* Email */}
-                    <TableCell className="py-3.5 px-4 text-slate-600 dark:text-slate-300 font-mono text-xs">
+                    <TableCell className="py-2.5 px-4 text-slate-600 dark:text-slate-300 font-mono text-xs">
                       <div className="flex items-center gap-1.5">
-                        <Mail className="size-3.5 text-slate-400 shrink-0" />
+                        <Mail className="size-3 text-slate-400 shrink-0" />
                         <span>{t.email}</span>
                       </div>
                     </TableCell>
 
                     {/* Assigned Classes */}
-                    <TableCell className="py-3.5 px-4">
+                    <TableCell className="py-2.5 px-4">
                       {t.assignedClasses.length > 0 ? (
-                        <div className="flex flex-wrap gap-1.5 max-w-sm">
+                        <div className="flex flex-wrap gap-1 max-w-sm">
                           {t.assignedClasses.map((cls) => (
                             <Link key={cls.id} href={`/attendance?classId=${cls.id}`}>
-                              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-blue-500/10 text-blue-700 dark:text-blue-300 border border-blue-500/20 hover:bg-blue-500/20 cursor-pointer transition-colors">
-                                <School className="size-3 text-blue-600" />
+                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-medium bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:border-slate-400 transition-colors">
+                                <School className="size-3 text-slate-500" />
                                 <span>{cls.name}</span>
                               </span>
                             </Link>
                           ))}
                         </div>
                       ) : (
-                        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/20">
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800">
                           <AlertTriangle className="size-3" />
-                          <span>No classes assigned</span>
+                          <span>No classes</span>
                         </span>
                       )}
                     </TableCell>
 
                     {/* Attendance Records Marked */}
-                    <TableCell className="py-3.5 px-4">
-                      <span
-                        className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold border ${
-                          t.markedAttendanceCount > 0
-                            ? "bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border-emerald-500/20"
-                            : "bg-slate-100 dark:bg-slate-800 text-slate-500 border-slate-200"
-                        }`}
-                      >
-                        <CalendarCheck className="size-3 mr-0.5 text-emerald-600" />
-                        <span>{t.markedAttendanceCount} sessions recorded</span>
+                    <TableCell className="py-2.5 px-4">
+                      <span className="text-xs text-slate-600 dark:text-slate-400">
+                        {t.markedAttendanceCount} session{t.markedAttendanceCount === 1 ? "" : "s"}
                       </span>
                     </TableCell>
 
                     {/* Actions */}
-                    <TableCell className="text-right py-3.5 px-4">
-                      <div className="flex items-center justify-end gap-1.5">
+                    <TableCell className="text-right py-2.5 px-4">
+                      <div className="flex items-center justify-end gap-1">
                         {/* Direct Roster link if assigned */}
                         {t.assignedClasses.length > 0 && (
                           <Link href={`/attendance?classId=${t.assignedClasses[0]!.id}`}>
                             <Button
                               variant="ghost"
                               size="sm"
-                              className="h-8 px-2.5 text-xs text-emerald-700 hover:text-emerald-800 hover:bg-emerald-500/10 dark:text-emerald-400 rounded-lg font-medium"
+                              className="h-7 px-2 text-xs text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white font-medium"
                               title={`View Roster for ${t.assignedClasses[0]!.name}`}
                             >
-                              <CalendarCheck className="size-3.5 mr-1" />
+                              <CalendarCheck className="size-3.5 mr-1 text-emerald-600" />
                               <span>Roster</span>
                             </Button>
                           </Link>
@@ -540,7 +495,7 @@ export function TeachersManager({
                             variant="ghost"
                             size="sm"
                             onClick={() => openEditModal(t)}
-                            className="h-8 w-8 p-0 text-slate-600 hover:text-slate-900 hover:bg-slate-100 dark:text-slate-400 dark:hover:text-white dark:hover:bg-slate-800 rounded-lg cursor-pointer"
+                            className="h-7 w-7 p-0 text-slate-500 hover:text-slate-900 dark:hover:text-white rounded"
                             title="Edit Teacher & Classes"
                           >
                             <Edit2 className="size-3.5" />
@@ -554,7 +509,7 @@ export function TeachersManager({
                             variant="ghost"
                             size="sm"
                             onClick={() => setDeletingTeacher(t)}
-                            className="h-8 w-8 p-0 text-rose-600 hover:text-rose-700 hover:bg-rose-500/10 dark:text-rose-400 rounded-lg cursor-pointer"
+                            className="h-7 w-7 p-0 text-rose-600 hover:text-rose-700 hover:bg-rose-50 dark:hover:bg-rose-950/30 rounded"
                             title="Delete Teacher Account"
                           >
                             <Trash2 className="size-3.5" />

@@ -227,40 +227,37 @@ export function NotificationsManager({
   }
 
   return (
-    <div className="space-y-8 pb-12">
+    <div className="space-y-6 pb-12">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <div className="flex items-center gap-2.5">
-            <div className="p-2 rounded-xl bg-purple-500/10 text-purple-600 dark:text-purple-400">
-              <History className="size-6" />
-            </div>
-            <div>
-              <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">
-                SMS Notification Audit &amp; Dispatch History
-              </h1>
-              <p className="text-xs md:text-sm text-slate-500 dark:text-slate-400">
-                End-to-end SMSHub gateway telemetry, failure analysis, and automated retry lock engine.
-              </p>
-            </div>
-          </div>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-slate-200 dark:border-slate-800 pb-4">
+        <div className="flex items-center gap-2">
+          <History className="size-5 text-slate-700 dark:text-slate-300" />
+          <h1 className="text-xl font-bold tracking-tight text-slate-900 dark:text-white">
+            SMS Notifications
+          </h1>
+          {initialData.isAdmin && (
+            <Badge variant="outline" className="text-xs font-medium text-slate-600 dark:text-slate-400 gap-1 py-0.5 px-2">
+              <ShieldCheck className="size-3 text-slate-500" />
+              <span>Admin</span>
+            </Badge>
+          )}
         </div>
 
-        <div className="flex items-center gap-2.5">
+        <div className="flex items-center gap-2">
           {initialData.isAdmin && initialData.summary.failed > 0 && (
             <Button
               variant="destructive"
               size="sm"
               onClick={handleBatchRetry}
               disabled={isBatchRetrying}
-              className="gap-2 h-10 px-4 rounded-xl text-xs font-semibold shadow-md shadow-rose-600/20 hover-lift"
+              className="gap-1.5 h-8 px-3 rounded-lg text-xs font-medium"
             >
               {isBatchRetrying ? (
-                <Loader2 className="size-4 animate-spin" />
+                <Loader2 className="size-3.5 animate-spin" />
               ) : (
-                <RotateCcw className="size-4" />
+                <RotateCcw className="size-3.5" />
               )}
-              Retry All Failed ({initialData.summary.failed})
+              Retry Failed ({initialData.summary.failed})
             </Button>
           )}
 
@@ -268,136 +265,112 @@ export function NotificationsManager({
             variant="outline"
             size="sm"
             onClick={() => router.refresh()}
-            className="gap-2 h-10 px-3.5 rounded-xl text-xs font-semibold hover-lift"
+            className="gap-1.5 h-8 px-2.5 rounded-lg text-xs font-medium"
           >
-            <RefreshCw className="size-4" />
-            Refresh
+            <RefreshCw className="size-3.5 text-slate-500" />
+            <span>Refresh</span>
           </Button>
         </div>
       </div>
 
       {/* KPI Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
         {/* Total Card */}
-        <Card className="relative overflow-hidden rounded-2xl border border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-slate-900/80 shadow-xs hover-lift transition-all">
-          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-500 to-indigo-500" />
-          <CardHeader className="pb-1 p-5 flex flex-row items-center justify-between space-y-0">
-            <CardTitle className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+        <Card className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
+          <CardContent className="p-4">
+            <p className="text-xs font-medium text-slate-500 uppercase tracking-wider">
               Total Notifications
-            </CardTitle>
-            <div className="p-2 bg-purple-500/10 rounded-xl text-purple-600 dark:text-purple-400">
-              <History className="size-4" />
-            </div>
-          </CardHeader>
-          <CardContent className="p-5 pt-0">
-            <div className="text-3xl font-extrabold text-slate-900 dark:text-white">
+            </p>
+            <div className="text-2xl font-bold text-slate-900 dark:text-white mt-1">
               {initialData.summary.total}
             </div>
-            <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1">
-              Logged across accessible classes
+            <p className="text-[11px] text-slate-500 mt-0.5">
+              Logged audit trail
             </p>
           </CardContent>
         </Card>
 
         {/* Accepted by Provider */}
-        <Card className="relative overflow-hidden rounded-2xl border border-emerald-500/20 bg-emerald-500/5 shadow-xs hover-lift transition-all">
-          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-emerald-500 to-teal-500" />
-          <CardHeader className="pb-1 p-5 flex flex-row items-center justify-between space-y-0">
-            <CardTitle className="text-xs font-semibold uppercase tracking-wider text-emerald-800 dark:text-emerald-400">
+        <Card className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
+          <CardContent className="p-4">
+            <p className="text-xs font-medium text-slate-500 uppercase tracking-wider">
               Accepted by Provider
-            </CardTitle>
-            <div className="p-2 bg-emerald-500/10 rounded-xl text-emerald-600 dark:text-emerald-300">
-              <CheckCircle2 className="size-4" />
-            </div>
-          </CardHeader>
-          <CardContent className="p-5 pt-0">
-            <div className="text-3xl font-extrabold text-emerald-950 dark:text-emerald-200">
+            </p>
+            <div className="text-2xl font-bold text-emerald-600 dark:text-emerald-400 mt-1">
               {initialData.summary.accepted}
             </div>
-            <p className="text-[11px] text-emerald-700/80 dark:text-emerald-400 mt-1">
+            <p className="text-[11px] text-slate-500 mt-0.5">
               {initialData.summary.total > 0
-                ? `${Math.round((initialData.summary.accepted / initialData.summary.total) * 100)}% delivery acceptance rate`
-                : "No notifications logged yet"}
+                ? `${Math.round((initialData.summary.accepted / initialData.summary.total) * 100)}% accepted`
+                : "No logs yet"}
             </p>
           </CardContent>
         </Card>
 
         {/* Failed Delivery */}
-        <Card className="relative overflow-hidden rounded-2xl border border-rose-500/20 bg-rose-500/5 shadow-xs hover-lift transition-all">
-          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-rose-500 to-pink-500" />
-          <CardHeader className="pb-1 p-5 flex flex-row items-center justify-between space-y-0">
-            <CardTitle className="text-xs font-semibold uppercase tracking-wider text-rose-800 dark:text-rose-400">
+        <Card className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
+          <CardContent className="p-4">
+            <p className="text-xs font-medium text-slate-500 uppercase tracking-wider">
               Failed Delivery
-            </CardTitle>
-            <div className="p-2 bg-rose-500/10 rounded-xl text-rose-600 dark:text-rose-300">
-              <AlertCircle className="size-4" />
-            </div>
-          </CardHeader>
-          <CardContent className="p-5 pt-0">
-            <div className="text-3xl font-extrabold text-rose-950 dark:text-rose-200">
+            </p>
+            <div className="text-2xl font-bold text-rose-600 dark:text-rose-400 mt-1">
               {initialData.summary.failed}
             </div>
-            <p className="text-[11px] text-rose-700/80 dark:text-rose-400 mt-1">
-              Eligible for safe manual / batch retry
+            <p className="text-[11px] text-slate-500 mt-0.5">
+              Eligible for retry
             </p>
           </CardContent>
         </Card>
 
         {/* Queued / In Flight */}
-        <Card className="relative overflow-hidden rounded-2xl border border-amber-500/20 bg-amber-500/5 shadow-xs hover-lift transition-all">
-          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-amber-500 to-orange-500" />
-          <CardHeader className="pb-1 p-5 flex flex-row items-center justify-between space-y-0">
-            <CardTitle className="text-xs font-semibold uppercase tracking-wider text-amber-800 dark:text-amber-400">
+        <Card className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
+          <CardContent className="p-4">
+            <p className="text-xs font-medium text-slate-500 uppercase tracking-wider">
               Queued / Transit
-            </CardTitle>
-            <div className="p-2 bg-amber-500/10 rounded-xl text-amber-600 dark:text-amber-300">
-              <Clock className="size-4" />
-            </div>
-          </CardHeader>
-          <CardContent className="p-5 pt-0">
-            <div className="flex items-baseline gap-2">
-              <span className="text-3xl font-extrabold text-amber-950 dark:text-amber-200">
+            </p>
+            <div className="flex items-baseline gap-2 mt-1">
+              <span className="text-2xl font-bold text-amber-600 dark:text-amber-400">
                 {initialData.summary.pending + initialData.summary.sending}
               </span>
               {initialData.summary.needsReview > 0 && (
-                <span className="text-xs px-2 py-0.5 rounded-full font-bold bg-amber-500/20 text-amber-900 dark:text-amber-200 border border-amber-500/30">
+                <span className="text-[10px] px-1.5 py-0.5 rounded font-medium bg-amber-50 dark:bg-amber-950/40 text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-800">
                   {initialData.summary.needsReview} Stalled
                 </span>
               )}
             </div>
-            <p className="text-[11px] text-amber-700/80 dark:text-amber-400 mt-1">
-              {initialData.summary.pending} queued · {initialData.summary.sending} in-transit
+            <p className="text-[11px] text-slate-500 mt-0.5">
+              {initialData.summary.pending} queued · {initialData.summary.sending} sending
             </p>
           </CardContent>
         </Card>
       </div>
 
       {/* Filter Toolbar */}
-      <div className="p-5 rounded-2xl border border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-slate-900/80 shadow-xs space-y-4">
-        <div className="flex flex-col md:flex-row gap-3">
+      <div className="p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs space-y-3">
+        <div className="flex flex-col md:flex-row gap-2.5">
           {/* Search Input */}
           <div className="relative flex-1">
-            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-slate-400" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-slate-400" />
             <Input
-              placeholder="Search by student name, admission number, guardian phone, or SMSHub provider ID..."
+              placeholder="Search by student name, admission number, guardian phone, or provider ID..."
               value={search}
               onChange={(e) => {
                 setSearch(e.target.value);
                 setPage(1);
               }}
-              className="pl-10 h-10 rounded-xl text-sm"
+              className="pl-9 h-9 rounded-lg text-xs"
             />
           </div>
 
           {/* Class Dropdown */}
-          <div className="w-full md:w-60">
+          <div className="w-full md:w-56">
             <select
               value={classFilter}
               onChange={(e) => {
                 setClassFilter(e.target.value);
                 setPage(1);
               }}
-              className="w-full h-10 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-3.5 py-2 text-sm font-semibold text-slate-900 dark:text-slate-100 focus:outline-hidden focus:ring-2 focus:ring-purple-500 shadow-xs"
+              className="w-full h-9 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-3 py-1.5 text-xs font-medium text-slate-900 dark:text-slate-100 focus:outline-hidden focus:ring-1 focus:ring-purple-500 shadow-xs"
             >
               <option value="ALL">All Classrooms</option>
               {initialData.accessibleClasses.map((c) => (
@@ -419,18 +392,18 @@ export function NotificationsManager({
                 setSearch("");
                 setPage(1);
               }}
-              className="h-10 text-slate-500 hover:text-slate-900 dark:hover:text-slate-100 gap-1.5 rounded-xl text-xs font-semibold"
+              className="h-9 text-slate-500 hover:text-slate-900 dark:hover:text-slate-100 gap-1.5 rounded-lg text-xs font-medium"
             >
-              <FilterX className="size-4" />
+              <FilterX className="size-3.5" />
               Reset Filters
             </Button>
           )}
         </div>
 
         {/* Status Filter Badges */}
-        <div className="flex flex-wrap items-center gap-2 pt-3 border-t border-slate-100 dark:border-slate-800/80">
-          <span className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mr-1">
-            Filter Status:
+        <div className="flex flex-wrap items-center gap-1.5 pt-2.5 border-t border-slate-100 dark:border-slate-800/80">
+          <span className="text-[11px] font-medium uppercase tracking-wider text-slate-400 dark:text-slate-500 mr-1">
+            Status:
           </span>
 
           <Button
@@ -440,7 +413,7 @@ export function NotificationsManager({
               setStatusFilter("ALL");
               setPage(1);
             }}
-            className="h-8 text-xs px-3 rounded-xl font-semibold"
+            className="h-7 text-xs px-2.5 rounded-lg font-medium"
           >
             All Logs ({initialData.summary.total})
           </Button>
@@ -452,13 +425,13 @@ export function NotificationsManager({
               setStatusFilter("ACCEPTED");
               setPage(1);
             }}
-            className={`h-8 text-xs px-3 rounded-xl font-semibold ${
+            className={`h-7 text-xs px-2.5 rounded-lg font-medium ${
               statusFilter === "ACCEPTED"
                 ? "bg-emerald-600 text-white"
                 : "border-emerald-500/30 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-500/10"
             }`}
           >
-            <CheckCircle2 className="size-3 text-emerald-500 mr-1.5" />
+            <CheckCircle2 className="size-3 text-emerald-500 mr-1" />
             Accepted ({initialData.summary.accepted})
           </Button>
 
@@ -469,13 +442,13 @@ export function NotificationsManager({
               setStatusFilter("FAILED");
               setPage(1);
             }}
-            className={`h-8 text-xs px-3 rounded-xl font-semibold ${
+            className={`h-7 text-xs px-2.5 rounded-lg font-medium ${
               statusFilter === "FAILED"
                 ? "bg-rose-600 text-white"
                 : "border-rose-500/30 text-rose-700 dark:text-rose-300 hover:bg-rose-500/10"
             }`}
           >
-            <AlertCircle className="size-3 text-rose-500 mr-1.5" />
+            <AlertCircle className="size-3 text-rose-500 mr-1" />
             Failed ({initialData.summary.failed})
           </Button>
 
@@ -486,9 +459,9 @@ export function NotificationsManager({
               setStatusFilter("PENDING");
               setPage(1);
             }}
-            className="h-8 text-xs px-3 rounded-xl font-semibold"
+            className="h-7 text-xs px-2.5 rounded-lg font-medium"
           >
-            <Clock className="size-3 text-slate-500 mr-1.5" />
+            <Clock className="size-3 text-slate-500 mr-1" />
             Queued ({initialData.summary.pending})
           </Button>
 
@@ -499,9 +472,9 @@ export function NotificationsManager({
               setStatusFilter("SENDING");
               setPage(1);
             }}
-            className="h-8 text-xs px-3 rounded-xl font-semibold border-blue-500/30"
+            className="h-7 text-xs px-2.5 rounded-lg font-medium border-blue-500/30"
           >
-            <Loader2 className="size-3 text-blue-500 mr-1.5 animate-spin" />
+            <Loader2 className="size-3 text-blue-500 mr-1 animate-spin" />
             Sending ({initialData.summary.sending})
           </Button>
 
@@ -513,9 +486,9 @@ export function NotificationsManager({
                 setStatusFilter("NEEDS_REVIEW");
                 setPage(1);
               }}
-              className="h-8 text-xs px-3 rounded-xl font-semibold border-amber-500/40 bg-amber-500/10 text-amber-800 dark:text-amber-300"
+              className="h-7 text-xs px-2.5 rounded-lg font-medium border-amber-500/40 bg-amber-500/10 text-amber-800 dark:text-amber-300"
             >
-              <AlertTriangle className="size-3 text-amber-500 mr-1.5" />
+              <AlertTriangle className="size-3 text-amber-500 mr-1" />
               Needs Review ({initialData.summary.needsReview})
             </Button>
           )}
@@ -523,31 +496,31 @@ export function NotificationsManager({
       </div>
 
       {/* Main Table */}
-      <div className="rounded-2xl border border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-slate-900/80 shadow-xs overflow-hidden">
+      <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs overflow-hidden">
         <div className="overflow-x-auto">
           <Table>
-            <TableHeader className="bg-slate-50/70 dark:bg-slate-900">
-              <TableRow className="border-b border-slate-100 dark:border-slate-800 text-xs font-semibold">
-                <TableHead className="w-48 py-3 px-4">Timestamp</TableHead>
-                <TableHead className="py-3 px-4">Student</TableHead>
-                <TableHead className="py-3 px-4">Class</TableHead>
-                <TableHead className="py-3 px-4">Guardian Contact</TableHead>
-                <TableHead className="py-3 px-4">Delivery Status</TableHead>
-                <TableHead className="py-3 px-4">Attempts</TableHead>
-                <TableHead className="py-3 px-4">Provider Ref ID</TableHead>
-                <TableHead className="py-3 px-4 text-right">Actions</TableHead>
+            <TableHeader className="bg-slate-50/70 dark:bg-slate-900/50">
+              <TableRow className="border-b border-slate-100 dark:border-slate-800 text-xs font-medium text-slate-500">
+                <TableHead className="w-44 py-2.5 px-3.5">Timestamp</TableHead>
+                <TableHead className="py-2.5 px-3.5">Student</TableHead>
+                <TableHead className="py-2.5 px-3.5">Class</TableHead>
+                <TableHead className="py-2.5 px-3.5">Guardian Contact</TableHead>
+                <TableHead className="py-2.5 px-3.5">Delivery Status</TableHead>
+                <TableHead className="py-2.5 px-3.5">Attempts</TableHead>
+                <TableHead className="py-2.5 px-3.5">Provider Ref ID</TableHead>
+                <TableHead className="py-2.5 px-3.5 text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {paginatedItems.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={8} className="text-center py-16">
-                    <div className="flex flex-col items-center justify-center text-slate-500 space-y-2">
-                      <History className="size-10 text-slate-300 dark:text-slate-700" />
-                      <p className="text-sm font-semibold text-slate-700 dark:text-slate-300">
+                  <TableCell colSpan={8} className="text-center py-14">
+                    <div className="flex flex-col items-center justify-center text-slate-500 space-y-1.5">
+                      <History className="size-8 text-slate-300 dark:text-slate-700" />
+                      <p className="text-xs font-semibold text-slate-700 dark:text-slate-300">
                         No notifications match the filter
                       </p>
-                      <p className="text-xs text-slate-400">
+                      <p className="text-[11px] text-slate-400">
                         Try adjusting your search query, status, or class selection.
                       </p>
                     </div>
@@ -563,9 +536,9 @@ export function NotificationsManager({
                       className="hover:bg-slate-50/80 dark:hover:bg-slate-800/50 transition-colors"
                     >
                       {/* Timestamp */}
-                      <TableCell className="align-middle py-3 px-4">
+                      <TableCell className="align-middle py-2.5 px-3.5">
                         <div className="flex flex-col">
-                          <span className="text-xs font-semibold text-slate-900 dark:text-slate-100">
+                          <span className="text-xs font-medium text-slate-900 dark:text-slate-100">
                             {formatDateTime(notif.createdAt)}
                           </span>
                           <span className="text-[11px] text-slate-400 flex items-center gap-1 mt-0.5">
@@ -576,16 +549,16 @@ export function NotificationsManager({
                       </TableCell>
 
                       {/* Student */}
-                      <TableCell className="align-middle py-3 px-4">
-                        <div className="flex items-center gap-2.5">
-                          <div className="size-7 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold text-xs flex items-center justify-center shrink-0 border border-slate-200 dark:border-slate-700">
+                      <TableCell className="align-middle py-2.5 px-3.5">
+                        <div className="flex items-center gap-2">
+                          <div className="size-6 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-semibold text-[11px] flex items-center justify-center shrink-0 border border-slate-200 dark:border-slate-700">
                             {notif.student.fullName.charAt(0).toUpperCase()}
                           </div>
                           <div className="flex flex-col">
-                            <span className="font-semibold text-sm text-slate-900 dark:text-slate-100">
+                            <span className="font-medium text-xs text-slate-900 dark:text-slate-100">
                               {notif.student.fullName}
                             </span>
-                            <span className="text-xs font-mono text-slate-500 dark:text-slate-400">
+                            <span className="text-[11px] font-mono text-slate-400">
                               {notif.student.admissionNo}
                             </span>
                           </div>
@@ -593,10 +566,10 @@ export function NotificationsManager({
                       </TableCell>
 
                       {/* Class */}
-                      <TableCell className="align-middle py-3 px-4">
+                      <TableCell className="align-middle py-2.5 px-3.5">
                         <Badge
                           variant="secondary"
-                          className="font-medium text-xs bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300"
+                          className="font-medium text-[11px] bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300"
                         >
                           <School className="size-3 mr-1 text-slate-400" />
                           {notif.student.className}
@@ -604,46 +577,46 @@ export function NotificationsManager({
                       </TableCell>
 
                       {/* Guardian Phone */}
-                      <TableCell className="align-middle py-3 px-4">
-                        <div className="flex items-center gap-1.5 font-mono text-xs text-slate-700 dark:text-slate-300">
-                          <Smartphone className="size-3.5 text-slate-400" />
+                      <TableCell className="align-middle py-2.5 px-3.5">
+                        <div className="flex items-center gap-1.5 font-mono text-xs text-slate-600 dark:text-slate-300">
+                          <Smartphone className="size-3 text-slate-400" />
                           {notif.guardianPhone}
                         </div>
                       </TableCell>
 
                       {/* Status Badge */}
-                      <TableCell className="align-middle py-3 px-4">
+                      <TableCell className="align-middle py-2.5 px-3.5">
                         <div className="flex flex-col items-start gap-1">
                           {notif.status === "ACCEPTED" && (
-                            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border border-emerald-500/20">
+                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-medium bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border border-emerald-500/20">
                               <CheckCircle2 className="size-3 text-emerald-600 dark:text-emerald-400" />
-                              Accepted by Hub
+                              Accepted
                             </span>
                           )}
 
                           {notif.status === "DELIVERED" && (
-                            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border border-emerald-500/20">
+                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-medium bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border border-emerald-500/20">
                               <CheckCheck className="size-3 text-emerald-600 dark:text-emerald-400" />
                               Delivered
                             </span>
                           )}
 
                           {notif.status === "FAILED" && (
-                            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-rose-500/10 text-rose-700 dark:text-rose-300 border border-rose-500/20">
+                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-medium bg-rose-500/10 text-rose-700 dark:text-rose-300 border border-rose-500/20">
                               <AlertCircle className="size-3 text-rose-600 dark:text-rose-400" />
-                              Delivery Failed
+                              Failed
                             </span>
                           )}
 
                           {notif.status === "PENDING" && (
-                            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-amber-500/10 text-amber-700 dark:text-amber-300 border border-amber-500/20">
+                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-medium bg-amber-500/10 text-amber-700 dark:text-amber-300 border border-amber-500/20">
                               <Clock className="size-3 text-amber-500" />
                               Queued
                             </span>
                           )}
 
                           {notif.status === "SENDING" && (
-                            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-blue-500/10 text-blue-700 dark:text-blue-300 border border-blue-500/20">
+                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-medium bg-blue-500/10 text-blue-700 dark:text-blue-300 border border-blue-500/20">
                               <Loader2 className="size-3 text-blue-600 dark:text-blue-400 animate-spin" />
                               Sending
                             </span>
@@ -653,7 +626,7 @@ export function NotificationsManager({
                           {notif.needsReview && (
                             <Badge
                               variant="outline"
-                              className="text-[10px] py-0 px-1.5 border-amber-400 bg-amber-50 dark:bg-amber-950/40 text-amber-800 dark:text-amber-300 gap-1 font-semibold"
+                              className="text-[10px] py-0 px-1.5 border-amber-400 bg-amber-50 dark:bg-amber-950/40 text-amber-800 dark:text-amber-300 gap-1 font-medium"
                             >
                               <AlertTriangle className="size-2.5" />
                               Needs Review (&gt;5m)
@@ -663,7 +636,7 @@ export function NotificationsManager({
                       </TableCell>
 
                       {/* Attempts */}
-                      <TableCell className="align-middle py-3 px-4">
+                      <TableCell className="align-middle py-2.5 px-3.5">
                         <Button
                           variant="ghost"
                           size="sm"
@@ -671,19 +644,19 @@ export function NotificationsManager({
                             setSelectedNotif(notif);
                             setDialogOpen(true);
                           }}
-                          className="h-7 text-xs px-2.5 gap-1.5 text-slate-600 dark:text-slate-300 hover:text-purple-600 hover:bg-purple-500/10 rounded-lg font-medium"
+                          className="h-6 text-xs px-2 gap-1 text-slate-600 dark:text-slate-300 hover:text-purple-600 hover:bg-purple-500/10 rounded font-medium"
                         >
-                          <span className="font-bold">{notif.attempts.length}</span>
+                          <span className="font-semibold">{notif.attempts.length}</span>
                           <span>{notif.attempts.length === 1 ? "attempt" : "attempts"}</span>
                           <Info className="size-3 text-slate-400" />
                         </Button>
                       </TableCell>
 
                       {/* Provider Reference */}
-                      <TableCell className="align-middle py-3 px-4">
+                      <TableCell className="align-middle py-2.5 px-3.5">
                         {notif.providerRef ? (
                           <div className="flex items-center gap-1.5 group">
-                            <span className="font-mono text-xs text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-md border border-slate-200 dark:border-slate-700">
+                            <span className="font-mono text-xs text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded border border-slate-200 dark:border-slate-700">
                               {notif.providerRef.length > 16
                                 ? `${notif.providerRef.slice(0, 14)}…`
                                 : notif.providerRef}
@@ -691,7 +664,7 @@ export function NotificationsManager({
                             <button
                               type="button"
                               onClick={() => copyToClipboard(notif.providerRef!, notif.id)}
-                              className="text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 transition-colors p-1"
+                              className="text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 transition-colors p-0.5"
                               title="Copy provider reference"
                             >
                               {copiedRefId === notif.id ? (
@@ -707,7 +680,7 @@ export function NotificationsManager({
                       </TableCell>
 
                       {/* Actions */}
-                      <TableCell className="align-middle text-right py-3 px-4">
+                      <TableCell className="align-middle text-right py-2.5 px-3.5">
                         <div className="flex items-center justify-end gap-1.5">
                           {/* Attempt logs button */}
                           <Button
@@ -717,10 +690,10 @@ export function NotificationsManager({
                               setSelectedNotif(notif);
                               setDialogOpen(true);
                             }}
-                            className="h-8 px-2.5 text-xs text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white rounded-lg"
+                            className="h-7 px-2 text-xs text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white rounded"
                             title="View Attempt Logs & Response"
                           >
-                            <Info className="size-3.5 mr-1" />
+                            <Info className="size-3 mr-1" />
                             Audit
                           </Button>
 
@@ -736,12 +709,12 @@ export function NotificationsManager({
                                   ? "Retry SMS Dispatch"
                                   : "Admin privilege required to retry SMS"
                               }
-                              className="h-8 px-2.5 text-xs border-rose-300 dark:border-rose-800 text-rose-700 dark:text-rose-300 hover:bg-rose-50 dark:hover:bg-rose-950/40 gap-1.5 rounded-lg font-semibold"
+                              className="h-7 px-2 text-xs border-rose-300 dark:border-rose-800 text-rose-700 dark:text-rose-300 hover:bg-rose-50 dark:hover:bg-rose-950/40 gap-1 rounded font-medium"
                             >
                               {isRetrying ? (
-                                <Loader2 className="size-3.5 animate-spin" />
+                                <Loader2 className="size-3 animate-spin" />
                               ) : (
-                                <RotateCcw className="size-3.5" />
+                                <RotateCcw className="size-3" />
                               )}
                               Retry
                             </Button>
@@ -758,7 +731,7 @@ export function NotificationsManager({
 
         {/* Pagination controls */}
         {totalPages > 1 && (
-          <div className="p-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs text-slate-500">
+          <div className="p-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs text-slate-500">
             <div>
               Showing {Math.min((page - 1) * pageSize + 1, totalItems)} to{" "}
               {Math.min(page * pageSize, totalItems)} of {totalItems} items
@@ -770,11 +743,11 @@ export function NotificationsManager({
                 size="sm"
                 onClick={() => setPage((p) => Math.max(1, p - 1))}
                 disabled={page <= 1}
-                className="h-8 text-xs rounded-lg"
+                className="h-7 text-xs rounded"
               >
                 Previous
               </Button>
-              <span className="font-semibold text-slate-700 dark:text-slate-300">
+              <span className="font-medium text-slate-700 dark:text-slate-300">
                 Page {page} of {totalPages}
               </span>
               <Button
@@ -782,7 +755,7 @@ export function NotificationsManager({
                 size="sm"
                 onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
                 disabled={page >= totalPages}
-                className="h-8 text-xs rounded-lg"
+                className="h-7 text-xs rounded"
               >
                 Next
               </Button>

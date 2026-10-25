@@ -89,261 +89,224 @@ export function TwoWeekGrid({ data, selectedClassId }: Props) {
   }
 
   return (
-    <div className="space-y-8 pb-12">
-      {/* Top Header & Navigation */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <div className="flex items-center gap-2.5">
-            <div className="p-2 rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400">
-              <CalendarDays className="size-6" />
-            </div>
-            <div>
-              <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">
-                Bi-Weekly Attendance Grid
-              </h1>
-              <p className="text-xs md:text-sm text-slate-500 dark:text-slate-400">
-                14-day rolling window analytics, chronic absence flags, and roll-call heatmap
-              </p>
-            </div>
-          </div>
+    <div className="space-y-6 pb-12">
+      {/* Top Header & Actions */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200 dark:border-slate-800 pb-4">
+        <div className="flex items-center gap-2">
+          <CalendarDays className="size-5 text-slate-700 dark:text-slate-300" />
+          <h1 className="text-xl font-bold tracking-tight text-slate-900 dark:text-white">
+            Two-Week Attendance
+          </h1>
         </div>
 
-        {/* View Toggle & Actions */}
-        <div className="flex items-center gap-2.5">
+        <div className="flex items-center gap-2">
           <Button
             variant="outline"
             size="sm"
             onClick={exportToCSV}
-            className="h-10 px-3.5 text-xs font-semibold rounded-xl gap-2 hover-lift"
+            className="h-8 px-2.5 text-xs font-medium gap-1.5"
           >
-            <Download className="size-4 text-slate-500" />
+            <Download className="size-3.5 text-slate-500" />
             <span>Export CSV</span>
           </Button>
 
           <Link href={`/attendance?classId=${selectedClassId}`}>
-            <Button variant="outline" size="sm" className="h-10 px-3.5 text-xs font-semibold rounded-xl gap-2 hover-lift">
-              <CalendarCheck className="size-4 text-emerald-600" />
+            <Button variant="outline" size="sm" className="h-8 px-2.5 text-xs font-medium gap-1.5">
+              <CalendarCheck className="size-3.5 text-emerald-600" />
               <span>Daily Roster</span>
             </Button>
           </Link>
-
-          <Button size="sm" className="h-10 px-4 text-xs font-semibold rounded-xl gap-2 bg-blue-600 text-white hover:bg-blue-700 shadow-md shadow-blue-600/20">
-            <CalendarDays className="size-4" />
-            <span>14-Day Matrix</span>
-          </Button>
         </div>
       </div>
 
       {/* Class & Date Selector Controls */}
-      <div className="p-5 md:p-6 rounded-2xl border border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-slate-900/80 shadow-xs">
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-          {/* Class Dropdown */}
-          <div className="flex items-center gap-3">
-            <div className="p-2.5 bg-blue-500/10 text-blue-600 dark:text-blue-400 rounded-xl shrink-0">
-              <School className="size-5" />
-            </div>
-            <div>
-              <label htmlFor="class-select" className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 block mb-1">
-                Selected Class Roster
-              </label>
-              <select
-                id="class-select"
-                value={selectedClassId}
-                onChange={(e) => handleClassChange(e.target.value)}
-                className="h-10 min-w-64 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-3.5 py-1.5 text-sm font-semibold text-slate-900 dark:text-slate-100 focus:outline-hidden focus:ring-2 focus:ring-blue-500 shadow-xs"
-              >
-                {data.accessibleClasses.map((c) => (
-                  <option key={c.id} value={c.id}>
-                    {c.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
+      <div className="p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+        {/* Class Dropdown */}
+        <div className="flex items-center gap-2">
+          <label htmlFor="class-select" className="text-xs font-medium text-slate-500 dark:text-slate-400 shrink-0">
+            Class:
+          </label>
+          <select
+            id="class-select"
+            value={selectedClassId}
+            onChange={(e) => handleClassChange(e.target.value)}
+            className="h-8 min-w-52 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-2.5 text-xs font-medium text-slate-900 dark:text-slate-100 outline-none focus:ring-1 focus:ring-slate-400"
+          >
+            {data.accessibleClasses.map((c) => (
+              <option key={c.id} value={c.id}>
+                {c.name}
+              </option>
+            ))}
+          </select>
+        </div>
 
-          {/* Date Navigation */}
-          <div className="flex items-center gap-2 self-start lg:self-auto flex-wrap">
+        {/* Date Navigation */}
+        <div className="flex items-center gap-1.5 flex-wrap">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => handleDateNav(data.prevStartDate)}
+            className="h-8 px-2.5 text-xs font-medium gap-1"
+            title="Go to previous 2 weeks"
+          >
+            <ChevronLeft className="size-3.5" />
+            <span>Prev 2 Weeks</span>
+          </Button>
+
+          <span className="px-3 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-medium text-xs border border-slate-200 dark:border-slate-700">
+            {formatDateRange(data.startDate, data.endDate)}
+          </span>
+
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => handleDateNav(data.nextStartDate)}
+            className="h-8 px-2.5 text-xs font-medium gap-1"
+            title="Go to next 2 weeks"
+          >
+            <span>Next 2 Weeks</span>
+            <ChevronRight className="size-3.5" />
+          </Button>
+
+          {data.startDate !== data.currentStartDate && (
             <Button
-              variant="outline"
+              variant="ghost"
               size="sm"
-              onClick={() => handleDateNav(data.prevStartDate)}
-              className="gap-1.5 h-10 px-3.5 text-xs font-semibold rounded-xl hover-lift"
-              title="Go to previous 2 weeks"
+              onClick={() => handleDateNav(data.currentStartDate)}
+              className="text-xs h-8 px-2 text-blue-600 dark:text-blue-400 gap-1 font-medium"
             >
-              <ChevronLeft className="size-4" />
-              <span>Previous 2 Weeks</span>
+              <RotateCcw className="size-3" />
+              <span>Current</span>
             </Button>
-
-            <div className="px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 font-bold text-xs tracking-tight text-center min-w-44 border border-slate-200 dark:border-slate-700">
-              {formatDateRange(data.startDate, data.endDate)}
-            </div>
-
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => handleDateNav(data.nextStartDate)}
-              className="gap-1.5 h-10 px-3.5 text-xs font-semibold rounded-xl hover-lift"
-              title="Go to next 2 weeks"
-            >
-              <span>Next 2 Weeks</span>
-              <ChevronRight className="size-4" />
-            </Button>
-
-            {data.startDate !== data.currentStartDate && (
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => handleDateNav(data.currentStartDate)}
-                className="text-xs h-10 px-3 rounded-xl text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-950/30 gap-1.5 font-semibold"
-              >
-                <RotateCcw className="size-3.5" />
-                Current Window
-              </Button>
-            )}
-          </div>
+          )}
         </div>
       </div>
 
       {/* KPI Cards for the 2-Week Window */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         {/* Total Active Students */}
-        <Card className="relative overflow-hidden rounded-2xl border border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-slate-900/80 shadow-xs hover-lift transition-all">
-          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 to-indigo-500" />
-          <CardHeader className="pb-1 p-5">
-            <CardTitle className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
-              Enrolled Students
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="p-5 pt-0">
-            <div className="text-3xl font-extrabold text-slate-900 dark:text-white">
+        <Card className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
+          <CardContent className="p-4">
+            <p className="text-xs font-medium text-slate-500 uppercase tracking-wider">
+              Enrolled
+            </p>
+            <div className="text-2xl font-bold text-slate-900 dark:text-white mt-1">
               {data.totals.totalStudents}
             </div>
-            <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1">
-              Active roster in {data.classInfo?.name}
+            <p className="text-[11px] text-slate-500 mt-0.5">
+              {data.classInfo?.name}
             </p>
           </CardContent>
         </Card>
 
         {/* Overall Attendance Rate */}
-        <Card className="relative overflow-hidden rounded-2xl border border-emerald-500/20 bg-emerald-500/5 shadow-xs hover-lift transition-all">
-          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-emerald-500 to-teal-500" />
-          <CardHeader className="pb-1 p-5">
-            <CardTitle className="text-xs font-semibold uppercase tracking-wider text-emerald-800 dark:text-emerald-400">
+        <Card className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
+          <CardContent className="p-4">
+            <p className="text-xs font-medium text-slate-500 uppercase tracking-wider">
               Attendance Rate
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="p-5 pt-0">
-            <div className="text-3xl font-extrabold text-emerald-950 dark:text-emerald-200">
+            </p>
+            <div className="text-2xl font-bold text-emerald-600 dark:text-emerald-400 mt-1">
               {data.totals.overallAttendanceRate !== null ? `${data.totals.overallAttendanceRate}%` : "—"}
             </div>
-            <p className="text-[11px] text-emerald-700/80 dark:text-emerald-400 mt-1">
-              {data.totals.totalPresent} presence marks recorded
+            <p className="text-[11px] text-slate-500 mt-0.5">
+              {data.totals.totalPresent} presence marks
             </p>
           </CardContent>
         </Card>
 
         {/* Total Absences */}
-        <Card className="relative overflow-hidden rounded-2xl border border-rose-500/20 bg-rose-500/5 shadow-xs hover-lift transition-all">
-          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-rose-500 to-pink-500" />
-          <CardHeader className="pb-1 p-5">
-            <CardTitle className="text-xs font-semibold uppercase tracking-wider text-rose-800 dark:text-rose-400">
+        <Card className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
+          <CardContent className="p-4">
+            <p className="text-xs font-medium text-slate-500 uppercase tracking-wider">
               Total Absences
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="p-5 pt-0">
-            <div className="text-3xl font-extrabold text-rose-950 dark:text-rose-200">
+            </p>
+            <div className="text-2xl font-bold text-rose-600 dark:text-rose-400 mt-1">
               {data.totals.totalAbsent}
             </div>
-            <p className="text-[11px] text-rose-700/80 dark:text-rose-400 mt-1">
-              Recorded in 14-day window
+            <p className="text-[11px] text-slate-500 mt-0.5">
+              14-day window
             </p>
           </CardContent>
         </Card>
 
-        {/* High Absence Alert Count */}
-        <Card className="relative overflow-hidden rounded-2xl border border-amber-500/20 bg-amber-500/5 shadow-xs hover-lift transition-all">
-          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-amber-500 to-orange-500" />
-          <CardHeader className="pb-1 p-5">
-            <CardTitle className="text-xs font-semibold uppercase tracking-wider text-amber-800 dark:text-amber-400 flex items-center justify-between">
-              <span>Chronic Absence</span>
-              {highAbsenceStudents.length > 0 && <Flame className="size-4 text-amber-500 animate-pulse" />}
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="p-5 pt-0">
-            <div className="text-3xl font-extrabold text-amber-950 dark:text-amber-200">
+        {/* Chronic Absence Alert Count */}
+        <Card className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
+          <CardContent className="p-4">
+            <p className="text-xs font-medium text-slate-500 uppercase tracking-wider">
+              Chronic Absence
+            </p>
+            <div className={`text-2xl font-bold mt-1 ${highAbsenceStudents.length > 0 ? "text-amber-600 dark:text-amber-400" : "text-slate-900 dark:text-white"}`}>
               {highAbsenceStudents.length}
             </div>
-            <p className="text-[11px] text-amber-700/80 dark:text-amber-400 mt-1">
-              Students with &ge; 3 absences
+            <p className="text-[11px] text-slate-500 mt-0.5">
+              &ge; 3 absences
             </p>
           </CardContent>
         </Card>
       </div>
 
-      {/* High Absence Banner (if applicable) */}
+      {/* Chronic Absence Warning (if applicable) */}
       {highAbsenceStudents.length > 0 && (
-        <div className="p-5 rounded-2xl border border-rose-500/20 bg-gradient-to-r from-rose-500/10 via-pink-500/5 to-transparent flex items-start gap-4 shadow-xs">
-          <div className="p-2.5 bg-rose-500/20 text-rose-600 dark:text-rose-400 rounded-xl shrink-0 mt-0.5">
-            <AlertTriangle className="size-5" />
-          </div>
-          <div className="space-y-1">
-            <h3 className="text-sm font-bold text-rose-950 dark:text-rose-200 uppercase tracking-wide">
-              Persistent Absence Warning Triggered
-            </h3>
-            <p className="text-xs text-rose-800/90 dark:text-rose-300 leading-relaxed">
-              <strong>{highAbsenceStudents.length} student(s)</strong> ({highAbsenceStudents.map((s) => s.fullName).join(", ")}) have reached 3 or more absences during this 14-day window. Please verify parent contact details and SMS delivery logs.
+        <div className="p-3 rounded-xl border border-rose-200 dark:border-rose-900/60 bg-rose-50/40 dark:bg-rose-950/20 flex items-start gap-2.5 text-xs">
+          <AlertTriangle className="size-4 text-rose-600 shrink-0 mt-0.5" />
+          <div className="space-y-0.5">
+            <span className="font-semibold text-rose-900 dark:text-rose-200">
+              Chronic Absence Warning:
+            </span>
+            <p className="text-rose-800/90 dark:text-rose-300">
+              <strong>{highAbsenceStudents.length} student(s)</strong> ({highAbsenceStudents.map((s) => s.fullName).join(", ")}) have reached 3 or more absences during this window.
             </p>
           </div>
         </div>
       )}
 
-      {/* Legend & Instructions */}
-      <div className="flex flex-wrap items-center justify-between gap-4 text-xs text-slate-500 dark:text-slate-400 bg-white dark:bg-slate-900/80 p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800/80 shadow-xs">
-        <div className="flex flex-wrap items-center gap-4">
-          <span className="font-semibold text-slate-700 dark:text-slate-300">Status Legend:</span>
-          <div className="flex items-center gap-1.5">
-            <span className="size-6 rounded-md flex items-center justify-center font-bold text-[11px] bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30">
+      {/* Legend */}
+      <div className="flex flex-wrap items-center justify-between gap-3 text-xs text-slate-500 dark:text-slate-400 bg-white dark:bg-slate-900 p-3 rounded-xl border border-slate-200 dark:border-slate-800">
+        <div className="flex flex-wrap items-center gap-3">
+          <span className="font-medium text-slate-700 dark:text-slate-300">Legend:</span>
+          <div className="flex items-center gap-1">
+            <span className="size-5 rounded flex items-center justify-center font-bold text-[10px] bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 border border-emerald-300 dark:border-emerald-800">
               P
             </span>
-            <span className="font-medium">Present</span>
+            <span>Present</span>
           </div>
-          <div className="flex items-center gap-1.5">
-            <span className="size-6 rounded-md flex items-center justify-center font-bold text-[11px] bg-rose-500/15 text-rose-700 dark:text-rose-300 border border-rose-500/30">
+          <div className="flex items-center gap-1">
+            <span className="size-5 rounded flex items-center justify-center font-bold text-[10px] bg-rose-50 dark:bg-rose-950/40 text-rose-700 dark:text-rose-400 border border-rose-300 dark:border-rose-800">
               A
             </span>
-            <span className="font-medium">Absent</span>
+            <span>Absent</span>
           </div>
-          <div className="flex items-center gap-1.5">
-            <span className="size-6 rounded-md flex items-center justify-center font-bold text-[11px] bg-amber-500/15 text-amber-700 dark:text-amber-300 border border-amber-500/30">
+          <div className="flex items-center gap-1">
+            <span className="size-5 rounded flex items-center justify-center font-bold text-[10px] bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400 border border-amber-300 dark:border-amber-800">
               L
             </span>
-            <span className="font-medium">On Leave</span>
+            <span>Leave</span>
           </div>
-          <div className="flex items-center gap-1.5">
-            <span className="size-6 rounded-md flex items-center justify-center font-bold text-[11px] bg-blue-500/15 text-blue-700 dark:text-blue-300 border border-blue-500/30">
+          <div className="flex items-center gap-1">
+            <span className="size-5 rounded flex items-center justify-center font-bold text-[10px] bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-400 border border-blue-300 dark:border-blue-800">
               T
             </span>
-            <span className="font-medium">Late Arrival</span>
+            <span>Late</span>
           </div>
-          <div className="flex items-center gap-1.5">
-            <span className="size-6 rounded-md flex items-center justify-center font-bold text-[11px] bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400 border border-slate-200 dark:border-slate-700">
+          <div className="flex items-center gap-1">
+            <span className="size-5 rounded flex items-center justify-center font-bold text-[10px] bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400 border border-slate-200 dark:border-slate-700">
               H
             </span>
-            <span className="font-medium">Weekend</span>
+            <span>Weekend</span>
           </div>
-          <div className="flex items-center gap-1.5">
-            <span className="text-slate-300 dark:text-slate-600 font-bold px-1">—</span>
-            <span className="font-medium">Unrecorded</span>
+          <div className="flex items-center gap-1">
+            <span className="text-slate-400 font-bold px-1">—</span>
+            <span>Unrecorded</span>
           </div>
         </div>
 
-        <div className="text-[11px] text-slate-400">
-          * Click on any cell or column date to edit that day&apos;s attendance session
-        </div>
+        <span className="text-[11px] text-slate-400">
+          Click any column date or cell to edit roster
+        </span>
       </div>
 
       {/* Two-Week Grid Table */}
-      <div className="rounded-2xl border border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-slate-900/80 shadow-xs overflow-hidden">
+      <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-xs text-left border-collapse">
             <thead>

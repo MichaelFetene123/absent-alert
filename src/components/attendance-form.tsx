@@ -229,21 +229,21 @@ export function AttendanceForm({
   }, []);
 
   return (
-    <div className="space-y-8 pb-16">
-      {/* Top Filter Controls: Class Selector & Date Picker */}
-      <div className="p-5 md:p-6 rounded-2xl border border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-slate-900/80 shadow-xs">
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-          <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+    <div className="space-y-6 pb-24">
+      {/* Filter Controls: Class Selector & Date Picker */}
+      <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-3">
             {/* Class Selector */}
-            <div className="space-y-1.5">
+            <div className="space-y-1">
               <label className="text-xs font-semibold text-slate-500 dark:text-slate-400 flex items-center gap-1.5 uppercase tracking-wider">
-                <School className="size-3.5 text-blue-600 dark:text-blue-400" />
-                Class Roster
+                <School className="size-3.5 text-slate-500" />
+                Class
               </label>
               <select
                 value={selectedClassId}
                 onChange={(e) => handleClassChange(e.target.value)}
-                className="w-full sm:w-60 h-10 px-3.5 text-sm font-semibold rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-blue-500/40 transition-colors shadow-xs"
+                className="w-full sm:w-56 h-9 px-3 text-sm font-medium rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-900 dark:text-white outline-none focus:ring-1 focus:ring-slate-400 transition-colors"
               >
                 {classes.map((cls) => (
                   <option key={cls.id} value={cls.id} className="dark:bg-slate-900">
@@ -254,32 +254,32 @@ export function AttendanceForm({
             </div>
 
             {/* Date Picker */}
-            <div className="space-y-1.5">
+            <div className="space-y-1">
               <label className="text-xs font-semibold text-slate-500 dark:text-slate-400 flex items-center gap-1.5 uppercase tracking-wider">
-                <Calendar className="size-3.5 text-blue-600 dark:text-blue-400" />
-                Session Date
+                <Calendar className="size-3.5 text-slate-500" />
+                Date
               </label>
               <Input
                 type="date"
                 value={selectedDate}
                 max={todayStr}
                 onChange={(e) => handleDateChange(e.target.value)}
-                className="w-full sm:w-48 h-10 text-sm font-medium rounded-xl"
+                className="w-full sm:w-44 h-9 text-sm rounded-lg"
               />
             </div>
           </div>
 
-          {/* Existing Records Indicator & Quick Action */}
-          <div className="flex items-center gap-3">
+          {/* Status Indicator & Mark All Action */}
+          <div className="flex items-center gap-2.5">
             {hasExistingRecords ? (
-              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold text-blue-700 dark:text-blue-300 bg-blue-500/10 border border-blue-500/20">
-                <History className="size-3.5" />
-                Previously Recorded
-              </span>
+              <Badge variant="outline" className="text-xs font-medium text-slate-600 dark:text-slate-400 gap-1.5 py-1 px-2.5">
+                <History className="size-3 text-slate-500" />
+                <span>Recorded</span>
+              </Badge>
             ) : (
-              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
-                New Session Roster
-              </span>
+              <Badge variant="outline" className="text-xs font-medium text-slate-500 gap-1.5 py-1 px-2.5">
+                <span>New Session</span>
+              </Badge>
             )}
 
             <Button
@@ -287,39 +287,37 @@ export function AttendanceForm({
               variant="outline"
               size="sm"
               onClick={handleMarkAllPresent}
-              className="text-emerald-700 dark:text-emerald-400 border-emerald-500/30 bg-emerald-500/5 hover:bg-emerald-500/15 gap-1.5 h-10 px-4 rounded-xl text-xs font-semibold hover-lift"
+              className="text-xs font-medium gap-1.5 h-9 px-3 rounded-lg text-emerald-700 dark:text-emerald-400 border-emerald-300 dark:border-emerald-800 hover:bg-emerald-50 dark:hover:bg-emerald-950/20"
             >
-              <CheckCheck className="size-4" />
+              <CheckCheck className="size-3.5" />
               <span>Mark All Present</span>
             </Button>
           </div>
         </div>
       </div>
 
-      {/* Live Summary Metrics Chips */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+      {/* Metric Cards */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         {/* Present */}
         <button
           type="button"
           onClick={() => setStatusFilter(statusFilter === "PRESENT" ? "ALL" : "PRESENT")}
-          className={`p-4 rounded-2xl border text-left transition-all hover-lift ${
+          className={`p-3.5 rounded-xl border text-left transition-colors ${
             statusFilter === "PRESENT"
-              ? "border-emerald-500 bg-emerald-500/15 ring-2 ring-emerald-500/30"
-              : "border-emerald-500/20 bg-emerald-500/5 hover:border-emerald-500/40"
+              ? "border-emerald-600 bg-emerald-50/50 dark:bg-emerald-950/20 ring-1 ring-emerald-600"
+              : "border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:border-slate-300"
           }`}
         >
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-emerald-800 dark:text-emerald-400 uppercase tracking-wider">
+            <span className="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">
               Present
             </span>
-            <div className="p-2 bg-emerald-500/10 rounded-xl text-emerald-600 dark:text-emerald-400">
-              <CheckCircle2 className="size-4" />
-            </div>
+            <CheckCircle2 className="size-4 text-emerald-600 dark:text-emerald-400" />
           </div>
-          <div className="text-2xl font-extrabold text-emerald-950 dark:text-emerald-200 mt-2">
+          <div className="text-2xl font-bold text-slate-900 dark:text-white mt-1">
             {summary.present}
           </div>
-          <span className="text-[11px] text-emerald-700/80 dark:text-emerald-400">
+          <span className="text-[11px] text-slate-500">
             {summary.attendanceRate}% of roster
           </span>
         </button>
@@ -328,24 +326,22 @@ export function AttendanceForm({
         <button
           type="button"
           onClick={() => setStatusFilter(statusFilter === "ABSENT" ? "ALL" : "ABSENT")}
-          className={`p-4 rounded-2xl border text-left transition-all hover-lift ${
+          className={`p-3.5 rounded-xl border text-left transition-colors ${
             statusFilter === "ABSENT"
-              ? "border-rose-500 bg-rose-500/15 ring-2 ring-rose-500/30"
-              : "border-rose-500/20 bg-rose-500/5 hover:border-rose-500/40"
+              ? "border-rose-600 bg-rose-50/50 dark:bg-rose-950/20 ring-1 ring-rose-600"
+              : "border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:border-slate-300"
           }`}
         >
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-rose-800 dark:text-rose-400 uppercase tracking-wider">
+            <span className="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">
               Absent
             </span>
-            <div className="p-2 bg-rose-500/10 rounded-xl text-rose-600 dark:text-rose-400">
-              <XCircle className="size-4" />
-            </div>
+            <XCircle className="size-4 text-rose-600 dark:text-rose-400" />
           </div>
-          <div className="text-2xl font-extrabold text-rose-950 dark:text-rose-200 mt-2">
+          <div className="text-2xl font-bold text-slate-900 dark:text-white mt-1">
             {summary.absent}
           </div>
-          <span className="text-[11px] text-rose-700/80 dark:text-rose-400">
+          <span className="text-[11px] text-slate-500">
             Triggers SMS dispatch
           </span>
         </button>
@@ -354,25 +350,23 @@ export function AttendanceForm({
         <button
           type="button"
           onClick={() => setStatusFilter(statusFilter === "LEAVE" ? "ALL" : "LEAVE")}
-          className={`p-4 rounded-2xl border text-left transition-all hover-lift ${
+          className={`p-3.5 rounded-xl border text-left transition-colors ${
             statusFilter === "LEAVE"
-              ? "border-amber-500 bg-amber-500/15 ring-2 ring-amber-500/30"
-              : "border-amber-500/20 bg-amber-500/5 hover:border-amber-500/40"
+              ? "border-amber-600 bg-amber-50/50 dark:bg-amber-950/20 ring-1 ring-amber-600"
+              : "border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:border-slate-300"
           }`}
         >
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-amber-800 dark:text-amber-400 uppercase tracking-wider">
+            <span className="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">
               Excused Leave
             </span>
-            <div className="p-2 bg-amber-500/10 rounded-xl text-amber-600 dark:text-amber-400">
-              <FileQuestion className="size-4" />
-            </div>
+            <FileQuestion className="size-4 text-amber-600 dark:text-amber-400" />
           </div>
-          <div className="text-2xl font-extrabold text-amber-950 dark:text-amber-200 mt-2">
+          <div className="text-2xl font-bold text-slate-900 dark:text-white mt-1">
             {summary.leave}
           </div>
-          <span className="text-[11px] text-amber-700/80 dark:text-amber-400">
-            Documented permission
+          <span className="text-[11px] text-slate-500">
+            Excused absence
           </span>
         </button>
 
@@ -380,53 +374,44 @@ export function AttendanceForm({
         <button
           type="button"
           onClick={() => setStatusFilter(statusFilter === "LATE" ? "ALL" : "LATE")}
-          className={`p-4 rounded-2xl border text-left transition-all hover-lift ${
+          className={`p-3.5 rounded-xl border text-left transition-colors ${
             statusFilter === "LATE"
-              ? "border-blue-500 bg-blue-500/15 ring-2 ring-blue-500/30"
-              : "border-blue-500/20 bg-blue-500/5 hover:border-blue-500/40"
+              ? "border-blue-600 bg-blue-50/50 dark:bg-blue-950/20 ring-1 ring-blue-600"
+              : "border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:border-slate-300"
           }`}
         >
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-blue-800 dark:text-blue-400 uppercase tracking-wider">
+            <span className="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">
               Late Arrival
             </span>
-            <div className="p-2 bg-blue-500/10 rounded-xl text-blue-600 dark:text-blue-400">
-              <Clock className="size-4" />
-            </div>
+            <Clock className="size-4 text-blue-600 dark:text-blue-400" />
           </div>
-          <div className="text-2xl font-extrabold text-blue-950 dark:text-blue-200 mt-2">
+          <div className="text-2xl font-bold text-slate-900 dark:text-white mt-1">
             {summary.late}
           </div>
-          <span className="text-[11px] text-blue-700/80 dark:text-blue-400">
-            Arrived after roll-call
+          <span className="text-[11px] text-slate-500">
+            Arrived after roll call
           </span>
         </button>
       </div>
 
       {/* SMS Alert Pipeline Preview Banner */}
       {summary.absent > 0 && (
-        <div className="p-4 rounded-2xl bg-gradient-to-r from-rose-500/10 via-pink-500/10 to-orange-500/10 border border-rose-500/20 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-xs">
-          <div className="flex items-center gap-3">
-            <div className="size-10 rounded-xl bg-rose-500/20 text-rose-600 dark:text-rose-400 flex items-center justify-center shrink-0">
-              <Zap className="size-5" />
-            </div>
-            <div>
-              <h4 className="text-xs font-bold text-rose-950 dark:text-rose-200 uppercase tracking-wider">
-                Automated SMS Alert Pipeline Ready
-              </h4>
-              <p className="text-xs text-rose-800/80 dark:text-rose-300">
-                Saving this roster will automatically trigger <strong>{summary.absent} SMS alert{summary.absent > 1 ? "s" : ""}</strong> to parent guardians via the SMSHub gateway.
-              </p>
-            </div>
+        <div className="p-3.5 rounded-xl border border-amber-200 dark:border-amber-900/60 bg-amber-50/40 dark:bg-amber-950/20 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+          <div className="flex items-center gap-2.5">
+            <Send className="size-4 text-amber-600 dark:text-amber-400 shrink-0" />
+            <p className="text-slate-700 dark:text-slate-300">
+              Saving will dispatch <strong>{summary.absent} SMS alert{summary.absent > 1 ? "s" : ""}</strong> to guardians via the SMSHub gateway.
+            </p>
           </div>
-          <span className="text-xs font-mono font-semibold text-rose-700 dark:text-rose-300 bg-rose-500/15 px-3 py-1 rounded-full shrink-0">
+          <span className="font-medium text-amber-700 dark:text-amber-400 shrink-0">
             {summary.absent} queued
           </span>
         </div>
       )}
 
       {/* Search and Filters Bar */}
-      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
         <div className="relative flex-1 max-w-md">
           <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-slate-400" />
           <Input
@@ -456,28 +441,28 @@ export function AttendanceForm({
       </div>
 
       {/* Student Attendance Roster Table */}
-      <div className="rounded-2xl border border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-slate-900/80 overflow-hidden shadow-xs">
+      <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 overflow-hidden">
         <Table>
           <TableHeader>
-            <tr className="border-b border-slate-100 dark:border-slate-800/80 bg-slate-50/50 dark:bg-slate-800/30 text-slate-500 dark:text-slate-400 font-semibold text-xs">
-              <TableHead className="w-32 py-3 px-4 font-semibold">Adm No</TableHead>
-              <TableHead className="py-3 px-4 font-semibold">Student Name</TableHead>
-              <TableHead className="py-3 px-4 text-right font-semibold pr-6">Attendance Status</TableHead>
+            <tr className="border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/60 text-slate-600 dark:text-slate-400 font-medium text-xs">
+              <TableHead className="w-28 py-2.5 px-4 font-semibold">Adm No</TableHead>
+              <TableHead className="py-2.5 px-4 font-semibold">Student Name</TableHead>
+              <TableHead className="py-2.5 px-4 text-right font-semibold pr-6">Attendance Status</TableHead>
             </tr>
           </TableHeader>
           <TableBody>
             {filteredStudents.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={3} className="h-40 text-center text-slate-500">
-                  <div className="flex flex-col items-center justify-center gap-2">
-                    <Users className="size-8 text-slate-300 dark:text-slate-600" />
-                    <p className="text-sm font-semibold">No students match current search or filter</p>
+                <TableCell colSpan={3} className="h-32 text-center text-slate-500">
+                  <div className="flex flex-col items-center justify-center gap-1.5">
+                    <Users className="size-6 text-slate-400" />
+                    <p className="text-sm font-medium">No students match current search or filter</p>
                     {statusFilter !== "ALL" && (
                       <Button
                         variant="outline"
                         size="sm"
                         onClick={() => setStatusFilter("ALL")}
-                        className="text-xs mt-1"
+                        className="text-xs h-7 px-2.5 mt-1"
                       >
                         Clear Status Filter
                       </Button>
@@ -493,103 +478,88 @@ export function AttendanceForm({
                   <TableRow
                     key={student.studentId}
                     className={`hover:bg-slate-50/70 dark:hover:bg-slate-800/30 transition-colors ${
-                      currentStatus === "ABSENT" ? "bg-rose-500/5 dark:bg-rose-950/10" : ""
+                      currentStatus === "ABSENT" ? "bg-rose-50/40 dark:bg-rose-950/10" : ""
                     }`}
                   >
                     {/* Admission Number */}
-                    <TableCell className="py-3.5 px-4">
-                      <span className="font-mono text-xs font-semibold px-2 py-1 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
+                    <TableCell className="py-2.5 px-4">
+                      <span className="font-mono text-xs font-medium text-slate-600 dark:text-slate-400">
                         {student.admissionNo}
                       </span>
                     </TableCell>
 
                     {/* Student Full Name */}
-                    <TableCell className="py-3.5 px-4">
-                      <div className="flex items-center gap-3">
-                        <div
-                          className={`size-8 rounded-full font-bold text-xs flex items-center justify-center shrink-0 border ${
-                            currentStatus === "ABSENT"
-                              ? "bg-rose-500/10 border-rose-500/30 text-rose-600 dark:text-rose-400"
-                              : currentStatus === "LEAVE"
-                              ? "bg-amber-500/10 border-amber-500/30 text-amber-600 dark:text-amber-400"
-                              : currentStatus === "LATE"
-                              ? "bg-blue-500/10 border-blue-500/30 text-blue-600 dark:text-blue-400"
-                              : "bg-emerald-500/10 border-emerald-500/30 text-emerald-600 dark:text-emerald-400"
-                          }`}
-                        >
-                          {student.fullName.charAt(0).toUpperCase()}
-                        </div>
-                        <div>
-                          <span className="font-semibold text-slate-900 dark:text-white text-sm block">
-                            {student.fullName}
+                    <TableCell className="py-2.5 px-4">
+                      <div className="flex items-center gap-2.5">
+                        <span className="font-medium text-slate-900 dark:text-white text-sm">
+                          {student.fullName}
+                        </span>
+                        {currentStatus === "ABSENT" && (
+                          <span className="text-[11px] text-rose-600 dark:text-rose-400 flex items-center gap-1 font-medium">
+                            <Send className="size-2.5" />
+                            SMS active
                           </span>
-                          {currentStatus === "ABSENT" && (
-                            <span className="text-[11px] text-rose-600 dark:text-rose-400 flex items-center gap-1 mt-0.5 font-medium">
-                              <Zap className="size-3" />
-                              Guardian SMS notification active
-                            </span>
-                          )}
-                        </div>
+                        )}
                       </div>
                     </TableCell>
 
                     {/* Segmented Status Controller: P · A · L · T */}
-                    <TableCell className="text-right py-3.5 px-4 pr-6">
-                      <div className="inline-flex items-center p-1 rounded-xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700/60 gap-1 shadow-inner">
+                    <TableCell className="text-right py-2.5 px-4 pr-6">
+                      <div className="inline-flex items-center p-0.5 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 gap-0.5">
                         {/* PRESENT (P) */}
                         <button
                           type="button"
                           onClick={() => handleStatusChange(student.studentId, "PRESENT")}
-                          className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-all ${
+                          className={`px-2.5 py-1 text-xs font-semibold rounded-md transition-all ${
                             currentStatus === "PRESENT"
-                              ? "bg-emerald-600 text-white shadow-sm ring-1 ring-emerald-500"
-                              : "text-slate-600 dark:text-slate-400 hover:text-emerald-700 dark:hover:text-emerald-300 hover:bg-slate-200/60 dark:hover:bg-slate-700"
+                              ? "bg-emerald-600 text-white shadow-xs"
+                              : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
                           }`}
                           title="Mark Present"
                         >
-                          P <span className="hidden md:inline font-medium text-[11px] ml-1">Present</span>
+                          P <span className="hidden sm:inline font-normal text-[11px] ml-1">Present</span>
                         </button>
 
                         {/* ABSENT (A) */}
                         <button
                           type="button"
                           onClick={() => handleStatusChange(student.studentId, "ABSENT")}
-                          className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-all ${
+                          className={`px-2.5 py-1 text-xs font-semibold rounded-md transition-all ${
                             currentStatus === "ABSENT"
-                              ? "bg-rose-600 text-white shadow-sm ring-1 ring-rose-500"
-                              : "text-slate-600 dark:text-slate-400 hover:text-rose-700 dark:hover:text-rose-300 hover:bg-slate-200/60 dark:hover:bg-slate-700"
+                              ? "bg-rose-600 text-white shadow-xs"
+                              : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
                           }`}
                           title="Mark Absent"
                         >
-                          A <span className="hidden md:inline font-medium text-[11px] ml-1">Absent</span>
+                          A <span className="hidden sm:inline font-normal text-[11px] ml-1">Absent</span>
                         </button>
 
                         {/* LEAVE (L) */}
                         <button
                           type="button"
                           onClick={() => handleStatusChange(student.studentId, "LEAVE")}
-                          className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-all ${
+                          className={`px-2.5 py-1 text-xs font-semibold rounded-md transition-all ${
                             currentStatus === "LEAVE"
-                              ? "bg-amber-500 text-white shadow-sm ring-1 ring-amber-400"
-                              : "text-slate-600 dark:text-slate-400 hover:text-amber-700 dark:hover:text-amber-300 hover:bg-slate-200/60 dark:hover:bg-slate-700"
+                              ? "bg-amber-600 text-white shadow-xs"
+                              : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
                           }`}
                           title="Mark On Leave"
                         >
-                          L <span className="hidden md:inline font-medium text-[11px] ml-1">Leave</span>
+                          L <span className="hidden sm:inline font-normal text-[11px] ml-1">Leave</span>
                         </button>
 
                         {/* LATE (T) */}
                         <button
                           type="button"
                           onClick={() => handleStatusChange(student.studentId, "LATE")}
-                          className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-all ${
+                          className={`px-2.5 py-1 text-xs font-semibold rounded-md transition-all ${
                             currentStatus === "LATE"
-                              ? "bg-blue-600 text-white shadow-sm ring-1 ring-blue-500"
-                              : "text-slate-600 dark:text-slate-400 hover:text-blue-700 dark:hover:text-blue-300 hover:bg-slate-200/60 dark:hover:bg-slate-700"
+                              ? "bg-blue-600 text-white shadow-xs"
+                              : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
                           }`}
                           title="Mark Late"
                         >
-                          T <span className="hidden md:inline font-medium text-[11px] ml-1">Late</span>
+                          T <span className="hidden sm:inline font-normal text-[11px] ml-1">Late</span>
                         </button>
                       </div>
                     </TableCell>
@@ -602,32 +572,32 @@ export function AttendanceForm({
       </div>
 
       {/* Floating Bottom Sticky Save Action Bar */}
-      <div className="fixed bottom-6 left-0 right-0 z-30 px-4 md:px-8 max-w-5xl mx-auto pointer-events-none">
-        <div className="pointer-events-auto p-4 rounded-2xl bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border border-slate-200/80 dark:border-slate-800/80 shadow-2xl flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex flex-wrap items-center gap-2 text-xs">
-            <span className="font-semibold text-slate-900 dark:text-white mr-1">Roster Summary:</span>
-            <span className="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 font-bold border border-emerald-500/20">
-              {summary.present} Present
+      <div className="fixed bottom-4 left-0 right-0 z-30 px-4 md:px-8 max-w-4xl mx-auto pointer-events-none">
+        <div className="pointer-events-auto p-3 rounded-xl bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border border-slate-200 dark:border-slate-800 shadow-lg flex flex-col sm:flex-row items-center justify-between gap-3">
+          <div className="flex flex-wrap items-center gap-1.5 text-xs">
+            <span className="font-medium text-slate-500 mr-1">Roster:</span>
+            <span className="px-2 py-0.5 rounded-md bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 font-semibold border border-emerald-200 dark:border-emerald-800">
+              {summary.present} P
             </span>
-            <span className="px-2 py-0.5 rounded-full bg-rose-500/10 text-rose-700 dark:text-rose-400 font-bold border border-rose-500/20">
-              {summary.absent} Absent
+            <span className="px-2 py-0.5 rounded-md bg-rose-50 dark:bg-rose-950/40 text-rose-700 dark:text-rose-400 font-semibold border border-rose-200 dark:border-rose-800">
+              {summary.absent} A
             </span>
-            <span className="px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-700 dark:text-amber-400 font-bold border border-amber-500/20">
-              {summary.leave} Leave
+            <span className="px-2 py-0.5 rounded-md bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400 font-semibold border border-amber-200 dark:border-amber-800">
+              {summary.leave} L
             </span>
-            <span className="px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-700 dark:text-blue-400 font-bold border border-blue-500/20">
-              {summary.late} Late
+            <span className="px-2 py-0.5 rounded-md bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-400 font-semibold border border-blue-200 dark:border-blue-800">
+              {summary.late} T
             </span>
           </div>
 
-          <div className="flex items-center gap-3 w-full sm:w-auto">
+          <div className="flex items-center gap-2 w-full sm:w-auto">
             <Button
               type="button"
               variant="outline"
               size="sm"
               onClick={handleMarkAllPresent}
               disabled={isPending || initialStudents.length === 0}
-              className="h-10 px-4 rounded-xl text-xs font-semibold flex-1 sm:flex-initial"
+              className="h-9 px-3 rounded-lg text-xs font-medium flex-1 sm:flex-initial"
             >
               Mark All Present
             </Button>
@@ -636,19 +606,19 @@ export function AttendanceForm({
               type="button"
               onClick={handleSaveClick}
               disabled={isPending || initialStudents.length === 0}
-              className="h-10 px-5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-semibold text-xs gap-2 min-w-40 flex-1 sm:flex-initial shadow-md shadow-emerald-600/20 hover-lift"
+              className="h-9 px-4 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-medium text-xs gap-1.5 flex-1 sm:flex-initial"
             >
               {isPending ? (
                 <>
-                  <Loader2 className="size-4 animate-spin" />
-                  <span>Saving &amp; Dispatching...</span>
+                  <Loader2 className="size-3.5 animate-spin" />
+                  <span>Saving...</span>
                 </>
               ) : (
                 <>
-                  <Save className="size-4" />
+                  <Save className="size-3.5" />
                   <span>Save Attendance</span>
-                  <span className="hidden lg:inline text-[10px] opacity-75 font-mono ml-1 px-1.5 py-0.5 rounded bg-white/20">
-                    ⌘S
+                  <span className="hidden lg:inline text-[10px] opacity-75 font-mono ml-1 px-1 rounded bg-emerald-700">
+                    Ctrl+S
                   </span>
                 </>
               )}

@@ -142,163 +142,143 @@ export function StudentsManager({
   }
 
   return (
-    <div className="space-y-8 pb-12">
+    <div className="space-y-6 pb-12">
       {/* Page Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div className="flex items-center gap-2.5">
-          <div className="p-2 rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400">
-            <Users className="size-6" />
-          </div>
-          <div>
-            <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">
-              Student Directory &amp; Roster
-            </h1>
-            <p className="text-xs md:text-sm text-slate-500 dark:text-slate-400">
-              Manage student admissions, primary guardian mobile numbers, and classroom assignments.
-            </p>
-          </div>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-slate-200 dark:border-slate-800 pb-4">
+        <div className="flex items-center gap-2">
+          <Users className="size-5 text-slate-700 dark:text-slate-300" />
+          <h1 className="text-xl font-bold tracking-tight text-slate-900 dark:text-white">
+            Students
+          </h1>
+          {isAdmin ? (
+            <Badge variant="outline" className="text-xs font-medium text-slate-600 dark:text-slate-400 gap-1 py-0.5 px-2">
+              <ShieldCheck className="size-3 text-slate-500" />
+              <span>Admin</span>
+            </Badge>
+          ) : (
+            <Badge variant="outline" className="text-xs font-medium text-slate-600 dark:text-slate-400 gap-1 py-0.5 px-2">
+              <Lock className="size-3 text-slate-500" />
+              <span>Teacher (Masked)</span>
+            </Badge>
+          )}
         </div>
 
-        {isAdmin ? (
+        {isAdmin && (
           <Button
             onClick={handleCreate}
-            className="h-10 px-5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs gap-2 shadow-md shadow-blue-600/20 hover-lift shrink-0"
+            size="sm"
+            className="h-8 px-3 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-medium text-xs gap-1.5 shrink-0"
           >
-            <UserPlus className="size-4" />
+            <UserPlus className="size-3.5" />
             <span>Add Student</span>
           </Button>
-        ) : (
-          <div className="flex items-center gap-1.5 text-xs text-slate-500 bg-slate-50 dark:bg-slate-800/80 px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-800">
-            <Lock className="size-3.5 text-slate-400" />
-            <span>Teacher View (Guardian phone masked)</span>
-          </div>
         )}
       </div>
 
       {/* Metrics Row */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
         {/* Total Enrolled */}
-        <Card className="relative overflow-hidden rounded-2xl border border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-slate-900/80 shadow-xs hover-lift transition-all">
-          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 to-indigo-500" />
-          <CardContent className="p-5 flex items-center justify-between">
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
-                Total Enrolled
-              </p>
-              <h3 className="text-3xl font-extrabold text-slate-900 dark:text-white mt-1">
-                {stats.total}
-              </h3>
-              <p className="text-[11px] text-slate-500 mt-0.5">Across {classes.length} classrooms</p>
-            </div>
-            <div className="size-11 rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center">
-              <Users className="size-5" />
-            </div>
+        <Card className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
+          <CardContent className="p-4">
+            <p className="text-xs font-medium text-slate-500 uppercase tracking-wider">
+              Total Enrolled
+            </p>
+            <h3 className="text-2xl font-bold text-slate-900 dark:text-white mt-1">
+              {stats.total}
+            </h3>
+            <p className="text-[11px] text-slate-500 mt-0.5">Across {classes.length} classrooms</p>
           </CardContent>
         </Card>
 
         {/* Active Students */}
-        <Card className="relative overflow-hidden rounded-2xl border border-emerald-500/20 bg-emerald-500/5 shadow-xs hover-lift transition-all">
-          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-emerald-500 to-teal-500" />
-          <CardContent className="p-5 flex items-center justify-between">
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-wider text-emerald-800 dark:text-emerald-400">
-                Active Enrolled
-              </p>
-              <h3 className="text-3xl font-extrabold text-emerald-950 dark:text-emerald-200 mt-1">
-                {stats.active}
-              </h3>
-              <p className="text-[11px] text-emerald-700/80 dark:text-emerald-400 font-semibold mt-0.5">
-                {stats.activeRate}% active rate
-              </p>
-            </div>
-            <div className="size-11 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
-              <CheckCircle2 className="size-5" />
-            </div>
+        <Card className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
+          <CardContent className="p-4">
+            <p className="text-xs font-medium text-slate-500 uppercase tracking-wider">
+              Active Enrolled
+            </p>
+            <h3 className="text-2xl font-bold text-emerald-600 dark:text-emerald-400 mt-1">
+              {stats.active}
+            </h3>
+            <p className="text-[11px] text-slate-500 mt-0.5">
+              {stats.activeRate}% active rate
+            </p>
           </CardContent>
         </Card>
 
         {/* Inactive */}
-        <Card className="relative overflow-hidden rounded-2xl border border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-slate-900/80 shadow-xs hover-lift transition-all">
-          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-slate-400 to-slate-500" />
-          <CardContent className="p-5 flex items-center justify-between">
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
-                Inactive / Suspended
-              </p>
-              <h3 className="text-3xl font-extrabold text-slate-600 dark:text-slate-400 mt-1">
-                {stats.inactive}
-              </h3>
-              <p className="text-[11px] text-slate-400 mt-0.5">Excluded from roll-call</p>
-            </div>
-            <div className="size-11 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-500 flex items-center justify-center">
-              <XCircle className="size-5" />
-            </div>
+        <Card className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
+          <CardContent className="p-4">
+            <p className="text-xs font-medium text-slate-500 uppercase tracking-wider">
+              Inactive / Suspended
+            </p>
+            <h3 className="text-2xl font-bold text-slate-600 dark:text-slate-400 mt-1">
+              {stats.inactive}
+            </h3>
+            <p className="text-[11px] text-slate-500 mt-0.5">Excluded from roll call</p>
           </CardContent>
         </Card>
       </div>
 
       {/* Action Bar: Search, Class Filter, Inactive Toggle */}
-      <div className="p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-slate-900/80 shadow-xs flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
-        <div className="flex flex-1 flex-col sm:flex-row items-stretch sm:items-center gap-3">
+      <div className="p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+        <div className="flex flex-1 flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
           {/* Search Input */}
-          <div className="relative flex-1 max-w-md">
-            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-slate-400" />
+          <div className="relative flex-1 max-w-sm">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-3.5 text-slate-400" />
             <Input
               type="text"
-              placeholder="Search by student name, admission number, guardian..."
+              placeholder="Search by student, adm no, or guardian..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="pl-10 h-10 rounded-xl text-sm"
+              className="pl-9 h-8 rounded-lg text-xs"
             />
           </div>
 
           {/* Class Filter */}
-          <div className="flex items-center gap-2">
-            <select
-              value={selectedClassId}
-              onChange={(e) => setSelectedClassId(e.target.value)}
-              className="h-10 px-3.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-xs font-semibold text-slate-700 dark:text-slate-200 shadow-xs"
-            >
-              <option value="ALL" className="dark:bg-slate-900">
-                All Classrooms ({classes.length})
+          <select
+            value={selectedClassId}
+            onChange={(e) => setSelectedClassId(e.target.value)}
+            className="h-8 px-2.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-xs text-slate-700 dark:text-slate-200 outline-none"
+          >
+            <option value="ALL">
+              All Classrooms ({classes.length})
+            </option>
+            {classes.map((cls) => (
+              <option key={cls.id} value={cls.id}>
+                {cls.name}
               </option>
-              {classes.map((cls) => (
-                <option key={cls.id} value={cls.id} className="dark:bg-slate-900">
-                  {cls.name}
-                </option>
-              ))}
-            </select>
-          </div>
+            ))}
+          </select>
 
           {/* Inactive Checkbox Toggle */}
-          <label className="flex items-center gap-2 text-xs font-semibold text-slate-600 dark:text-slate-400 cursor-pointer select-none px-2 py-1.5 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800/50">
+          <label className="flex items-center gap-1.5 text-xs text-slate-600 dark:text-slate-400 cursor-pointer select-none px-2 py-1 rounded hover:bg-slate-50 dark:hover:bg-slate-800/50">
             <input
               type="checkbox"
               checked={showInactive}
               onChange={(e) => setShowInactive(e.target.checked)}
-              className="rounded border-slate-300 text-blue-600 focus:ring-blue-500"
+              className="rounded border-slate-300 text-blue-600"
             />
-            <span>Include Inactive Students</span>
+            <span>Include Inactive</span>
           </label>
         </div>
 
         <p className="text-xs text-slate-500 self-end sm:self-auto font-medium">
-          Showing <span className="font-bold text-slate-900 dark:text-white">{filteredStudents.length}</span> of {students.length} students
+          Showing <span className="font-bold text-slate-900 dark:text-white">{filteredStudents.length}</span> of {students.length}
         </p>
       </div>
 
       {/* Students Table */}
-      <div className="rounded-2xl border border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-slate-900/80 shadow-xs overflow-hidden">
+      <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 overflow-hidden">
         <div className="overflow-x-auto">
           <Table>
-            <TableHeader className="bg-slate-50/70 dark:bg-slate-900">
-              <TableRow className="border-b border-slate-100 dark:border-slate-800 text-xs font-semibold">
-                <TableHead className="w-32 py-3 px-4 font-bold text-slate-700 dark:text-slate-300">Adm No</TableHead>
-                <TableHead className="py-3 px-4 font-bold text-slate-700 dark:text-slate-300">Student Profile</TableHead>
-                <TableHead className="py-3 px-4 font-bold text-slate-700 dark:text-slate-300">Classroom</TableHead>
-                <TableHead className="py-3 px-4 font-bold text-slate-700 dark:text-slate-300">Primary Guardian Contact</TableHead>
-                <TableHead className="py-3 px-4 font-bold text-slate-700 dark:text-slate-300">Enrollment Status</TableHead>
-                {isAdmin && <TableHead className="text-right py-3 px-4 font-bold text-slate-700 dark:text-slate-300">Actions</TableHead>}
+            <TableHeader className="bg-slate-50 dark:bg-slate-900/60">
+              <TableRow className="border-b border-slate-200 dark:border-slate-800 text-xs font-medium">
+                <TableHead className="w-28 py-2.5 px-4 font-semibold text-slate-700 dark:text-slate-300">Adm No</TableHead>
+                <TableHead className="py-2.5 px-4 font-semibold text-slate-700 dark:text-slate-300">Student Name</TableHead>
+                <TableHead className="py-2.5 px-4 font-semibold text-slate-700 dark:text-slate-300">Classroom</TableHead>
+                <TableHead className="py-2.5 px-4 font-semibold text-slate-700 dark:text-slate-300">Primary Guardian</TableHead>
+                <TableHead className="py-2.5 px-4 font-semibold text-slate-700 dark:text-slate-300">Status</TableHead>
+                {isAdmin && <TableHead className="text-right py-2.5 px-4 font-semibold text-slate-700 dark:text-slate-300">Actions</TableHead>}
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -306,19 +286,19 @@ export function StudentsManager({
                 <TableRow>
                   <TableCell
                     colSpan={isAdmin ? 6 : 5}
-                    className="h-40 text-center text-slate-500 dark:text-slate-400"
+                    className="h-32 text-center text-slate-500 dark:text-slate-400"
                   >
-                    <div className="flex flex-col items-center justify-center gap-2">
-                      <Users className="size-9 text-slate-400" />
-                      <p className="text-sm font-semibold text-slate-800 dark:text-slate-200">No students match current search or class filter</p>
+                    <div className="flex flex-col items-center justify-center gap-1.5">
+                      <Users className="size-6 text-slate-400" />
+                      <p className="text-sm font-medium text-slate-800 dark:text-slate-200">No students match current search or class filter</p>
                       {isAdmin && (
                         <Button
                           variant="outline"
                           size="sm"
                           onClick={handleCreate}
-                          className="mt-1 rounded-xl text-xs font-semibold"
+                          className="mt-1 h-7 text-xs"
                         >
-                          Register a new student
+                          Register student
                         </Button>
                       )}
                     </div>
@@ -336,49 +316,36 @@ export function StudentsManager({
                       }`}
                     >
                       {/* Admission Number */}
-                      <TableCell className="py-3.5 px-4">
-                        <span className="font-mono text-xs font-semibold px-2 py-1 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
-                          {student.admissionNo}
-                        </span>
+                      <TableCell className="py-2.5 px-4 font-mono text-xs text-slate-600 dark:text-slate-400">
+                        {student.admissionNo}
                       </TableCell>
 
-                      {/* Student Full Name & Avatar */}
-                      <TableCell className="py-3.5 px-4 font-semibold text-slate-900 dark:text-white">
-                        <div className="flex items-center gap-3">
-                          <div className="size-9 rounded-full bg-blue-500/10 text-blue-700 dark:text-blue-300 font-bold text-xs flex items-center justify-center shrink-0 border border-blue-500/20">
-                            {student.fullName.charAt(0).toUpperCase()}
-                          </div>
-                          <div>
-                            <span className="font-bold text-sm block">{student.fullName}</span>
-                            <span className="block text-[11px] font-mono text-slate-400 font-normal">
-                              ID: {student.id.slice(0, 8)}...
-                            </span>
-                          </div>
-                        </div>
+                      {/* Student Full Name */}
+                      <TableCell className="py-2.5 px-4 font-medium text-slate-900 dark:text-white text-sm">
+                        {student.fullName}
                       </TableCell>
 
                       {/* Class */}
-                      <TableCell className="py-3.5 px-4">
+                      <TableCell className="py-2.5 px-4">
                         <Badge
                           variant="secondary"
-                          className="font-medium text-xs bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 gap-1"
+                          className="font-medium text-xs px-2 py-0.5"
                         >
-                          <School className="size-3 text-slate-400" />
-                          <span>{student.className}</span>
+                          {student.className}
                         </Badge>
                       </TableCell>
 
                       {/* Primary Guardian & Phone */}
-                      <TableCell className="py-3.5 px-4">
+                      <TableCell className="py-2.5 px-4">
                         <div className="space-y-0.5">
-                          <p className="text-xs text-slate-900 dark:text-slate-100 font-bold">
+                          <p className="text-xs text-slate-900 dark:text-slate-100 font-medium">
                             {student.guardianName}
                           </p>
                           <div className="flex items-center gap-1.5 text-xs text-slate-500 font-mono">
                             <Smartphone className="size-3 text-slate-400" />
                             <span>{student.guardianPhone}</span>
                             {!isAdmin && (
-                              <span className="text-[10px] text-slate-400 font-sans ml-1">
+                              <span className="text-[10px] text-slate-400 font-sans">
                                 (masked)
                               </span>
                             )}
@@ -386,7 +353,7 @@ export function StudentsManager({
                               <button
                                 type="button"
                                 onClick={() => copyPhone(student.guardianPhone, student.id)}
-                                className="text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 transition-colors ml-1 p-0.5"
+                                className="text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 transition-colors p-0.5"
                                 title="Copy guardian phone"
                               >
                                 {copiedPhoneId === student.id ? (
@@ -401,14 +368,14 @@ export function StudentsManager({
                       </TableCell>
 
                       {/* Active Status Badge */}
-                      <TableCell className="py-3.5 px-4">
+                      <TableCell className="py-2.5 px-4">
                         {student.active ? (
-                          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border border-emerald-500/20">
-                            <span className="size-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                            Active Roster
+                          <span className="inline-flex items-center gap-1.5 text-xs text-emerald-600 dark:text-emerald-400 font-medium">
+                            <span className="size-1.5 rounded-full bg-emerald-500" />
+                            Active
                           </span>
                         ) : (
-                          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400 border border-slate-200 dark:border-slate-700">
+                          <span className="inline-flex items-center gap-1.5 text-xs text-slate-400 font-medium">
                             <span className="size-1.5 rounded-full bg-slate-400" />
                             Inactive
                           </span>
@@ -417,13 +384,13 @@ export function StudentsManager({
 
                       {/* Admin Actions */}
                       {isAdmin && (
-                        <TableCell className="text-right py-3.5 px-4">
-                          <div className="flex items-center justify-end gap-1.5">
+                        <TableCell className="text-right py-2.5 px-4">
+                          <div className="flex items-center justify-end gap-1">
                             <Button
                               variant="ghost"
                               size="sm"
                               onClick={() => handleEdit(student)}
-                              className="size-8 p-0 text-slate-600 hover:text-blue-600 hover:bg-blue-500/10 rounded-lg cursor-pointer"
+                              className="size-7 p-0 text-slate-500 hover:text-slate-900 dark:hover:text-white rounded"
                               title="Edit Student Profile"
                             >
                               <Edit2 className="size-3.5" />
@@ -435,10 +402,10 @@ export function StudentsManager({
                               size="sm"
                               disabled={isToggling}
                               onClick={() => handleToggleActive(student)}
-                              className={`size-8 p-0 rounded-lg cursor-pointer ${
+                              className={`size-7 p-0 rounded ${
                                 student.active
-                                  ? "text-slate-400 hover:text-amber-600 hover:bg-amber-500/10"
-                                  : "text-emerald-600 hover:text-emerald-700 hover:bg-emerald-500/10"
+                                  ? "text-slate-400 hover:text-amber-600"
+                                  : "text-emerald-600 hover:text-emerald-700"
                               }`}
                               title={student.active ? "Deactivate Student" : "Reactivate Student"}
                             >

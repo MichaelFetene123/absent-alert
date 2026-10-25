@@ -22,6 +22,7 @@ import {
   X,
   ExternalLink,
   Sparkles,
+  Shield,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -280,136 +281,108 @@ export function ClassesManager({
   }
 
   return (
-    <div className="space-y-8 pb-12">
+    <div className="space-y-6 pb-12">
       {/* Page Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div className="flex items-center gap-2.5">
-          <div className="p-2 rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400">
-            <School className="size-6" />
-          </div>
-          <div>
-            <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">
-              Classrooms &amp; Cohorts
-            </h1>
-            <p className="text-xs md:text-sm text-slate-500 dark:text-slate-400">
-              Manage school grades, sections, teacher assignments, and roster roll calls.
-            </p>
-          </div>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-slate-200 dark:border-slate-800 pb-4">
+        <div className="flex items-center gap-2">
+          <School className="size-5 text-slate-700 dark:text-slate-300" />
+          <h1 className="text-xl font-bold tracking-tight text-slate-900 dark:text-white">
+            Classes
+          </h1>
+          {isAdmin ? (
+            <Badge variant="outline" className="text-xs font-medium text-slate-600 dark:text-slate-400 gap-1 py-0.5 px-2">
+              <Shield className="size-3 text-slate-500" />
+              <span>Admin</span>
+            </Badge>
+          ) : (
+            <Badge variant="outline" className="text-xs font-medium text-slate-600 dark:text-slate-400 gap-1 py-0.5 px-2">
+              <GraduationCap className="size-3 text-slate-500" />
+              <span>Teacher View</span>
+            </Badge>
+          )}
         </div>
 
         {isAdmin && (
           <Button
             id="add-class-btn"
             onClick={() => setIsCreateOpen(true)}
-            className="h-10 px-5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs gap-2 shadow-md shadow-blue-600/20 hover-lift shrink-0"
+            size="sm"
+            className="h-8 px-3 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-medium text-xs gap-1.5 shrink-0"
           >
-            <Plus className="size-4" />
+            <Plus className="size-3.5" />
             <span>Add Class</span>
           </Button>
         )}
       </div>
 
       {/* Metric Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         {/* Total Classes */}
-        <Card className="relative overflow-hidden rounded-2xl border border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-slate-900/80 shadow-xs hover-lift transition-all">
-          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 to-indigo-500" />
-          <CardContent className="p-5 flex items-center justify-between">
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Total Classes</p>
-              <h3 className="text-3xl font-extrabold text-slate-900 dark:text-white mt-1">
-                {stats.totalClasses}
-              </h3>
-            </div>
-            <div className="size-11 rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center">
-              <School className="size-5" />
-            </div>
+        <Card className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
+          <CardContent className="p-4">
+            <p className="text-xs font-medium text-slate-500 uppercase tracking-wider">Total Classes</p>
+            <h3 className="text-2xl font-bold text-slate-900 dark:text-white mt-1">
+              {stats.totalClasses}
+            </h3>
+            <p className="text-[11px] text-slate-500 mt-0.5">Active rosters</p>
           </CardContent>
         </Card>
 
         {/* Total Enrolled */}
-        <Card className="relative overflow-hidden rounded-2xl border border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-slate-900/80 shadow-xs hover-lift transition-all">
-          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-emerald-500 to-teal-500" />
-          <CardContent className="p-5 flex items-center justify-between">
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Total Students</p>
-              <h3 className="text-3xl font-extrabold text-slate-900 dark:text-white mt-1">
-                {stats.totalStudents}
-              </h3>
-              <p className="text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold mt-0.5">
-                {stats.activeStudents} active enrolled
-              </p>
-            </div>
-            <div className="size-11 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
-              <Users className="size-5" />
-            </div>
+        <Card className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
+          <CardContent className="p-4">
+            <p className="text-xs font-medium text-slate-500 uppercase tracking-wider">Total Students</p>
+            <h3 className="text-2xl font-bold text-slate-900 dark:text-white mt-1">
+              {stats.totalStudents}
+            </h3>
+            <p className="text-[11px] text-emerald-600 dark:text-emerald-400 mt-0.5">
+              {stats.activeStudents} active enrolled
+            </p>
           </CardContent>
         </Card>
 
         {/* Active Teachers */}
-        <Card className="relative overflow-hidden rounded-2xl border border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-slate-900/80 shadow-xs hover-lift transition-all">
-          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-500 to-pink-500" />
-          <CardContent className="p-5 flex items-center justify-between">
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Assigned Faculty</p>
-              <h3 className="text-3xl font-extrabold text-slate-900 dark:text-white mt-1">
-                {stats.assignedTeachersCount}
-              </h3>
-              <p className="text-[11px] text-slate-500 mt-0.5">Assigned to rosters</p>
-            </div>
-            <div className="size-11 rounded-xl bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center">
-              <GraduationCap className="size-5" />
-            </div>
+        <Card className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
+          <CardContent className="p-4">
+            <p className="text-xs font-medium text-slate-500 uppercase tracking-wider">Faculty Assigned</p>
+            <h3 className="text-2xl font-bold text-slate-900 dark:text-white mt-1">
+              {stats.assignedTeachersCount}
+            </h3>
+            <p className="text-[11px] text-slate-500 mt-0.5">Assigned teachers</p>
           </CardContent>
         </Card>
 
         {/* Teacher Status */}
-        <Card className="relative overflow-hidden rounded-2xl border border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-slate-900/80 shadow-xs hover-lift transition-all">
-          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-amber-500 to-orange-500" />
-          <CardContent className="p-5 flex items-center justify-between">
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Staffing Status</p>
-              <h3
-                className={`text-3xl font-extrabold mt-1 ${
-                  stats.unassignedClasses > 0
-                    ? "text-amber-600 dark:text-amber-400"
-                    : "text-emerald-600 dark:text-emerald-400"
-                }`}
-              >
-                {stats.unassignedClasses === 0 ? "100%" : `${stats.unassignedClasses} unassigned`}
-              </h3>
-              <p className="text-[11px] text-slate-500 mt-0.5">
-                {stats.unassignedClasses === 0 ? "All rosters covered" : "Need teacher assignment"}
-              </p>
-            </div>
-            <div
-              className={`size-11 rounded-xl flex items-center justify-center ${
+        <Card className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
+          <CardContent className="p-4">
+            <p className="text-xs font-medium text-slate-500 uppercase tracking-wider">Staffing Status</p>
+            <h3
+              className={`text-2xl font-bold mt-1 ${
                 stats.unassignedClasses > 0
-                  ? "bg-amber-500/10 text-amber-600 dark:text-amber-400"
-                  : "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
+                  ? "text-amber-600 dark:text-amber-400"
+                  : "text-emerald-600 dark:text-emerald-400"
               }`}
             >
-              {stats.unassignedClasses > 0 ? (
-                <AlertTriangle className="size-5" />
-              ) : (
-                <CheckCircle2 className="size-5" />
-              )}
-            </div>
+              {stats.unassignedClasses === 0 ? "100%" : `${stats.unassignedClasses} unassigned`}
+            </h3>
+            <p className="text-[11px] text-slate-500 mt-0.5">
+              {stats.unassignedClasses === 0 ? "All covered" : "Need teacher"}
+            </p>
           </CardContent>
         </Card>
       </div>
 
       {/* Action Bar: Search, Filters */}
-      <div className="p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-slate-900/80 shadow-xs flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
-        <div className="flex flex-1 flex-col sm:flex-row items-stretch sm:items-center gap-3">
-          <div className="relative flex-1 max-w-md">
-            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-slate-400" />
+      <div className="p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+        <div className="flex flex-1 flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
+          <div className="relative flex-1 max-w-sm">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-3.5 text-slate-400" />
             <Input
               id="class-search-input"
-              placeholder="Search classes, grades, sections, or teachers..."
+              placeholder="Search classes or teachers..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="pl-10 h-10 rounded-xl text-sm"
+              className="pl-9 h-8 rounded-lg text-xs"
             />
           </div>
 
@@ -418,7 +391,7 @@ export function ClassesManager({
             id="class-grade-filter"
             value={gradeFilter}
             onChange={(e) => setGradeFilter(e.target.value)}
-            className="h-10 px-3.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-xs font-semibold text-slate-700 dark:text-slate-200 shadow-xs"
+            className="h-8 px-2.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-xs text-slate-700 dark:text-slate-200 outline-none"
           >
             <option value="ALL">All Grades</option>
             {uniqueGrades.map((g) => (
@@ -433,7 +406,7 @@ export function ClassesManager({
             id="class-teacher-filter"
             value={teacherFilter}
             onChange={(e) => setTeacherFilter(e.target.value)}
-            className="h-10 px-3.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-xs font-semibold text-slate-700 dark:text-slate-200 shadow-xs"
+            className="h-8 px-2.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-xs text-slate-700 dark:text-slate-200 outline-none"
           >
             <option value="ALL">All Staffing</option>
             <option value="ASSIGNED">Assigned Faculty</option>
@@ -442,21 +415,21 @@ export function ClassesManager({
         </div>
 
         <p className="text-xs text-slate-500 self-end sm:self-auto font-medium">
-          Showing <span className="font-bold text-slate-900 dark:text-white">{filteredClasses.length}</span> of {classes.length} classes
+          Showing <span className="font-bold text-slate-900 dark:text-white">{filteredClasses.length}</span> of {classes.length}
         </p>
       </div>
 
       {/* Classes Table */}
-      <div className="rounded-2xl border border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-slate-900/80 shadow-xs overflow-hidden">
+      <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 overflow-hidden">
         <div className="overflow-x-auto">
           <Table>
-            <TableHeader className="bg-slate-50/70 dark:bg-slate-900">
-              <TableRow className="border-b border-slate-100 dark:border-slate-800 text-xs font-semibold">
-                <TableHead className="py-3 px-4 font-bold text-slate-700 dark:text-slate-300">Class Name</TableHead>
-                <TableHead className="py-3 px-4 font-bold text-slate-700 dark:text-slate-300">Grade &amp; Section</TableHead>
-                <TableHead className="py-3 px-4 font-bold text-slate-700 dark:text-slate-300">Enrolled Students</TableHead>
-                <TableHead className="py-3 px-4 font-bold text-slate-700 dark:text-slate-300">Assigned Faculty</TableHead>
-                <TableHead className="py-3 px-4 text-right font-bold text-slate-700 dark:text-slate-300">Actions</TableHead>
+            <TableHeader className="bg-slate-50 dark:bg-slate-900/60">
+              <TableRow className="border-b border-slate-200 dark:border-slate-800 text-xs font-medium">
+                <TableHead className="py-2.5 px-4 font-semibold text-slate-700 dark:text-slate-300">Class Name</TableHead>
+                <TableHead className="py-2.5 px-4 font-semibold text-slate-700 dark:text-slate-300">Grade &amp; Section</TableHead>
+                <TableHead className="py-2.5 px-4 font-semibold text-slate-700 dark:text-slate-300">Enrolled Students</TableHead>
+                <TableHead className="py-2.5 px-4 font-semibold text-slate-700 dark:text-slate-300">Assigned Faculty</TableHead>
+                <TableHead className="py-2.5 px-4 text-right font-semibold text-slate-700 dark:text-slate-300">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -478,29 +451,21 @@ export function ClassesManager({
                 filteredClasses.map((cls) => (
                   <TableRow key={cls.id} className="hover:bg-slate-50/70 dark:hover:bg-slate-800/40 transition-colors">
                     {/* Class Name */}
-                    <TableCell className="py-3.5 px-4 font-semibold text-slate-900 dark:text-white">
-                      <div className="flex items-center gap-3">
-                        <div className="size-9 rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0 border border-blue-500/20">
-                          <School className="size-4.5" />
-                        </div>
-                        <div>
-                          <span className="font-bold text-sm block">{cls.name}</span>
-                          <span className="block text-[11px] font-mono text-slate-400 font-normal">
-                            ID: {cls.id.slice(0, 8)}...
-                          </span>
-                        </div>
+                    <TableCell className="py-2.5 px-4 font-semibold text-slate-900 dark:text-white">
+                      <div className="flex items-center gap-2.5">
+                        <span className="font-semibold text-sm">{cls.name}</span>
                       </div>
                     </TableCell>
 
                     {/* Grade & Section */}
-                    <TableCell className="py-3.5 px-4">
+                    <TableCell className="py-2.5 px-4">
                       <div className="flex items-center gap-1.5">
-                        <Badge variant="outline" className="text-xs font-semibold bg-slate-50 dark:bg-slate-800">
+                        <Badge variant="outline" className="text-xs font-medium">
                           {cls.grade}
                         </Badge>
                         <Badge
                           variant="secondary"
-                          className="bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-mono text-xs px-2"
+                          className="text-xs px-1.5 font-mono"
                         >
                           Sec {cls.section}
                         </Badge>
@@ -508,61 +473,52 @@ export function ClassesManager({
                     </TableCell>
 
                     {/* Enrolled Students */}
-                    <TableCell className="py-3.5 px-4">
+                    <TableCell className="py-2.5 px-4">
                       <Link
                         href={`/students?classId=${cls.id}`}
-                        className="inline-flex items-center gap-1.5 group"
+                        className="inline-flex items-center gap-1 text-xs text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white font-medium"
                       >
-                        <span
-                          className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold border ${
-                            cls.totalStudentCount > 0
-                              ? "bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border-emerald-500/20"
-                              : "bg-slate-100 dark:bg-slate-800 text-slate-500 border-slate-200"
-                          }`}
-                        >
-                          <Users className="size-3 mr-0.5" />
-                          <span>
-                            {cls.totalStudentCount} {cls.totalStudentCount === 1 ? "student" : "students"}
-                          </span>
+                        <Users className="size-3 text-slate-400" />
+                        <span>
+                          {cls.totalStudentCount} {cls.totalStudentCount === 1 ? "student" : "students"}
                         </span>
-                        <ExternalLink className="size-3 text-slate-400 opacity-0 group-hover:opacity-100 transition-opacity" />
                       </Link>
                     </TableCell>
 
                     {/* Assigned Teachers */}
-                    <TableCell className="py-3.5 px-4">
+                    <TableCell className="py-2.5 px-4">
                       {cls.teachers.length > 0 ? (
-                        <div className="flex flex-wrap gap-1.5">
+                        <div className="flex flex-wrap gap-1">
                           {cls.teachers.map((t) => (
                             <span
                               key={t.id}
-                              className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-purple-500/10 text-purple-700 dark:text-purple-300 border border-purple-500/20"
+                              className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-medium bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700"
                             >
-                              <GraduationCap className="size-3 text-purple-600" />
+                              <GraduationCap className="size-3 text-slate-500" />
                               <span>{t.name}</span>
                             </span>
                           ))}
                         </div>
                       ) : (
-                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/20">
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800">
                           <AlertTriangle className="size-3" />
-                          <span>No faculty assigned</span>
+                          <span>Unassigned</span>
                         </span>
                       )}
                     </TableCell>
 
                     {/* Actions */}
-                    <TableCell className="text-right py-3.5 px-4">
-                      <div className="flex items-center justify-end gap-1.5">
+                    <TableCell className="text-right py-2.5 px-4">
+                      <div className="flex items-center justify-end gap-1">
                         {/* Attendance Roster Link */}
                         <Link href={`/attendance?classId=${cls.id}`}>
                           <Button
                             variant="ghost"
                             size="sm"
-                            className="h-8 px-2.5 text-xs text-emerald-700 hover:text-emerald-800 hover:bg-emerald-500/10 dark:text-emerald-400 rounded-lg font-medium"
+                            className="h-7 px-2 text-xs text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white font-medium"
                             title="Daily Attendance Roster"
                           >
-                            <CalendarCheck className="size-3.5 mr-1" />
+                            <CalendarCheck className="size-3.5 mr-1 text-emerald-600" />
                             <span>Roster</span>
                           </Button>
                         </Link>
@@ -572,10 +528,10 @@ export function ClassesManager({
                           <Button
                             variant="ghost"
                             size="sm"
-                            className="h-8 px-2.5 text-xs text-blue-700 hover:text-blue-800 hover:bg-blue-500/10 dark:text-blue-400 rounded-lg font-medium"
+                            className="h-7 px-2 text-xs text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white font-medium"
                             title="Two-Week Attendance Overview"
                           >
-                            <CalendarDays className="size-3.5 mr-1" />
+                            <CalendarDays className="size-3.5 mr-1 text-blue-600" />
                             <span>14-Day</span>
                           </Button>
                         </Link>
@@ -587,7 +543,7 @@ export function ClassesManager({
                             variant="ghost"
                             size="sm"
                             onClick={() => openEditModal(cls)}
-                            className="h-8 w-8 p-0 text-slate-600 hover:text-slate-900 hover:bg-slate-100 dark:text-slate-400 dark:hover:text-white dark:hover:bg-slate-800 rounded-lg cursor-pointer"
+                            className="h-7 w-7 p-0 text-slate-500 hover:text-slate-900 dark:hover:text-white rounded"
                             title="Edit Class & Teachers"
                           >
                             <Edit2 className="size-3.5" />

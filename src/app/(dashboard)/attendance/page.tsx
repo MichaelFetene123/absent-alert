@@ -124,27 +124,24 @@ export default async function AttendancePage({ searchParams }: AttendancePagePro
   return (
     <div className="space-y-6">
       {/* Page Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white flex items-center gap-2">
-            <CalendarCheck className="size-6 text-emerald-600" />
-            Daily Attendance Roster
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-slate-200 dark:border-slate-800 pb-4">
+        <div className="flex items-center gap-2">
+          <CalendarCheck className="size-5 text-slate-700 dark:text-slate-300" />
+          <h1 className="text-xl font-bold tracking-tight text-slate-900 dark:text-white">
+            Daily Attendance
           </h1>
-          <p className="text-sm text-slate-500 mt-1">
-            Mark student attendance, manage exceptions, and record daily presence.
-          </p>
         </div>
 
         <div className="flex items-center gap-2">
           {isAdmin ? (
-            <Badge className="bg-purple-600/10 text-purple-700 dark:text-purple-300 border-purple-200 dark:border-purple-800 gap-1.5 py-1 px-2.5">
-              <Shield className="size-3.5 text-purple-600" />
-              <span>Admin Access (All Classes)</span>
+            <Badge variant="outline" className="text-xs font-medium text-slate-600 dark:text-slate-400 gap-1.5 py-1 px-2.5">
+              <Shield className="size-3 text-slate-500" />
+              <span>Admin (All Classes)</span>
             </Badge>
           ) : (
-            <Badge className="bg-emerald-600/10 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800 gap-1.5 py-1 px-2.5">
-              <GraduationCap className="size-3.5 text-emerald-600" />
-              <span>Assigned Teacher: {activeClass.name}</span>
+            <Badge variant="outline" className="text-xs font-medium text-slate-600 dark:text-slate-400 gap-1.5 py-1 px-2.5">
+              <GraduationCap className="size-3 text-slate-500" />
+              <span>Teacher: {activeClass.name}</span>
             </Badge>
           )}
         </div>
