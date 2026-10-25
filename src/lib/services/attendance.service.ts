@@ -1,6 +1,6 @@
 import "server-only";
 import { Temporal } from "temporal-polyfill";
-import { db } from "@/lib/db";
+import { db, withDbRetry } from "@/lib/db";
 import type { AttendanceStatus } from "@/lib/validations/attendance";
 
 export type AttendanceEntry = {
@@ -173,14 +173,18 @@ export async function getClassAttendance(params: {
  * - TEACHER: Returns only classes linked to the teacher in TeacherClass
  */
 export async function getAccessibleClasses(userId: string, role: "ADMIN" | "TEACHER") {
-  if (role === "ADMIN") {
-    return db.orm.public.Class.all();
-  }
-  const links = await db.orm.public.TeacherClass.where({ userId }).all();
-  const classes = await Promise.all(
-    links.map((l) => db.orm.public.Class.where({ id: l.classId }).first())
-  );
-  return classes.filter((c): c is NonNullable<typeof c> => c !== null);
+  return withDbRetry(async () => {
+    if (role === "ADMIN") {
+      return db.orm.public.Class.all();
+    }
+    const links = await db.orm.public.TeacherClass.where({ userId }).all();
+    if (links.length === 0) {
+      return [];
+    }
+    const classIdSet = new Set(links.map((l) => l.classId));
+    const allClasses = await db.orm.public.Class.all();
+    return allClasses.filter((c) => classIdSet.has(c.id));
+  });
 }
 
 // ---------------------------------------------------------------------------
@@ -268,10 +272,11 @@ export async function getTwoWeekOverview(params: {
   userId: string;
   role: "ADMIN" | "TEACHER";
 }): Promise<TwoWeekOverviewResult> {
-  const accessibleClasses = await getAccessibleClasses(params.userId, params.role);
-  const classList = accessibleClasses.map((c) => ({ id: c.id, name: c.name }));
+  return withDbRetry(async () => {
+    const accessibleClasses = await getAccessibleClasses(params.userId, params.role);
+    const classList = accessibleClasses.map((c) => ({ id: c.id, name: c.name }));
 
-  const hasAccess = accessibleClasses.some((c) => c.id === params.classId);
+    const hasAccess = accessibleClasses.some((c) => c.id === params.classId);
   if (!hasAccess) {
     return {
       ok: false,
@@ -469,6 +474,7 @@ export async function getTwoWeekOverview(params: {
     },
     accessibleClasses: classList,
   };
+  });
 }
 
 // ---------------------------------------------------------------------------
@@ -528,8 +534,9 @@ export async function getDashboardOverview(params: {
   userId: string;
   role: "ADMIN" | "TEACHER";
 }): Promise<DashboardOverviewResult> {
-  const accessibleClasses = await getAccessibleClasses(params.userId, params.role);
-  const classList = accessibleClasses.map((c) => ({ id: c.id, name: c.name }));
+  return withDbRetry(async () => {
+    const accessibleClasses = await getAccessibleClasses(params.userId, params.role);
+    const classList = accessibleClasses.map((c) => ({ id: c.id, name: c.name }));
   const classIdSet = new Set(classList.map((c) => c.id));
 
   const todayStr = new Date().toISOString().split("T")[0]!;
@@ -720,4 +727,5 @@ export async function getDashboardOverview(params: {
     smsSummary,
     isAdmin: params.role === "ADMIN",
   };
+  });
 }
