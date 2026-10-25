@@ -6,13 +6,13 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { studentSchema, type StudentInput } from "@/lib/validations/student";
 import { createStudent, updateStudent } from "@/actions/student.actions";
 import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetDescription,
-  SheetFooter,
-} from "@/components/ui/sheet";
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -53,7 +53,6 @@ export function StudentForm({
     register,
     handleSubmit,
     reset,
-    setValue,
     formState: { errors, isSubmitting },
   } = useForm<StudentInput>({
     resolver: zodResolver(studentSchema),
@@ -129,24 +128,28 @@ export function StudentForm({
     }
   }
 
+  if (!open) return null;
+
   return (
-    <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent side="right" className="sm:max-w-md w-full overflow-y-auto">
-        <SheetHeader>
-          <div className="flex items-center gap-2 text-blue-600">
-            {isEdit ? <Save className="size-5" /> : <UserPlus className="size-5" />}
-            <SheetTitle className="text-lg font-bold text-slate-900 dark:text-white">
-              {isEdit ? "Edit Student" : "Register New Student"}
-            </SheetTitle>
-          </div>
-          <SheetDescription className="text-xs text-slate-500">
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="sm:max-w-lg max-h-[90vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle className="flex items-center gap-2">
+            {isEdit ? (
+              <Save className="size-5 text-blue-600" />
+            ) : (
+              <UserPlus className="size-5 text-blue-600" />
+            )}
+            <span>{isEdit ? "Edit Student" : "Register New Student"}</span>
+          </DialogTitle>
+          <DialogDescription className="text-xs text-slate-500">
             {isEdit
               ? "Update student information and primary guardian contact details."
               : "Enter student details, class assignment, and primary guardian for SMS notifications."}
-          </SheetDescription>
-        </SheetHeader>
+          </DialogDescription>
+        </DialogHeader>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-5 px-4 py-2">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 py-1">
           {/* Admission Number */}
           <div className="space-y-1.5">
             <Label htmlFor="admissionNo" className="text-xs font-semibold flex items-center gap-1.5">
@@ -190,7 +193,7 @@ export function StudentForm({
             <select
               id="classId"
               {...register("classId")}
-              className="w-full h-8 px-2.5 text-sm rounded-lg border border-input bg-transparent text-foreground outline-none focus:border-ring focus:ring-2 focus:ring-ring/50 transition-colors dark:bg-input/30"
+              className="w-full h-9 px-3 text-sm rounded-md border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors"
             >
               {classes.length === 0 ? (
                 <option value="">No classes available</option>
@@ -213,7 +216,7 @@ export function StudentForm({
             </h4>
 
             {/* Guardian Name */}
-            <div className="space-y-1.5 mb-4">
+            <div className="space-y-1.5 mb-3">
               <Label htmlFor="guardianName" className="text-xs font-semibold flex items-center gap-1.5">
                 <User className="size-3.5 text-slate-400" />
                 Guardian Name <span className="text-red-500">*</span>
@@ -251,7 +254,7 @@ export function StudentForm({
             </div>
           </div>
 
-          <SheetFooter className="pt-4 border-t border-slate-100 dark:border-slate-800 flex gap-2 sm:justify-end">
+          <DialogFooter className="pt-3 border-t border-slate-100 dark:border-slate-800 flex gap-2 sm:justify-end">
             <Button
               type="button"
               variant="outline"
@@ -265,7 +268,7 @@ export function StudentForm({
               type="submit"
               size="sm"
               disabled={isSubmitting}
-              className="bg-blue-600 hover:bg-blue-700 text-white min-w-24"
+              className="bg-blue-600 hover:bg-blue-700 text-white min-w-24 cursor-pointer"
             >
               {isSubmitting ? (
                 <>
@@ -278,9 +281,9 @@ export function StudentForm({
                 "Register Student"
               )}
             </Button>
-          </SheetFooter>
+          </DialogFooter>
         </form>
-      </SheetContent>
-    </Sheet>
+      </DialogContent>
+    </Dialog>
   );
 }

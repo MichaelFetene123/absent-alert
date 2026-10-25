@@ -399,7 +399,7 @@ export function StudentsManager({
         </Table>
       </div>
 
-      {/* Slide-over Sheet for Create / Edit */}
+      {/* Centered Dialog for Create / Edit */}
       {isAdmin && (
         <StudentForm
           open={isFormOpen}
