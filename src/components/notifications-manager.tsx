@@ -19,6 +19,9 @@ import {
   AlertTriangle,
   Send,
   Loader2,
+  ArrowRight,
+  ShieldCheck,
+  Sparkles,
 } from "lucide-react";
 import { toast } from "sonner";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
@@ -187,11 +190,19 @@ export function NotificationsManager({
     setTimeout(() => setCopiedJson(false), 2000);
   }
 
+  // Client mount time for pure relative timestamps
+  const mountedTime = React.useSyncExternalStore(
+    React.useCallback(() => () => {}, []),
+    () => Date.now(),
+    () => null
+  );
+
   // Relative time helper
   function formatRelativeTime(isoString: string): string {
+    if (!mountedTime) return "";
     const ms = Date.parse(isoString);
-    if (!ms) return "Recently";
-    const sec = Math.floor((Date.now() - ms) / 1000);
+    if (!ms) return "";
+    const sec = Math.floor((mountedTime - ms) / 1000);
     if (sec < 60) return "Just now";
     const min = Math.floor(sec / 60);
     if (min < 60) return `${min}m ago`;
@@ -216,27 +227,33 @@ export function NotificationsManager({
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8 pb-12">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white flex items-center gap-2">
-            <History className="size-6 text-purple-600 dark:text-purple-400" />
-            SMS Notification History
-          </h1>
-          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-            Real-time delivery tracking, provider attempt logs, and automated retry system.
-          </p>
+          <div className="flex items-center gap-2.5">
+            <div className="p-2 rounded-xl bg-purple-500/10 text-purple-600 dark:text-purple-400">
+              <History className="size-6" />
+            </div>
+            <div>
+              <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">
+                SMS Notification Audit &amp; Dispatch History
+              </h1>
+              <p className="text-xs md:text-sm text-slate-500 dark:text-slate-400">
+                End-to-end SMSHub gateway telemetry, failure analysis, and automated retry lock engine.
+              </p>
+            </div>
+          </div>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2.5">
           {initialData.isAdmin && initialData.summary.failed > 0 && (
             <Button
               variant="destructive"
               size="sm"
               onClick={handleBatchRetry}
               disabled={isBatchRetrying}
-              className="gap-2 shadow-xs"
+              className="gap-2 h-10 px-4 rounded-xl text-xs font-semibold shadow-md shadow-rose-600/20 hover-lift"
             >
               {isBatchRetrying ? (
                 <Loader2 className="size-4 animate-spin" />
@@ -251,7 +268,7 @@ export function NotificationsManager({
             variant="outline"
             size="sm"
             onClick={() => router.refresh()}
-            className="gap-2"
+            className="gap-2 h-10 px-3.5 rounded-xl text-xs font-semibold hover-lift"
           >
             <RefreshCw className="size-4" />
             Refresh
@@ -262,89 +279,93 @@ export function NotificationsManager({
       {/* KPI Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Total Card */}
-        <Card className="border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs">
-          <CardHeader className="pb-2 flex flex-row items-center justify-between space-y-0">
-            <CardTitle className="text-sm font-medium text-slate-600 dark:text-slate-400">
+        <Card className="relative overflow-hidden rounded-2xl border border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-slate-900/80 shadow-xs hover-lift transition-all">
+          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-500 to-indigo-500" />
+          <CardHeader className="pb-1 p-5 flex flex-row items-center justify-between space-y-0">
+            <CardTitle className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
               Total Notifications
             </CardTitle>
-            <div className="p-2 bg-purple-50 dark:bg-purple-950/40 rounded-lg text-purple-600 dark:text-purple-400">
+            <div className="p-2 bg-purple-500/10 rounded-xl text-purple-600 dark:text-purple-400">
               <History className="size-4" />
             </div>
           </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-slate-900 dark:text-white">
+          <CardContent className="p-5 pt-0">
+            <div className="text-3xl font-extrabold text-slate-900 dark:text-white">
               {initialData.summary.total}
             </div>
-            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+            <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1">
               Logged across accessible classes
             </p>
           </CardContent>
         </Card>
 
         {/* Accepted by Provider */}
-        <Card className="border-emerald-200 dark:border-emerald-900/50 bg-emerald-50/20 dark:bg-emerald-950/20 shadow-xs">
-          <CardHeader className="pb-2 flex flex-row items-center justify-between space-y-0">
-            <CardTitle className="text-sm font-medium text-emerald-800 dark:text-emerald-400">
+        <Card className="relative overflow-hidden rounded-2xl border border-emerald-500/20 bg-emerald-500/5 shadow-xs hover-lift transition-all">
+          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-emerald-500 to-teal-500" />
+          <CardHeader className="pb-1 p-5 flex flex-row items-center justify-between space-y-0">
+            <CardTitle className="text-xs font-semibold uppercase tracking-wider text-emerald-800 dark:text-emerald-400">
               Accepted by Provider
             </CardTitle>
-            <div className="p-2 bg-emerald-100 dark:bg-emerald-900/50 rounded-lg text-emerald-600 dark:text-emerald-300">
+            <div className="p-2 bg-emerald-500/10 rounded-xl text-emerald-600 dark:text-emerald-300">
               <CheckCircle2 className="size-4" />
             </div>
           </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-emerald-900 dark:text-emerald-200">
+          <CardContent className="p-5 pt-0">
+            <div className="text-3xl font-extrabold text-emerald-950 dark:text-emerald-200">
               {initialData.summary.accepted}
             </div>
-            <p className="text-xs text-emerald-700 dark:text-emerald-400 mt-1">
+            <p className="text-[11px] text-emerald-700/80 dark:text-emerald-400 mt-1">
               {initialData.summary.total > 0
-                ? `${Math.round((initialData.summary.accepted / initialData.summary.total) * 100)}% acceptance rate`
+                ? `${Math.round((initialData.summary.accepted / initialData.summary.total) * 100)}% delivery acceptance rate`
                 : "No notifications logged yet"}
             </p>
           </CardContent>
         </Card>
 
         {/* Failed Delivery */}
-        <Card className="border-rose-200 dark:border-rose-900/50 bg-rose-50/20 dark:bg-rose-950/20 shadow-xs">
-          <CardHeader className="pb-2 flex flex-row items-center justify-between space-y-0">
-            <CardTitle className="text-sm font-medium text-rose-800 dark:text-rose-400">
+        <Card className="relative overflow-hidden rounded-2xl border border-rose-500/20 bg-rose-500/5 shadow-xs hover-lift transition-all">
+          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-rose-500 to-pink-500" />
+          <CardHeader className="pb-1 p-5 flex flex-row items-center justify-between space-y-0">
+            <CardTitle className="text-xs font-semibold uppercase tracking-wider text-rose-800 dark:text-rose-400">
               Failed Delivery
             </CardTitle>
-            <div className="p-2 bg-rose-100 dark:bg-rose-900/50 rounded-lg text-rose-600 dark:text-rose-300">
+            <div className="p-2 bg-rose-500/10 rounded-xl text-rose-600 dark:text-rose-300">
               <AlertCircle className="size-4" />
             </div>
           </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-rose-900 dark:text-rose-200">
+          <CardContent className="p-5 pt-0">
+            <div className="text-3xl font-extrabold text-rose-950 dark:text-rose-200">
               {initialData.summary.failed}
             </div>
-            <p className="text-xs text-rose-700 dark:text-rose-400 mt-1">
-              Eligible for safe manual / automated retry
+            <p className="text-[11px] text-rose-700/80 dark:text-rose-400 mt-1">
+              Eligible for safe manual / batch retry
             </p>
           </CardContent>
         </Card>
 
         {/* Queued / In Flight */}
-        <Card className="border-amber-200 dark:border-amber-900/50 bg-amber-50/20 dark:bg-amber-950/20 shadow-xs">
-          <CardHeader className="pb-2 flex flex-row items-center justify-between space-y-0">
-            <CardTitle className="text-sm font-medium text-amber-800 dark:text-amber-400">
-              Queued / Sending
+        <Card className="relative overflow-hidden rounded-2xl border border-amber-500/20 bg-amber-500/5 shadow-xs hover-lift transition-all">
+          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-amber-500 to-orange-500" />
+          <CardHeader className="pb-1 p-5 flex flex-row items-center justify-between space-y-0">
+            <CardTitle className="text-xs font-semibold uppercase tracking-wider text-amber-800 dark:text-amber-400">
+              Queued / Transit
             </CardTitle>
-            <div className="p-2 bg-amber-100 dark:bg-amber-900/50 rounded-lg text-amber-600 dark:text-amber-300">
+            <div className="p-2 bg-amber-500/10 rounded-xl text-amber-600 dark:text-amber-300">
               <Clock className="size-4" />
             </div>
           </CardHeader>
-          <CardContent>
+          <CardContent className="p-5 pt-0">
             <div className="flex items-baseline gap-2">
-              <span className="text-2xl font-bold text-amber-900 dark:text-amber-200">
+              <span className="text-3xl font-extrabold text-amber-950 dark:text-amber-200">
                 {initialData.summary.pending + initialData.summary.sending}
               </span>
               {initialData.summary.needsReview > 0 && (
-                <span className="text-xs px-2 py-0.5 rounded-full font-medium bg-amber-200 dark:bg-amber-900/70 text-amber-900 dark:text-amber-200">
-                  {initialData.summary.needsReview} Need Review
+                <span className="text-xs px-2 py-0.5 rounded-full font-bold bg-amber-500/20 text-amber-900 dark:text-amber-200 border border-amber-500/30">
+                  {initialData.summary.needsReview} Stalled
                 </span>
               )}
             </div>
-            <p className="text-xs text-amber-700 dark:text-amber-400 mt-1">
+            <p className="text-[11px] text-amber-700/80 dark:text-amber-400 mt-1">
               {initialData.summary.pending} queued · {initialData.summary.sending} in-transit
             </p>
           </CardContent>
@@ -352,175 +373,181 @@ export function NotificationsManager({
       </div>
 
       {/* Filter Toolbar */}
-      <Card className="border-slate-200 dark:border-slate-800 shadow-xs">
-        <CardContent className="p-4 space-y-4">
-          <div className="flex flex-col md:flex-row gap-3">
-            {/* Search Input */}
-            <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-slate-400" />
-              <Input
-                placeholder="Search by student name, admission no, phone, provider ref..."
-                value={search}
-                onChange={(e) => {
-                  setSearch(e.target.value);
-                  setPage(1);
-                }}
-                className="pl-9 h-10"
-              />
-            </div>
-
-            {/* Class Dropdown */}
-            <div className="w-full md:w-56">
-              <select
-                value={classFilter}
-                onChange={(e) => {
-                  setClassFilter(e.target.value);
-                  setPage(1);
-                }}
-                className="w-full h-10 rounded-md border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-3 py-2 text-sm text-slate-900 dark:text-slate-100 focus:outline-hidden focus:ring-2 focus:ring-purple-500"
-              >
-                <option value="ALL">All Classes</option>
-                {initialData.accessibleClasses.map((c) => (
-                  <option key={c.id} value={c.id}>
-                    {c.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            {/* Clear Filters */}
-            {(statusFilter !== "ALL" || classFilter !== "ALL" || search) && (
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => {
-                  setStatusFilter("ALL");
-                  setClassFilter("ALL");
-                  setSearch("");
-                  setPage(1);
-                }}
-                className="h-10 text-slate-500 hover:text-slate-900 dark:hover:text-slate-100 gap-1.5"
-              >
-                <FilterX className="size-4" />
-                Clear
-              </Button>
-            )}
+      <div className="p-5 rounded-2xl border border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-slate-900/80 shadow-xs space-y-4">
+        <div className="flex flex-col md:flex-row gap-3">
+          {/* Search Input */}
+          <div className="relative flex-1">
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-slate-400" />
+            <Input
+              placeholder="Search by student name, admission number, guardian phone, or SMSHub provider ID..."
+              value={search}
+              onChange={(e) => {
+                setSearch(e.target.value);
+                setPage(1);
+              }}
+              className="pl-10 h-10 rounded-xl text-sm"
+            />
           </div>
 
-          {/* Status Filter Badges */}
-          <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-slate-100 dark:border-slate-800">
-            <span className="text-xs font-medium text-slate-500 dark:text-slate-400 mr-1">
-              Status Filter:
-            </span>
+          {/* Class Dropdown */}
+          <div className="w-full md:w-60">
+            <select
+              value={classFilter}
+              onChange={(e) => {
+                setClassFilter(e.target.value);
+                setPage(1);
+              }}
+              className="w-full h-10 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-3.5 py-2 text-sm font-semibold text-slate-900 dark:text-slate-100 focus:outline-hidden focus:ring-2 focus:ring-purple-500 shadow-xs"
+            >
+              <option value="ALL">All Classrooms</option>
+              {initialData.accessibleClasses.map((c) => (
+                <option key={c.id} value={c.id}>
+                  {c.name}
+                </option>
+              ))}
+            </select>
+          </div>
 
+          {/* Clear Filters */}
+          {(statusFilter !== "ALL" || classFilter !== "ALL" || search) && (
             <Button
-              variant={statusFilter === "ALL" ? "default" : "outline"}
+              variant="ghost"
               size="sm"
               onClick={() => {
                 setStatusFilter("ALL");
+                setClassFilter("ALL");
+                setSearch("");
                 setPage(1);
               }}
-              className="h-7 text-xs px-2.5 rounded-full"
+              className="h-10 text-slate-500 hover:text-slate-900 dark:hover:text-slate-100 gap-1.5 rounded-xl text-xs font-semibold"
             >
-              All ({initialData.summary.total})
+              <FilterX className="size-4" />
+              Reset Filters
             </Button>
+          )}
+        </div>
 
+        {/* Status Filter Badges */}
+        <div className="flex flex-wrap items-center gap-2 pt-3 border-t border-slate-100 dark:border-slate-800/80">
+          <span className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mr-1">
+            Filter Status:
+          </span>
+
+          <Button
+            variant={statusFilter === "ALL" ? "default" : "outline"}
+            size="sm"
+            onClick={() => {
+              setStatusFilter("ALL");
+              setPage(1);
+            }}
+            className="h-8 text-xs px-3 rounded-xl font-semibold"
+          >
+            All Logs ({initialData.summary.total})
+          </Button>
+
+          <Button
+            variant={statusFilter === "ACCEPTED" ? "default" : "outline"}
+            size="sm"
+            onClick={() => {
+              setStatusFilter("ACCEPTED");
+              setPage(1);
+            }}
+            className={`h-8 text-xs px-3 rounded-xl font-semibold ${
+              statusFilter === "ACCEPTED"
+                ? "bg-emerald-600 text-white"
+                : "border-emerald-500/30 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-500/10"
+            }`}
+          >
+            <CheckCircle2 className="size-3 text-emerald-500 mr-1.5" />
+            Accepted ({initialData.summary.accepted})
+          </Button>
+
+          <Button
+            variant={statusFilter === "FAILED" ? "default" : "outline"}
+            size="sm"
+            onClick={() => {
+              setStatusFilter("FAILED");
+              setPage(1);
+            }}
+            className={`h-8 text-xs px-3 rounded-xl font-semibold ${
+              statusFilter === "FAILED"
+                ? "bg-rose-600 text-white"
+                : "border-rose-500/30 text-rose-700 dark:text-rose-300 hover:bg-rose-500/10"
+            }`}
+          >
+            <AlertCircle className="size-3 text-rose-500 mr-1.5" />
+            Failed ({initialData.summary.failed})
+          </Button>
+
+          <Button
+            variant={statusFilter === "PENDING" ? "default" : "outline"}
+            size="sm"
+            onClick={() => {
+              setStatusFilter("PENDING");
+              setPage(1);
+            }}
+            className="h-8 text-xs px-3 rounded-xl font-semibold"
+          >
+            <Clock className="size-3 text-slate-500 mr-1.5" />
+            Queued ({initialData.summary.pending})
+          </Button>
+
+          <Button
+            variant={statusFilter === "SENDING" ? "default" : "outline"}
+            size="sm"
+            onClick={() => {
+              setStatusFilter("SENDING");
+              setPage(1);
+            }}
+            className="h-8 text-xs px-3 rounded-xl font-semibold border-blue-500/30"
+          >
+            <Loader2 className="size-3 text-blue-500 mr-1.5 animate-spin" />
+            Sending ({initialData.summary.sending})
+          </Button>
+
+          {initialData.summary.needsReview > 0 && (
             <Button
-              variant={statusFilter === "ACCEPTED" ? "default" : "outline"}
+              variant={statusFilter === "NEEDS_REVIEW" ? "default" : "outline"}
               size="sm"
               onClick={() => {
-                setStatusFilter("ACCEPTED");
+                setStatusFilter("NEEDS_REVIEW");
                 setPage(1);
               }}
-              className="h-7 text-xs px-2.5 rounded-full border-emerald-300 dark:border-emerald-800 hover:bg-emerald-50 dark:hover:bg-emerald-950/30"
+              className="h-8 text-xs px-3 rounded-xl font-semibold border-amber-500/40 bg-amber-500/10 text-amber-800 dark:text-amber-300"
             >
-              <CheckCircle2 className="size-3 text-emerald-500 mr-1" />
-              Accepted ({initialData.summary.accepted})
+              <AlertTriangle className="size-3 text-amber-500 mr-1.5" />
+              Needs Review ({initialData.summary.needsReview})
             </Button>
-
-            <Button
-              variant={statusFilter === "FAILED" ? "default" : "outline"}
-              size="sm"
-              onClick={() => {
-                setStatusFilter("FAILED");
-                setPage(1);
-              }}
-              className="h-7 text-xs px-2.5 rounded-full border-rose-300 dark:border-rose-800 hover:bg-rose-50 dark:hover:bg-rose-950/30"
-            >
-              <AlertCircle className="size-3 text-rose-500 mr-1" />
-              Failed ({initialData.summary.failed})
-            </Button>
-
-            <Button
-              variant={statusFilter === "PENDING" ? "default" : "outline"}
-              size="sm"
-              onClick={() => {
-                setStatusFilter("PENDING");
-                setPage(1);
-              }}
-              className="h-7 text-xs px-2.5 rounded-full"
-            >
-              <Clock className="size-3 text-slate-500 mr-1" />
-              Queued ({initialData.summary.pending})
-            </Button>
-
-            <Button
-              variant={statusFilter === "SENDING" ? "default" : "outline"}
-              size="sm"
-              onClick={() => {
-                setStatusFilter("SENDING");
-                setPage(1);
-              }}
-              className="h-7 text-xs px-2.5 rounded-full border-blue-300 dark:border-blue-800"
-            >
-              <Loader2 className="size-3 text-blue-500 mr-1 animate-spin" />
-              Sending ({initialData.summary.sending})
-            </Button>
-
-            {initialData.summary.needsReview > 0 && (
-              <Button
-                variant={statusFilter === "NEEDS_REVIEW" ? "default" : "outline"}
-                size="sm"
-                onClick={() => {
-                  setStatusFilter("NEEDS_REVIEW");
-                  setPage(1);
-                }}
-                className="h-7 text-xs px-2.5 rounded-full border-amber-300 dark:border-amber-700 bg-amber-50 dark:bg-amber-950/30 text-amber-800 dark:text-amber-300"
-              >
-                <AlertTriangle className="size-3 text-amber-500 mr-1" />
-                Needs Review ({initialData.summary.needsReview})
-              </Button>
-            )}
-          </div>
-        </CardContent>
-      </Card>
+          )}
+        </div>
+      </div>
 
       {/* Main Table */}
-      <Card className="border-slate-200 dark:border-slate-800 shadow-xs overflow-hidden">
+      <div className="rounded-2xl border border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-slate-900/80 shadow-xs overflow-hidden">
         <div className="overflow-x-auto">
           <Table>
-            <TableHeader className="bg-slate-50 dark:bg-slate-900/80">
-              <TableRow>
-                <TableHead className="w-44">Timestamp</TableHead>
-                <TableHead>Student</TableHead>
-                <TableHead>Class</TableHead>
-                <TableHead>Guardian Phone</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Attempts</TableHead>
-                <TableHead>Provider Ref</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
+            <TableHeader className="bg-slate-50/70 dark:bg-slate-900">
+              <TableRow className="border-b border-slate-100 dark:border-slate-800 text-xs font-semibold">
+                <TableHead className="w-48 py-3 px-4">Timestamp</TableHead>
+                <TableHead className="py-3 px-4">Student</TableHead>
+                <TableHead className="py-3 px-4">Class</TableHead>
+                <TableHead className="py-3 px-4">Guardian Contact</TableHead>
+                <TableHead className="py-3 px-4">Delivery Status</TableHead>
+                <TableHead className="py-3 px-4">Attempts</TableHead>
+                <TableHead className="py-3 px-4">Provider Ref ID</TableHead>
+                <TableHead className="py-3 px-4 text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {paginatedItems.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={8} className="text-center py-12">
-                    <div className="flex flex-col items-center justify-center text-slate-500">
-                      <History className="size-10 text-slate-300 dark:text-slate-700 mb-2" />
-                      <p className="text-base font-medium text-slate-700 dark:text-slate-300">
+                  <TableCell colSpan={8} className="text-center py-16">
+                    <div className="flex flex-col items-center justify-center text-slate-500 space-y-2">
+                      <History className="size-10 text-slate-300 dark:text-slate-700" />
+                      <p className="text-sm font-semibold text-slate-700 dark:text-slate-300">
                         No notifications match the filter
                       </p>
-                      <p className="text-sm text-slate-400 mt-1">
+                      <p className="text-xs text-slate-400">
                         Try adjusting your search query, status, or class selection.
                       </p>
                     </div>
@@ -536,7 +563,7 @@ export function NotificationsManager({
                       className="hover:bg-slate-50/80 dark:hover:bg-slate-800/50 transition-colors"
                     >
                       {/* Timestamp */}
-                      <TableCell className="align-middle">
+                      <TableCell className="align-middle py-3 px-4">
                         <div className="flex flex-col">
                           <span className="text-xs font-semibold text-slate-900 dark:text-slate-100">
                             {formatDateTime(notif.createdAt)}
@@ -549,22 +576,27 @@ export function NotificationsManager({
                       </TableCell>
 
                       {/* Student */}
-                      <TableCell className="align-middle">
-                        <div className="flex flex-col">
-                          <span className="font-medium text-sm text-slate-900 dark:text-slate-100">
-                            {notif.student.fullName}
-                          </span>
-                          <span className="text-xs font-mono text-slate-500 dark:text-slate-400">
-                            {notif.student.admissionNo}
-                          </span>
+                      <TableCell className="align-middle py-3 px-4">
+                        <div className="flex items-center gap-2.5">
+                          <div className="size-7 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold text-xs flex items-center justify-center shrink-0 border border-slate-200 dark:border-slate-700">
+                            {notif.student.fullName.charAt(0).toUpperCase()}
+                          </div>
+                          <div className="flex flex-col">
+                            <span className="font-semibold text-sm text-slate-900 dark:text-slate-100">
+                              {notif.student.fullName}
+                            </span>
+                            <span className="text-xs font-mono text-slate-500 dark:text-slate-400">
+                              {notif.student.admissionNo}
+                            </span>
+                          </div>
                         </div>
                       </TableCell>
 
                       {/* Class */}
-                      <TableCell className="align-middle">
+                      <TableCell className="align-middle py-3 px-4">
                         <Badge
                           variant="secondary"
-                          className="font-normal text-xs bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300"
+                          className="font-medium text-xs bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300"
                         >
                           <School className="size-3 mr-1 text-slate-400" />
                           {notif.student.className}
@@ -572,7 +604,7 @@ export function NotificationsManager({
                       </TableCell>
 
                       {/* Guardian Phone */}
-                      <TableCell className="align-middle">
+                      <TableCell className="align-middle py-3 px-4">
                         <div className="flex items-center gap-1.5 font-mono text-xs text-slate-700 dark:text-slate-300">
                           <Smartphone className="size-3.5 text-slate-400" />
                           {notif.guardianPhone}
@@ -580,48 +612,48 @@ export function NotificationsManager({
                       </TableCell>
 
                       {/* Status Badge */}
-                      <TableCell className="align-middle">
+                      <TableCell className="align-middle py-3 px-4">
                         <div className="flex flex-col items-start gap-1">
                           {notif.status === "ACCEPTED" && (
-                            <Badge className="bg-emerald-100 hover:bg-emerald-200 text-emerald-800 dark:bg-emerald-950/70 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800/60 font-medium text-xs gap-1">
+                            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border border-emerald-500/20">
                               <CheckCircle2 className="size-3 text-emerald-600 dark:text-emerald-400" />
-                              Accepted by provider
-                            </Badge>
+                              Accepted by Hub
+                            </span>
                           )}
 
                           {notif.status === "DELIVERED" && (
-                            <Badge className="bg-emerald-100 hover:bg-emerald-200 text-emerald-800 dark:bg-emerald-950/70 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800/60 font-medium text-xs gap-1">
+                            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border border-emerald-500/20">
                               <CheckCheck className="size-3 text-emerald-600 dark:text-emerald-400" />
                               Delivered
-                            </Badge>
+                            </span>
                           )}
 
                           {notif.status === "FAILED" && (
-                            <Badge className="bg-rose-100 hover:bg-rose-200 text-rose-800 dark:bg-rose-950/70 dark:text-rose-300 border-rose-200 dark:border-rose-800/60 font-medium text-xs gap-1">
+                            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-rose-500/10 text-rose-700 dark:text-rose-300 border border-rose-500/20">
                               <AlertCircle className="size-3 text-rose-600 dark:text-rose-400" />
-                              Failed
-                            </Badge>
+                              Delivery Failed
+                            </span>
                           )}
 
                           {notif.status === "PENDING" && (
-                            <Badge className="bg-slate-100 hover:bg-slate-200 text-slate-800 dark:bg-slate-800 dark:text-slate-300 border-slate-300 dark:border-slate-700 font-medium text-xs gap-1">
-                              <Clock className="size-3 text-slate-500" />
+                            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-amber-500/10 text-amber-700 dark:text-amber-300 border border-amber-500/20">
+                              <Clock className="size-3 text-amber-500" />
                               Queued
-                            </Badge>
+                            </span>
                           )}
 
                           {notif.status === "SENDING" && (
-                            <Badge className="bg-blue-100 hover:bg-blue-200 text-blue-800 dark:bg-blue-950/70 dark:text-blue-300 border-blue-200 dark:border-blue-800/60 font-medium text-xs gap-1">
+                            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-blue-500/10 text-blue-700 dark:text-blue-300 border border-blue-500/20">
                               <Loader2 className="size-3 text-blue-600 dark:text-blue-400 animate-spin" />
                               Sending
-                            </Badge>
+                            </span>
                           )}
 
                           {/* Needs Review flag if stuck >5 min */}
                           {notif.needsReview && (
                             <Badge
                               variant="outline"
-                              className="text-[10px] py-0 px-1.5 border-amber-400 bg-amber-50 dark:bg-amber-950/40 text-amber-800 dark:text-amber-300 gap-1"
+                              className="text-[10px] py-0 px-1.5 border-amber-400 bg-amber-50 dark:bg-amber-950/40 text-amber-800 dark:text-amber-300 gap-1 font-semibold"
                             >
                               <AlertTriangle className="size-2.5" />
                               Needs Review (&gt;5m)
@@ -631,7 +663,7 @@ export function NotificationsManager({
                       </TableCell>
 
                       {/* Attempts */}
-                      <TableCell className="align-middle">
+                      <TableCell className="align-middle py-3 px-4">
                         <Button
                           variant="ghost"
                           size="sm"
@@ -639,19 +671,19 @@ export function NotificationsManager({
                             setSelectedNotif(notif);
                             setDialogOpen(true);
                           }}
-                          className="h-7 text-xs px-2 gap-1 text-slate-600 dark:text-slate-300 hover:text-purple-600 hover:bg-purple-50 dark:hover:bg-purple-950/30"
+                          className="h-7 text-xs px-2.5 gap-1.5 text-slate-600 dark:text-slate-300 hover:text-purple-600 hover:bg-purple-500/10 rounded-lg font-medium"
                         >
-                          <span className="font-semibold">{notif.attempts.length}</span>
+                          <span className="font-bold">{notif.attempts.length}</span>
                           <span>{notif.attempts.length === 1 ? "attempt" : "attempts"}</span>
-                          <Info className="size-3 text-slate-400 ml-0.5" />
+                          <Info className="size-3 text-slate-400" />
                         </Button>
                       </TableCell>
 
                       {/* Provider Reference */}
-                      <TableCell className="align-middle">
+                      <TableCell className="align-middle py-3 px-4">
                         {notif.providerRef ? (
                           <div className="flex items-center gap-1.5 group">
-                            <span className="font-mono text-xs text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded">
+                            <span className="font-mono text-xs text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-md border border-slate-200 dark:border-slate-700">
                               {notif.providerRef.length > 16
                                 ? `${notif.providerRef.slice(0, 14)}…`
                                 : notif.providerRef}
@@ -675,7 +707,7 @@ export function NotificationsManager({
                       </TableCell>
 
                       {/* Actions */}
-                      <TableCell className="align-middle text-right">
+                      <TableCell className="align-middle text-right py-3 px-4">
                         <div className="flex items-center justify-end gap-1.5">
                           {/* Attempt logs button */}
                           <Button
@@ -685,11 +717,11 @@ export function NotificationsManager({
                               setSelectedNotif(notif);
                               setDialogOpen(true);
                             }}
-                            className="h-8 px-2 text-xs text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
+                            className="h-8 px-2.5 text-xs text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white rounded-lg"
                             title="View Attempt Logs & Response"
                           >
                             <Info className="size-3.5 mr-1" />
-                            Logs
+                            Audit
                           </Button>
 
                           {/* Retry button for FAILED rows */}
@@ -704,7 +736,7 @@ export function NotificationsManager({
                                   ? "Retry SMS Dispatch"
                                   : "Admin privilege required to retry SMS"
                               }
-                              className="h-8 px-2.5 text-xs border-rose-300 dark:border-rose-800 text-rose-700 dark:text-rose-300 hover:bg-rose-50 dark:hover:bg-rose-950/40 gap-1.5"
+                              className="h-8 px-2.5 text-xs border-rose-300 dark:border-rose-800 text-rose-700 dark:text-rose-300 hover:bg-rose-50 dark:hover:bg-rose-950/40 gap-1.5 rounded-lg font-semibold"
                             >
                               {isRetrying ? (
                                 <Loader2 className="size-3.5 animate-spin" />
@@ -738,11 +770,11 @@ export function NotificationsManager({
                 size="sm"
                 onClick={() => setPage((p) => Math.max(1, p - 1))}
                 disabled={page <= 1}
-                className="h-8 text-xs"
+                className="h-8 text-xs rounded-lg"
               >
                 Previous
               </Button>
-              <span className="font-medium text-slate-700 dark:text-slate-300">
+              <span className="font-semibold text-slate-700 dark:text-slate-300">
                 Page {page} of {totalPages}
               </span>
               <Button
@@ -750,54 +782,54 @@ export function NotificationsManager({
                 size="sm"
                 onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
                 disabled={page >= totalPages}
-                className="h-8 text-xs"
+                className="h-8 text-xs rounded-lg"
               >
                 Next
               </Button>
             </div>
           </div>
         )}
-      </Card>
+      </div>
 
       {/* Attempt Details Dialog */}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
+        <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto rounded-2xl">
           {selectedNotif && (
-            <div className="space-y-5">
+            <div className="space-y-6">
               <DialogHeader>
                 <div className="flex items-center justify-between pr-6">
                   <DialogTitle className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
                     <History className="size-5 text-purple-600" />
-                    SMS Dispatch Log &amp; Attempts
+                    SMS Dispatch Log &amp; Gateway Telemetry
                   </DialogTitle>
                 </div>
-                <DialogDescription>
-                  Audit record for notification #{selectedNotif.id}
+                <DialogDescription className="text-xs">
+                  Detailed delivery audit record for notification #{selectedNotif.id}
                 </DialogDescription>
               </DialogHeader>
 
               {/* Student and recipient summary */}
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 p-3 bg-slate-50 dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-800 text-xs">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 p-4 bg-slate-50 dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 text-xs">
                 <div>
-                  <span className="text-slate-400 block font-medium">Student</span>
-                  <span className="font-semibold text-slate-800 dark:text-slate-200">
+                  <span className="text-slate-400 block text-[11px] font-medium uppercase">Student</span>
+                  <span className="font-bold text-slate-800 dark:text-slate-200 text-sm">
                     {selectedNotif.student.fullName}
                   </span>
                 </div>
                 <div>
-                  <span className="text-slate-400 block font-medium">Class</span>
+                  <span className="text-slate-400 block text-[11px] font-medium uppercase">Class</span>
                   <span className="font-semibold text-slate-800 dark:text-slate-200">
                     {selectedNotif.student.className}
                   </span>
                 </div>
                 <div>
-                  <span className="text-slate-400 block font-medium">Guardian Phone</span>
+                  <span className="text-slate-400 block text-[11px] font-medium uppercase">Guardian Phone</span>
                   <span className="font-mono font-semibold text-slate-800 dark:text-slate-200">
                     {selectedNotif.guardianPhone}
                   </span>
                 </div>
                 <div>
-                  <span className="text-slate-400 block font-medium">Current Status</span>
+                  <span className="text-slate-400 block text-[11px] font-medium uppercase">Current Status</span>
                   <span className="font-semibold text-slate-800 dark:text-slate-200">
                     {selectedNotif.status}
                   </span>
@@ -805,11 +837,11 @@ export function NotificationsManager({
               </div>
 
               {/* Message body preview */}
-              <div className="space-y-1.5">
+              <div className="space-y-2">
                 <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
-                  SMS Message Body
+                  SMS Message Body Delivered
                 </span>
-                <div className="p-3 bg-slate-50 dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-800 text-xs text-slate-800 dark:text-slate-200 font-sans leading-relaxed">
+                <div className="p-4 bg-slate-50 dark:bg-slate-900/60 rounded-xl border border-slate-200 dark:border-slate-800 text-xs text-slate-800 dark:text-slate-200 font-sans leading-relaxed">
                   {selectedNotif.body}
                 </div>
               </div>
@@ -827,12 +859,12 @@ export function NotificationsManager({
                       size="sm"
                       onClick={() => handleRetry(selectedNotif)}
                       disabled={retryingId === selectedNotif.id}
-                      className="h-7 text-xs border-rose-300 text-rose-700 dark:text-rose-300 gap-1.5"
+                      className="h-8 text-xs border-rose-300 text-rose-700 dark:text-rose-300 gap-1.5 rounded-xl font-semibold"
                     >
                       {retryingId === selectedNotif.id ? (
-                        <Loader2 className="size-3 animate-spin" />
+                        <Loader2 className="size-3.5 animate-spin" />
                       ) : (
-                        <RotateCcw className="size-3" />
+                        <RotateCcw className="size-3.5" />
                       )}
                       Retry Now
                     </Button>
@@ -848,7 +880,7 @@ export function NotificationsManager({
                     {selectedNotif.attempts.map((attempt, idx) => (
                       <div
                         key={attempt.id}
-                        className="p-3.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 space-y-2 text-xs"
+                        className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 space-y-2 text-xs"
                       >
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-2">
@@ -876,36 +908,36 @@ export function NotificationsManager({
                             )}
 
                             {attempt.success ? (
-                              <Badge className="bg-emerald-100 text-emerald-800 dark:bg-emerald-950/70 dark:text-emerald-300 text-[11px]">
-                                <CheckCircle2 className="size-3 mr-1" />
+                              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border border-emerald-500/20">
+                                <CheckCircle2 className="size-3" />
                                 Success
-                              </Badge>
+                              </span>
                             ) : (
-                              <Badge className="bg-rose-100 text-rose-800 dark:bg-rose-950/70 dark:text-rose-300 text-[11px]">
-                                <AlertCircle className="size-3 mr-1" />
+                              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-rose-500/10 text-rose-700 dark:text-rose-300 border border-rose-500/20">
+                                <AlertCircle className="size-3" />
                                 Failed
-                              </Badge>
+                              </span>
                             )}
                           </div>
                         </div>
 
                         {attempt.error && (
-                          <div className="p-2 rounded bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900/50 text-rose-800 dark:text-rose-300 text-xs">
-                            <span className="font-semibold">Error:</span> {attempt.error}
+                          <div className="p-2.5 rounded-lg bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900/50 text-rose-800 dark:text-rose-300 text-xs">
+                            <span className="font-semibold">Gateway Error:</span> {attempt.error}
                           </div>
                         )}
 
                         {attempt.rawResponse && (
-                          <div className="space-y-1">
+                          <div className="space-y-1 pt-1">
                             <div className="flex items-center justify-between">
                               <span className="text-[11px] font-mono text-slate-400">
-                                Raw Provider Response:
+                                Raw Gateway Response JSON:
                               </span>
                               <Button
                                 variant="ghost"
                                 size="sm"
                                 onClick={() => copyRawResponse(attempt.rawResponse)}
-                                className="h-6 text-[10px] px-1.5 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200"
+                                className="h-6 text-[10px] px-2 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 rounded-md"
                               >
                                 {copiedJson ? (
                                   <Check className="size-3 text-emerald-500 mr-1" />
@@ -915,7 +947,7 @@ export function NotificationsManager({
                                 Copy JSON
                               </Button>
                             </div>
-                            <pre className="p-2.5 rounded bg-slate-900 text-slate-100 dark:bg-slate-950 font-mono text-[11px] overflow-x-auto max-h-48 leading-relaxed">
+                            <pre className="p-3 rounded-xl bg-slate-900 text-slate-100 dark:bg-slate-950 font-mono text-[11px] overflow-x-auto max-h-48 leading-relaxed">
                               {JSON.stringify(attempt.rawResponse, null, 2)}
                             </pre>
                           </div>

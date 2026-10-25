@@ -22,8 +22,10 @@ import {
   Mail,
   User,
   ExternalLink,
+  Shield,
+  KeyRound,
 } from "lucide-react";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -66,9 +68,11 @@ export function TeachersManager({
   const [teachers, setTeachers] = React.useState<TeacherItemWithDetails[]>(initialTeachers);
 
   // Sync state if server revalidates
-  React.useEffect(() => {
+  const [prevInitialTeachers, setPrevInitialTeachers] = React.useState(initialTeachers);
+  if (initialTeachers !== prevInitialTeachers) {
+    setPrevInitialTeachers(initialTeachers);
     setTeachers(initialTeachers);
-  }, [initialTeachers]);
+  }
 
   // Filtering & Search
   const [search, setSearch] = React.useState("");
@@ -255,61 +259,97 @@ export function TeachersManager({
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8 pb-12">
+      {/* Page Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div className="flex items-center gap-2.5">
+          <div className="p-2 rounded-xl bg-purple-500/10 text-purple-600 dark:text-purple-400">
+            <GraduationCap className="size-6" />
+          </div>
+          <div>
+            <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">
+              Faculty &amp; Instructors
+            </h1>
+            <p className="text-xs md:text-sm text-slate-500 dark:text-slate-400">
+              Manage teacher access, classroom assignments, and track recorded attendance history.
+            </p>
+          </div>
+        </div>
+
+        {isAdmin && (
+          <Button
+            id="add-teacher-btn"
+            onClick={() => setIsCreateOpen(true)}
+            className="h-10 px-5 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-semibold text-xs gap-2 shadow-md shadow-purple-600/20 hover-lift shrink-0"
+          >
+            <Plus className="size-4" />
+            <span>Add Teacher</span>
+          </Button>
+        )}
+      </div>
+
       {/* Metric Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <Card className="border-slate-200 dark:border-slate-800 shadow-xs">
-          <CardContent className="p-4 flex items-center justify-between">
+        {/* Total Teachers */}
+        <Card className="relative overflow-hidden rounded-2xl border border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-slate-900/80 shadow-xs hover-lift transition-all">
+          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-500 to-indigo-500" />
+          <CardContent className="p-5 flex items-center justify-between">
             <div>
-              <p className="text-xs font-medium text-slate-500 dark:text-slate-400">Total Teachers</p>
-              <h3 className="text-2xl font-bold text-slate-900 dark:text-white mt-0.5">
+              <p className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Faculty Members</p>
+              <h3 className="text-3xl font-extrabold text-slate-900 dark:text-white mt-1">
                 {stats.totalTeachers}
               </h3>
             </div>
-            <div className="size-10 rounded-lg bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400 flex items-center justify-center">
+            <div className="size-11 rounded-xl bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center">
               <GraduationCap className="size-5" />
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border-slate-200 dark:border-slate-800 shadow-xs">
-          <CardContent className="p-4 flex items-center justify-between">
+        {/* Class Assignments */}
+        <Card className="relative overflow-hidden rounded-2xl border border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-slate-900/80 shadow-xs hover-lift transition-all">
+          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 to-cyan-500" />
+          <CardContent className="p-5 flex items-center justify-between">
             <div>
-              <p className="text-xs font-medium text-slate-500 dark:text-slate-400">Class Assignments</p>
-              <h3 className="text-2xl font-bold text-slate-900 dark:text-white mt-0.5">
+              <p className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Class Assignments</p>
+              <h3 className="text-3xl font-extrabold text-slate-900 dark:text-white mt-1">
                 {stats.totalClassAssignments}
               </h3>
-              <p className="text-[11px] text-emerald-600 dark:text-emerald-400 font-medium">
-                across all classes
+              <p className="text-[11px] text-blue-600 dark:text-blue-400 font-semibold mt-0.5">
+                across all classrooms
               </p>
             </div>
-            <div className="size-10 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
+            <div className="size-11 rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center">
               <School className="size-5" />
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border-slate-200 dark:border-slate-800 shadow-xs">
-          <CardContent className="p-4 flex items-center justify-between">
+        {/* Assigned Teachers */}
+        <Card className="relative overflow-hidden rounded-2xl border border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-slate-900/80 shadow-xs hover-lift transition-all">
+          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-emerald-500 to-teal-500" />
+          <CardContent className="p-5 flex items-center justify-between">
             <div>
-              <p className="text-xs font-medium text-slate-500 dark:text-slate-400">Assigned Teachers</p>
-              <h3 className="text-2xl font-bold text-slate-900 dark:text-white mt-0.5">
+              <p className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Active Teachers</p>
+              <h3 className="text-3xl font-extrabold text-slate-900 dark:text-white mt-1">
                 {stats.assignedTeachers}
               </h3>
-              <p className="text-[11px] text-slate-500">Active class instructors</p>
+              <p className="text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold mt-0.5">Covering rosters</p>
             </div>
-            <div className="size-10 rounded-lg bg-purple-50 dark:bg-purple-950/40 text-purple-600 dark:text-purple-400 flex items-center justify-center">
+            <div className="size-11 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
               <CheckCircle2 className="size-5" />
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border-slate-200 dark:border-slate-800 shadow-xs">
-          <CardContent className="p-4 flex items-center justify-between">
+        {/* Unassigned */}
+        <Card className="relative overflow-hidden rounded-2xl border border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-slate-900/80 shadow-xs hover-lift transition-all">
+          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-amber-500 to-orange-500" />
+          <CardContent className="p-5 flex items-center justify-between">
             <div>
-              <p className="text-xs font-medium text-slate-500 dark:text-slate-400">Unassigned</p>
+              <p className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Unassigned</p>
               <h3
-                className={`text-2xl font-bold mt-0.5 ${
+                className={`text-3xl font-extrabold mt-1 ${
                   stats.unassignedTeachers > 0
                     ? "text-amber-600 dark:text-amber-400"
                     : "text-emerald-600 dark:text-emerald-400"
@@ -317,15 +357,15 @@ export function TeachersManager({
               >
                 {stats.unassignedTeachers}
               </h3>
-              <p className="text-[11px] text-slate-500">
-                {stats.unassignedTeachers === 0 ? "All teachers assigned" : "Awaiting class assignment"}
+              <p className="text-[11px] text-slate-500 mt-0.5">
+                {stats.unassignedTeachers === 0 ? "All faculty assigned" : "Awaiting class assignment"}
               </p>
             </div>
             <div
-              className={`size-10 rounded-lg flex items-center justify-center ${
+              className={`size-11 rounded-xl flex items-center justify-center ${
                 stats.unassignedTeachers > 0
-                  ? "bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400"
-                  : "bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400"
+                  ? "bg-amber-500/10 text-amber-600 dark:text-amber-400"
+                  : "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
               }`}
             >
               {stats.unassignedTeachers > 0 ? (
@@ -338,17 +378,17 @@ export function TeachersManager({
         </Card>
       </div>
 
-      {/* Action Bar: Search, Filters, Add Teacher Button */}
-      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
-        <div className="flex flex-1 items-center gap-2 max-w-lg">
-          <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-slate-400" />
+      {/* Action Bar: Search, Filters */}
+      <div className="p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-slate-900/80 shadow-xs flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+        <div className="flex flex-1 flex-col sm:flex-row items-stretch sm:items-center gap-3">
+          <div className="relative flex-1 max-w-md">
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-slate-400" />
             <Input
               id="teacher-search-input"
-              placeholder="Search teachers by name, email, or class..."
+              placeholder="Search faculty by name, email, or assigned class..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="pl-9 bg-white dark:bg-slate-900"
+              className="pl-10 h-10 rounded-xl text-sm"
             />
           </div>
 
@@ -357,9 +397,9 @@ export function TeachersManager({
             id="teacher-class-filter"
             value={classFilter}
             onChange={(e) => setClassFilter(e.target.value)}
-            className="h-9 px-3 rounded-md border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-xs font-medium text-slate-700 dark:text-slate-200"
+            className="h-10 px-3.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-xs font-semibold text-slate-700 dark:text-slate-200 shadow-xs"
           >
-            <option value="ALL">All Classes</option>
+            <option value="ALL">All Classrooms</option>
             <option value="UNASSIGNED">Unassigned Only</option>
             {availableClasses.map((c) => (
               <option key={c.id} value={c.id}>
@@ -373,7 +413,7 @@ export function TeachersManager({
             id="teacher-status-filter"
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="h-9 px-3 rounded-md border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-xs font-medium text-slate-700 dark:text-slate-200"
+            className="h-10 px-3.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-xs font-semibold text-slate-700 dark:text-slate-200 shadow-xs"
           >
             <option value="ALL">All Status</option>
             <option value="ASSIGNED">Has Classes</option>
@@ -381,38 +421,31 @@ export function TeachersManager({
           </select>
         </div>
 
-        {isAdmin && (
-          <Button
-            id="add-teacher-btn"
-            onClick={() => setIsCreateOpen(true)}
-            className="bg-blue-600 hover:bg-blue-700 text-white shrink-0 gap-1.5 cursor-pointer"
-          >
-            <Plus className="size-4" />
-            <span>Add Teacher</span>
-          </Button>
-        )}
+        <p className="text-xs text-slate-500 self-end sm:self-auto font-medium">
+          Showing <span className="font-bold text-slate-900 dark:text-white">{filteredTeachers.length}</span> of {teachers.length} faculty
+        </p>
       </div>
 
       {/* Teachers Table */}
-      <Card className="border-slate-200 dark:border-slate-800 shadow-xs overflow-hidden">
+      <div className="rounded-2xl border border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-slate-900/80 shadow-xs overflow-hidden">
         <div className="overflow-x-auto">
           <Table>
-            <TableHeader className="bg-slate-50 dark:bg-slate-800/50">
-              <TableRow>
-                <TableHead className="font-semibold text-slate-700 dark:text-slate-300">Teacher Profile</TableHead>
-                <TableHead className="font-semibold text-slate-700 dark:text-slate-300">Email Address</TableHead>
-                <TableHead className="font-semibold text-slate-700 dark:text-slate-300">Assigned Classes</TableHead>
-                <TableHead className="font-semibold text-slate-700 dark:text-slate-300">Attendance Marked</TableHead>
-                <TableHead className="text-right font-semibold text-slate-700 dark:text-slate-300">Actions</TableHead>
+            <TableHeader className="bg-slate-50/70 dark:bg-slate-900">
+              <TableRow className="border-b border-slate-100 dark:border-slate-800 text-xs font-semibold">
+                <TableHead className="py-3 px-4 font-bold text-slate-700 dark:text-slate-300">Instructor Profile</TableHead>
+                <TableHead className="py-3 px-4 font-bold text-slate-700 dark:text-slate-300">Email Address</TableHead>
+                <TableHead className="py-3 px-4 font-bold text-slate-700 dark:text-slate-300">Assigned Classrooms</TableHead>
+                <TableHead className="py-3 px-4 font-bold text-slate-700 dark:text-slate-300">Attendance Audit</TableHead>
+                <TableHead className="py-3 px-4 text-right font-bold text-slate-700 dark:text-slate-300">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {filteredTeachers.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={5} className="h-36 text-center text-slate-500">
-                    <div className="flex flex-col items-center justify-center gap-1.5">
-                      <GraduationCap className="size-8 text-slate-400" />
-                      <p className="font-medium text-sm">No teachers found</p>
+                  <TableCell colSpan={5} className="h-40 text-center text-slate-500">
+                    <div className="flex flex-col items-center justify-center gap-2">
+                      <GraduationCap className="size-9 text-slate-400" />
+                      <p className="font-semibold text-sm text-slate-800 dark:text-slate-200">No teachers found</p>
                       <p className="text-xs text-slate-400">
                         {search || classFilter !== "ALL" || statusFilter !== "ALL"
                           ? "Try clearing your search or filters."
@@ -423,24 +456,24 @@ export function TeachersManager({
                 </TableRow>
               ) : (
                 filteredTeachers.map((t) => (
-                  <TableRow key={t.id} className="hover:bg-slate-50/60 dark:hover:bg-slate-800/40">
+                  <TableRow key={t.id} className="hover:bg-slate-50/70 dark:hover:bg-slate-800/40 transition-colors">
                     {/* Name & Avatar */}
-                    <TableCell className="font-semibold text-slate-900 dark:text-white">
-                      <div className="flex items-center gap-2.5">
-                        <div className="size-8 rounded-full bg-purple-100 dark:bg-purple-950/60 text-purple-700 dark:text-purple-300 flex items-center justify-center font-bold text-xs shrink-0">
+                    <TableCell className="py-3.5 px-4 font-semibold text-slate-900 dark:text-white">
+                      <div className="flex items-center gap-3">
+                        <div className="size-9 rounded-xl bg-purple-500/10 text-purple-700 dark:text-purple-300 flex items-center justify-center font-bold text-xs shrink-0 border border-purple-500/20">
                           {t.name.slice(0, 2).toUpperCase()}
                         </div>
                         <div>
-                          <span>{t.name}</span>
+                          <span className="font-bold text-sm block">{t.name}</span>
                           <span className="block text-[11px] font-mono text-slate-400 font-normal">
-                            ID: {t.id.slice(0, 10)}...
+                            ID: {t.id.slice(0, 8)}...
                           </span>
                         </div>
                       </div>
                     </TableCell>
 
                     {/* Email */}
-                    <TableCell className="text-slate-600 dark:text-slate-300 font-mono text-xs">
+                    <TableCell className="py-3.5 px-4 text-slate-600 dark:text-slate-300 font-mono text-xs">
                       <div className="flex items-center gap-1.5">
                         <Mail className="size-3.5 text-slate-400 shrink-0" />
                         <span>{t.email}</span>
@@ -448,61 +481,54 @@ export function TeachersManager({
                     </TableCell>
 
                     {/* Assigned Classes */}
-                    <TableCell>
+                    <TableCell className="py-3.5 px-4">
                       {t.assignedClasses.length > 0 ? (
                         <div className="flex flex-wrap gap-1.5 max-w-sm">
                           {t.assignedClasses.map((cls) => (
                             <Link key={cls.id} href={`/attendance?classId=${cls.id}`}>
-                              <Badge
-                                variant="secondary"
-                                className="bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-800 text-[11px] gap-1 hover:bg-blue-100 cursor-pointer transition-colors"
-                              >
+                              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-blue-500/10 text-blue-700 dark:text-blue-300 border border-blue-500/20 hover:bg-blue-500/20 cursor-pointer transition-colors">
                                 <School className="size-3 text-blue-600" />
                                 <span>{cls.name}</span>
-                              </Badge>
+                              </span>
                             </Link>
                           ))}
                         </div>
                       ) : (
-                        <Badge
-                          variant="outline"
-                          className="bg-amber-50 dark:bg-amber-950/30 text-amber-700 dark:text-amber-400 border-amber-200 dark:border-amber-800 text-[11px] gap-1"
-                        >
+                        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/20">
                           <AlertTriangle className="size-3" />
                           <span>No classes assigned</span>
-                        </Badge>
+                        </span>
                       )}
                     </TableCell>
 
                     {/* Attendance Records Marked */}
-                    <TableCell>
-                      <Badge
-                        variant="outline"
-                        className={
+                    <TableCell className="py-3.5 px-4">
+                      <span
+                        className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold border ${
                           t.markedAttendanceCount > 0
-                            ? "bg-emerald-50 dark:bg-emerald-950/30 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800 text-xs"
-                            : "bg-slate-100 dark:bg-slate-800 text-slate-500 border-slate-200 text-xs"
-                        }
+                            ? "bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border-emerald-500/20"
+                            : "bg-slate-100 dark:bg-slate-800 text-slate-500 border-slate-200"
+                        }`}
                       >
-                        <CalendarCheck className="size-3 mr-1" />
-                        <span>{t.markedAttendanceCount} records marked</span>
-                      </Badge>
+                        <CalendarCheck className="size-3 mr-0.5 text-emerald-600" />
+                        <span>{t.markedAttendanceCount} sessions recorded</span>
+                      </span>
                     </TableCell>
 
                     {/* Actions */}
-                    <TableCell className="text-right">
-                      <div className="flex items-center justify-end gap-1">
-                        {/* If teacher has classes, provide direct Roster link */}
+                    <TableCell className="text-right py-3.5 px-4">
+                      <div className="flex items-center justify-end gap-1.5">
+                        {/* Direct Roster link if assigned */}
                         {t.assignedClasses.length > 0 && (
                           <Link href={`/attendance?classId=${t.assignedClasses[0]!.id}`}>
                             <Button
                               variant="ghost"
                               size="sm"
-                              className="h-8 px-2 text-xs text-emerald-700 hover:text-emerald-800 hover:bg-emerald-50 dark:text-emerald-400 dark:hover:bg-emerald-950/50"
+                              className="h-8 px-2.5 text-xs text-emerald-700 hover:text-emerald-800 hover:bg-emerald-500/10 dark:text-emerald-400 rounded-lg font-medium"
                               title={`View Roster for ${t.assignedClasses[0]!.name}`}
                             >
                               <CalendarCheck className="size-3.5 mr-1" />
-                              <span className="hidden sm:inline">Roster</span>
+                              <span>Roster</span>
                             </Button>
                           </Link>
                         )}
@@ -514,7 +540,7 @@ export function TeachersManager({
                             variant="ghost"
                             size="sm"
                             onClick={() => openEditModal(t)}
-                            className="h-8 w-8 p-0 text-slate-600 hover:text-slate-900 hover:bg-slate-100 dark:text-slate-400 dark:hover:text-white dark:hover:bg-slate-800 cursor-pointer"
+                            className="h-8 w-8 p-0 text-slate-600 hover:text-slate-900 hover:bg-slate-100 dark:text-slate-400 dark:hover:text-white dark:hover:bg-slate-800 rounded-lg cursor-pointer"
                             title="Edit Teacher & Classes"
                           >
                             <Edit2 className="size-3.5" />
@@ -528,8 +554,8 @@ export function TeachersManager({
                             variant="ghost"
                             size="sm"
                             onClick={() => setDeletingTeacher(t)}
-                            className="h-8 w-8 p-0 text-red-600 hover:text-red-700 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-950/50 cursor-pointer"
-                            title="Delete Teacher"
+                            className="h-8 w-8 p-0 text-rose-600 hover:text-rose-700 hover:bg-rose-500/10 dark:text-rose-400 rounded-lg cursor-pointer"
+                            title="Delete Teacher Account"
                           >
                             <Trash2 className="size-3.5" />
                           </Button>
@@ -542,127 +568,110 @@ export function TeachersManager({
             </TableBody>
           </Table>
         </div>
-      </Card>
+      </div>
 
       {/* CREATE TEACHER DIALOG */}
       {isCreateOpen && (
         <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
-          <DialogContent className="sm:max-w-md">
+          <DialogContent className="sm:max-w-md rounded-2xl">
             <DialogHeader>
-              <DialogTitle className="flex items-center gap-2">
-                <GraduationCap className="size-5 text-blue-600" />
-                <span>Add New Teacher</span>
+              <DialogTitle className="flex items-center gap-2 text-lg font-bold">
+                <GraduationCap className="size-5 text-purple-600" />
+                <span>Register Faculty Member</span>
               </DialogTitle>
-              <DialogDescription>
-                Create a login account for school faculty and assign classrooms.
+              <DialogDescription className="text-xs">
+                Create a teacher credentials login and assign initial classroom rosters.
               </DialogDescription>
             </DialogHeader>
 
             <form onSubmit={handleCreateTeacher} className="space-y-4 py-2">
-              {/* Full Name */}
               <div className="space-y-1.5">
-                <Label htmlFor="create-teacher-name" className="text-xs font-semibold">
+                <Label htmlFor="create-teacher-name" className="text-xs font-semibold uppercase tracking-wider text-slate-500">
                   Full Name
                 </Label>
                 <Input
                   id="create-teacher-name"
                   value={createName}
                   onChange={(e) => setCreateName(e.target.value)}
-                  placeholder="e.g. Teacher Abebe"
+                  placeholder="e.g. Samuel Bekele"
+                  className="h-10 rounded-xl font-semibold"
                   required
                 />
               </div>
 
-              {/* Email Address */}
               <div className="space-y-1.5">
-                <Label htmlFor="create-teacher-email" className="text-xs font-semibold">
-                  Email Address
+                <Label htmlFor="create-teacher-email" className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+                  Email Address (Login)
                 </Label>
                 <Input
                   id="create-teacher-email"
                   type="email"
                   value={createEmail}
                   onChange={(e) => setCreateEmail(e.target.value)}
-                  placeholder="e.g. teacher.abebe@school.et"
+                  placeholder="teacher@school.edu.et"
+                  className="h-10 rounded-xl font-mono text-sm"
                   required
                 />
               </div>
 
-              {/* Initial Password */}
               <div className="space-y-1.5">
-                <Label htmlFor="create-teacher-password" className="text-xs font-semibold">
-                  Temporary Password
+                <Label htmlFor="create-teacher-password" className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+                  Initial Password
                 </Label>
                 <Input
                   id="create-teacher-password"
                   type="password"
                   value={createPassword}
                   onChange={(e) => setCreatePassword(e.target.value)}
-                  placeholder="Minimum 6 characters"
+                  className="h-10 rounded-xl font-mono text-sm"
                   required
                 />
               </div>
 
-              {/* Assigned Classes */}
-              <div className="space-y-2 pt-2 border-t border-slate-100 dark:border-slate-800">
-                <Label className="text-xs font-semibold flex items-center justify-between">
-                  <span>Assign Classrooms</span>
-                  <span className="text-slate-400 font-normal">
-                    {createClassIds.length} selected
-                  </span>
+              {/* Class Assignment Multi-select */}
+              <div className="space-y-2 pt-2">
+                <Label className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+                  Assign Classroom Rosters ({createClassIds.length} selected)
                 </Label>
-                <div className="max-h-36 overflow-y-auto space-y-1 rounded-md border border-slate-200 dark:border-slate-800 p-2 bg-slate-50/50 dark:bg-slate-900/50">
-                  {availableClasses.length === 0 ? (
-                    <p className="text-xs text-slate-500 italic p-1">No classes created in system.</p>
-                  ) : (
-                    availableClasses.map((cls) => {
-                      const isChecked = createClassIds.includes(cls.id);
-                      return (
-                        <label
-                          key={cls.id}
-                          className="flex items-center gap-2 p-1.5 rounded-md hover:bg-white dark:hover:bg-slate-800 cursor-pointer text-xs transition-colors"
-                        >
+                <div className="max-h-36 overflow-y-auto divide-y divide-slate-100 dark:divide-slate-800/80 rounded-xl border border-slate-200 dark:border-slate-800 p-1">
+                  {availableClasses.map((c) => {
+                    const isChecked = createClassIds.includes(c.id);
+                    return (
+                      <label
+                        key={c.id}
+                        className="flex items-center justify-between p-2 hover:bg-slate-50 dark:hover:bg-slate-800/50 rounded-lg cursor-pointer text-xs"
+                      >
+                        <div className="flex items-center gap-2">
                           <input
                             type="checkbox"
-                            id={`create-class-check-${cls.id}`}
                             checked={isChecked}
-                            onChange={() =>
-                              toggleClassSelection(cls.id, createClassIds, setCreateClassIds)
-                            }
-                            className="rounded text-blue-600 focus:ring-blue-500 size-3.5"
+                            onChange={() => toggleClassSelection(c.id, createClassIds, setCreateClassIds)}
+                            className="rounded border-slate-300 text-purple-600 focus:ring-purple-500"
                           />
-                          <span className="font-medium text-slate-900 dark:text-white">{cls.name}</span>
-                        </label>
-                      );
-                    })
-                  )}
+                          <span className="font-semibold text-slate-800 dark:text-slate-200">{c.name}</span>
+                        </div>
+                      </label>
+                    );
+                  })}
                 </div>
               </div>
 
-              <DialogFooter className="pt-2">
+              <DialogFooter className="pt-4">
                 <Button
                   type="button"
-                  id="cancel-create-teacher-btn"
                   variant="outline"
                   onClick={() => setIsCreateOpen(false)}
-                  disabled={isCreating}
+                  className="rounded-xl text-xs"
                 >
                   Cancel
                 </Button>
                 <Button
                   type="submit"
-                  id="submit-create-teacher-btn"
                   disabled={isCreating}
-                  className="bg-blue-600 hover:bg-blue-700 text-white cursor-pointer"
+                  className="bg-purple-600 hover:bg-purple-700 text-white rounded-xl text-xs font-semibold"
                 >
-                  {isCreating ? (
-                    <>
-                      <Loader2 className="size-4 animate-spin mr-1.5" />
-                      <span>Creating...</span>
-                    </>
-                  ) : (
-                    <span>Create Account</span>
-                  )}
+                  {isCreating ? <Loader2 className="size-4 animate-spin mr-1.5" /> : null}
+                  Register Teacher
                 </Button>
               </DialogFooter>
             </form>
@@ -673,35 +682,33 @@ export function TeachersManager({
       {/* EDIT TEACHER DIALOG */}
       {editingTeacher && (
         <Dialog open={!!editingTeacher} onOpenChange={(open) => !open && setEditingTeacher(null)}>
-          <DialogContent className="sm:max-w-md">
+          <DialogContent className="sm:max-w-md rounded-2xl">
             <DialogHeader>
-              <DialogTitle className="flex items-center gap-2">
-                <Edit2 className="size-5 text-blue-600" />
-                <span>Edit Teacher: {editingTeacher.name}</span>
+              <DialogTitle className="flex items-center gap-2 text-lg font-bold">
+                <Edit2 className="size-5 text-purple-600" />
+                <span>Edit Faculty: {editingTeacher.name}</span>
               </DialogTitle>
-              <DialogDescription>
-                Update faculty details, reset credentials, or manage classroom assignments.
+              <DialogDescription className="text-xs">
+                Update account details, reset password, or adjust class assignments.
               </DialogDescription>
             </DialogHeader>
 
             <form onSubmit={handleUpdateTeacher} className="space-y-4 py-2">
-              {/* Full Name */}
               <div className="space-y-1.5">
-                <Label htmlFor="edit-teacher-name" className="text-xs font-semibold">
+                <Label htmlFor="edit-teacher-name" className="text-xs font-semibold uppercase tracking-wider text-slate-500">
                   Full Name
                 </Label>
                 <Input
                   id="edit-teacher-name"
                   value={editName}
                   onChange={(e) => setEditName(e.target.value)}
-                  placeholder="e.g. Teacher Abebe"
+                  className="h-10 rounded-xl font-semibold"
                   required
                 />
               </div>
 
-              {/* Email Address */}
               <div className="space-y-1.5">
-                <Label htmlFor="edit-teacher-email" className="text-xs font-semibold">
+                <Label htmlFor="edit-teacher-email" className="text-xs font-semibold uppercase tracking-wider text-slate-500">
                   Email Address
                 </Label>
                 <Input
@@ -709,88 +716,69 @@ export function TeachersManager({
                   type="email"
                   value={editEmail}
                   onChange={(e) => setEditEmail(e.target.value)}
-                  placeholder="e.g. teacher.abebe@school.et"
+                  className="h-10 rounded-xl font-mono text-sm"
                   required
                 />
               </div>
 
-              {/* Reset Password (Optional) */}
               <div className="space-y-1.5">
-                <Label htmlFor="edit-teacher-password" className="text-xs font-semibold">
-                  New Password (Optional)
+                <Label htmlFor="edit-teacher-password" className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+                  Change Password (leave empty to keep current)
                 </Label>
                 <Input
                   id="edit-teacher-password"
                   type="password"
                   value={editPassword}
                   onChange={(e) => setEditPassword(e.target.value)}
-                  placeholder="Leave empty to keep existing password"
+                  placeholder="••••••••"
+                  className="h-10 rounded-xl font-mono text-sm"
                 />
-                <p className="text-[11px] text-slate-400">
-                  Only fill this out if you wish to reset the teacher&apos;s password.
-                </p>
               </div>
 
-              {/* Assigned Classes */}
-              <div className="space-y-2 pt-2 border-t border-slate-100 dark:border-slate-800">
-                <Label className="text-xs font-semibold flex items-center justify-between">
-                  <span>Assigned Classrooms</span>
-                  <span className="text-slate-400 font-normal">
-                    {editClassIds.length} assigned
-                  </span>
+              {/* Class Assignment Multi-select */}
+              <div className="space-y-2 pt-2">
+                <Label className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+                  Assigned Classes ({editClassIds.length} assigned)
                 </Label>
-                <div className="max-h-40 overflow-y-auto space-y-1 rounded-md border border-slate-200 dark:border-slate-800 p-2 bg-slate-50/50 dark:bg-slate-900/50">
-                  {availableClasses.length === 0 ? (
-                    <p className="text-xs text-slate-500 italic p-1">No classes created in system.</p>
-                  ) : (
-                    availableClasses.map((cls) => {
-                      const isChecked = editClassIds.includes(cls.id);
-                      return (
-                        <label
-                          key={cls.id}
-                          className="flex items-center gap-2 p-1.5 rounded-md hover:bg-white dark:hover:bg-slate-800 cursor-pointer text-xs transition-colors"
-                        >
+                <div className="max-h-36 overflow-y-auto divide-y divide-slate-100 dark:divide-slate-800/80 rounded-xl border border-slate-200 dark:border-slate-800 p-1">
+                  {availableClasses.map((c) => {
+                    const isChecked = editClassIds.includes(c.id);
+                    return (
+                      <label
+                        key={c.id}
+                        className="flex items-center justify-between p-2 hover:bg-slate-50 dark:hover:bg-slate-800/50 rounded-lg cursor-pointer text-xs"
+                      >
+                        <div className="flex items-center gap-2">
                           <input
                             type="checkbox"
-                            id={`edit-class-check-${cls.id}`}
                             checked={isChecked}
-                            onChange={() =>
-                              toggleClassSelection(cls.id, editClassIds, setEditClassIds)
-                            }
-                            className="rounded text-blue-600 focus:ring-blue-500 size-3.5"
+                            onChange={() => toggleClassSelection(c.id, editClassIds, setEditClassIds)}
+                            className="rounded border-slate-300 text-purple-600 focus:ring-purple-500"
                           />
-                          <span className="font-medium text-slate-900 dark:text-white">{cls.name}</span>
-                        </label>
-                      );
-                    })
-                  )}
+                          <span className="font-semibold text-slate-800 dark:text-slate-200">{c.name}</span>
+                        </div>
+                      </label>
+                    );
+                  })}
                 </div>
               </div>
 
-              <DialogFooter className="pt-2">
+              <DialogFooter className="pt-4">
                 <Button
                   type="button"
-                  id="cancel-edit-teacher-btn"
                   variant="outline"
                   onClick={() => setEditingTeacher(null)}
-                  disabled={isUpdating}
+                  className="rounded-xl text-xs"
                 >
                   Cancel
                 </Button>
                 <Button
                   type="submit"
-                  id="submit-edit-teacher-btn"
                   disabled={isUpdating}
-                  className="bg-blue-600 hover:bg-blue-700 text-white cursor-pointer"
+                  className="bg-purple-600 hover:bg-purple-700 text-white rounded-xl text-xs font-semibold"
                 >
-                  {isUpdating ? (
-                    <>
-                      <Loader2 className="size-4 animate-spin mr-1.5" />
-                      <span>Saving...</span>
-                    </>
-                  ) : (
-                    <span>Save Changes</span>
-                  )}
+                  {isUpdating ? <Loader2 className="size-4 animate-spin mr-1.5" /> : null}
+                  Save Changes
                 </Button>
               </DialogFooter>
             </form>
@@ -798,135 +786,62 @@ export function TeachersManager({
         </Dialog>
       )}
 
-      {/* DELETE CONFIRMATION DIALOG WITH REFERENTIAL INTEGRITY GUARD */}
+      {/* DELETE TEACHER CONFIRMATION DIALOG */}
       {deletingTeacher && (
         <Dialog open={!!deletingTeacher} onOpenChange={(open) => !open && setDeletingTeacher(null)}>
-          <DialogContent className="sm:max-w-md">
+          <DialogContent className="sm:max-w-md rounded-2xl">
             <DialogHeader>
-              <DialogTitle className="flex items-center gap-2 text-red-600">
-                <AlertTriangle className="size-5" />
-                <span>Delete Teacher: {deletingTeacher.name}</span>
-              </DialogTitle>
-              <DialogDescription>
-                Review referential integrity requirements before deleting this faculty account.
+              <div className="flex items-center gap-2 text-rose-600 mb-1">
+                <div className="p-2 bg-rose-500/10 rounded-xl">
+                  <AlertTriangle className="size-5" />
+                </div>
+                <DialogTitle className="text-lg font-bold">
+                  Delete Faculty Account
+                </DialogTitle>
+              </div>
+              <DialogDescription className="text-sm pt-2 leading-relaxed">
+                Are you certain you want to permanently delete teacher <strong>&quot;{deletingTeacher.name}&quot;</strong>?
               </DialogDescription>
             </DialogHeader>
 
-            <div className="space-y-4 py-2">
-              {deletingTeacher.assignedClasses.length > 0 ? (
-                // DEPENDENCY BLOCKED 1: Active Class Assignments
-                <div className="space-y-3">
-                  <div className="p-3.5 rounded-lg bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-900 text-red-800 dark:text-red-300 space-y-2 text-xs">
-                    <div className="flex items-center gap-2 font-semibold text-sm">
-                      <AlertCircle className="size-4 text-red-600 shrink-0" />
-                      <span>Active Class Assignments Prevent Deletion</span>
-                    </div>
-                    <p>
-                      This teacher is currently assigned to{" "}
-                      <strong>{deletingTeacher.assignedClasses.length} classroom(s)</strong>:{" "}
-                      {deletingTeacher.assignedClasses.map((c) => c.name).join(", ")}.
-                    </p>
-                    <p className="text-slate-600 dark:text-slate-400">
-                      To preserve teaching assignments and prevent unmanaged classrooms, you must
-                      unassign this teacher from all classes before deleting their account.
-                    </p>
-                  </div>
+            {deletingTeacher.assignedClasses.length > 0 ? (
+              <div className="p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/20 text-xs text-rose-800 dark:text-rose-300">
+                <strong>Deletion Blocked:</strong> Teacher is actively assigned to {deletingTeacher.assignedClasses.length} class(es). Unassign all classes first.
+              </div>
+            ) : deletingTeacher.markedAttendanceCount > 0 ? (
+              <div className="p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/20 text-xs text-rose-800 dark:text-rose-300">
+                <strong>Audit Lock:</strong> This teacher has {deletingTeacher.markedAttendanceCount} marked attendance records on file. Deleting is prevented to preserve historical school audit integrity.
+              </div>
+            ) : (
+              <p className="text-xs text-slate-500">
+                This account has 0 class assignments and 0 historical attendance records, and can be removed safely.
+              </p>
+            )}
 
-                  <div className="flex justify-end gap-2 pt-2">
-                    <Button
-                      id="close-delete-teacher-blocked-btn"
-                      variant="outline"
-                      onClick={() => setDeletingTeacher(null)}
-                    >
-                      Close
-                    </Button>
-                    <Button
-                      id="edit-to-unassign-btn"
-                      onClick={() => {
-                        const target = deletingTeacher;
-                        setDeletingTeacher(null);
-                        openEditModal(target);
-                      }}
-                      className="bg-blue-600 hover:bg-blue-700 text-white gap-1.5"
-                    >
-                      <Edit2 className="size-4" />
-                      <span>Edit & Unassign Classes</span>
-                    </Button>
-                  </div>
-                </div>
-              ) : deletingTeacher.markedAttendanceCount > 0 ? (
-                // DEPENDENCY BLOCKED 2: Marked Attendance Records (Audit Trail)
-                <div className="space-y-3">
-                  <div className="p-3.5 rounded-lg bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-900 text-red-800 dark:text-red-300 space-y-2 text-xs">
-                    <div className="flex items-center gap-2 font-semibold text-sm">
-                      <AlertCircle className="size-4 text-red-600 shrink-0" />
-                      <span>Historical Attendance Records Prevent Deletion</span>
-                    </div>
-                    <p>
-                      This teacher account has marked{" "}
-                      <strong>{deletingTeacher.markedAttendanceCount} attendance record(s)</strong> in
-                      the system.
-                    </p>
-                    <p className="text-slate-600 dark:text-slate-400">
-                      To maintain academic audit records, government attendance compliance, and
-                      database referential integrity, accounts with recorded historical attendance
-                      cannot be deleted.
-                    </p>
-                  </div>
-
-                  <div className="flex justify-end pt-2">
-                    <Button
-                      id="close-audit-blocked-btn"
-                      variant="outline"
-                      onClick={() => setDeletingTeacher(null)}
-                    >
-                      Close
-                    </Button>
-                  </div>
-                </div>
-              ) : (
-                // SAFE TO DELETE STATE
-                <div className="space-y-3">
-                  <p className="text-sm text-slate-600 dark:text-slate-300">
-                    Are you sure you want to permanently delete teacher account{" "}
-                    <strong>{deletingTeacher.name}</strong> ({deletingTeacher.email})?
-                  </p>
-                  <p className="text-xs text-slate-500">
-                    This teacher has 0 assigned classrooms and 0 marked attendance records. This
-                    action cannot be undone.
-                  </p>
-
-                  <DialogFooter className="pt-2">
-                    <Button
-                      type="button"
-                      id="cancel-delete-teacher-btn"
-                      variant="outline"
-                      onClick={() => setDeletingTeacher(null)}
-                      disabled={isDeleting}
-                    >
-                      Cancel
-                    </Button>
-                    <Button
-                      type="button"
-                      id="confirm-delete-teacher-btn"
-                      variant="destructive"
-                      onClick={handleDeleteTeacher}
-                      disabled={isDeleting}
-                      className="cursor-pointer"
-                    >
-                      {isDeleting ? (
-                        <>
-                          <Loader2 className="size-4 animate-spin mr-1.5" />
-                          <span>Deleting...</span>
-                        </>
-                      ) : (
-                        <span>Delete Teacher</span>
-                      )}
-                    </Button>
-                  </DialogFooter>
-                </div>
-              )}
-            </div>
+            <DialogFooter className="pt-4">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setDeletingTeacher(null)}
+                className="rounded-xl text-xs"
+              >
+                Cancel
+              </Button>
+              <Button
+                type="button"
+                variant="destructive"
+                disabled={
+                  isDeleting ||
+                  deletingTeacher.assignedClasses.length > 0 ||
+                  deletingTeacher.markedAttendanceCount > 0
+                }
+                onClick={handleDeleteTeacher}
+                className="rounded-xl text-xs font-semibold"
+              >
+                {isDeleting ? <Loader2 className="size-4 animate-spin mr-1.5" /> : null}
+                Delete Account
+              </Button>
+            </DialogFooter>
           </DialogContent>
         </Dialog>
       )}
