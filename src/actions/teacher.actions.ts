@@ -1,6 +1,7 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { updateTag, cacheTag } from "next/cache";
+import { CACHE_TAGS } from "@/components/cacheTag";
 import bcrypt from "bcryptjs";
 import { db } from "@/lib/db";
 import { requireAdmin, requireUser } from "@/lib/guards";
@@ -35,6 +36,9 @@ export type ActionResult<T = unknown> = {
  */
 export async function listTeachersWithDetails(): Promise<TeacherItemWithDetails[]> {
   await requireUser();
+  try {
+    cacheTag(CACHE_TAGS.TEACHERS, CACHE_TAGS.CLASSES);
+  } catch {}
 
   const [allUsers, allClasses, allTeacherClasses, allAttendance] = await Promise.all([
     db.orm.public.User.where({ role: "TEACHER" }).all(),
@@ -96,6 +100,9 @@ export async function listAvailableClassesForTeachers(): Promise<
   Array<{ id: string; name: string }>
 > {
   await requireUser();
+  try {
+    cacheTag(CACHE_TAGS.CLASSES);
+  } catch {}
 
   const classes = await db.orm.public.Class.all();
   return classes
@@ -161,11 +168,10 @@ export async function createTeacherAction(
       }
     }
 
-    revalidatePath("/teachers");
-    revalidatePath("/classes");
-    revalidatePath("/attendance");
-    revalidatePath("/attendance/overview");
-    revalidatePath("/dashboard");
+    updateTag(CACHE_TAGS.TEACHERS);
+    updateTag(CACHE_TAGS.CLASSES);
+    updateTag(CACHE_TAGS.ATTENDANCE);
+    updateTag(CACHE_TAGS.DASHBOARD);
 
     return {
       ok: true,
@@ -262,11 +268,11 @@ export async function updateTeacherAction(input: unknown): Promise<ActionResult>
       }
     }
 
-    revalidatePath("/teachers");
-    revalidatePath("/classes");
-    revalidatePath("/attendance");
-    revalidatePath("/attendance/overview");
-    revalidatePath("/dashboard");
+    updateTag(CACHE_TAGS.TEACHERS);
+    updateTag(CACHE_TAGS.TEACHER(id));
+    updateTag(CACHE_TAGS.CLASSES);
+    updateTag(CACHE_TAGS.ATTENDANCE);
+    updateTag(CACHE_TAGS.DASHBOARD);
 
     return { ok: true };
   } catch (error: any) {
@@ -312,11 +318,11 @@ export async function deleteTeacherAction(teacherId: string): Promise<ActionResu
     // Safe to delete
     await db.orm.public.User.where({ id }).delete();
 
-    revalidatePath("/teachers");
-    revalidatePath("/classes");
-    revalidatePath("/attendance");
-    revalidatePath("/attendance/overview");
-    revalidatePath("/dashboard");
+    updateTag(CACHE_TAGS.TEACHERS);
+    updateTag(CACHE_TAGS.TEACHER(id));
+    updateTag(CACHE_TAGS.CLASSES);
+    updateTag(CACHE_TAGS.ATTENDANCE);
+    updateTag(CACHE_TAGS.DASHBOARD);
 
     return { ok: true };
   } catch (error: any) {
@@ -374,11 +380,11 @@ export async function assignClassesToTeacherAction(
       }
     }
 
-    revalidatePath("/teachers");
-    revalidatePath("/classes");
-    revalidatePath("/attendance");
-    revalidatePath("/attendance/overview");
-    revalidatePath("/dashboard");
+    updateTag(CACHE_TAGS.TEACHERS);
+    updateTag(CACHE_TAGS.TEACHER(tId));
+    updateTag(CACHE_TAGS.CLASSES);
+    updateTag(CACHE_TAGS.ATTENDANCE);
+    updateTag(CACHE_TAGS.DASHBOARD);
 
     return { ok: true };
   } catch (error: any) {

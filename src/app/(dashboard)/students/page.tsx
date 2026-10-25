@@ -4,7 +4,6 @@ import { StudentsManager } from "@/components/students-manager";
 import { Users, Shield, GraduationCap } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
-export const dynamic = "force-dynamic";
 
 export default async function StudentsPage() {
   // Both Admin and Teachers can access students page per FR-1 and Step 6.2

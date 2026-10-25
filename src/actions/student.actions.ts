@@ -8,7 +8,8 @@ import {
   type StudentInput,
   type UpdateStudentInput,
 } from "@/lib/validations/student";
-import { revalidatePath } from "next/cache";
+import { updateTag, cacheTag } from "next/cache";
+import { CACHE_TAGS } from "@/components/cacheTag";
 
 export type ActionResult<T = unknown> = {
   ok: boolean;
@@ -55,7 +56,11 @@ export async function createStudent(input: unknown): Promise<ActionResult> {
       isPrimary: true,
     });
 
-    revalidatePath("/students");
+    updateTag(CACHE_TAGS.STUDENTS);
+    updateTag(CACHE_TAGS.STUDENTS_BY_CLASS(classId));
+    updateTag(CACHE_TAGS.CLASSES);
+    updateTag(CACHE_TAGS.ATTENDANCE);
+    updateTag(CACHE_TAGS.DASHBOARD);
     return { ok: true, data: { id: student.id, admissionNo, fullName } };
   } catch (error: any) {
     return { ok: false, error: error.message || "Failed to create student" };
@@ -127,7 +132,12 @@ export async function updateStudent(input: unknown): Promise<ActionResult> {
       }
     }
 
-    revalidatePath("/students");
+    updateTag(CACHE_TAGS.STUDENTS);
+    updateTag(CACHE_TAGS.STUDENT(id));
+    if (classId) updateTag(CACHE_TAGS.STUDENTS_BY_CLASS(classId));
+    updateTag(CACHE_TAGS.CLASSES);
+    updateTag(CACHE_TAGS.ATTENDANCE);
+    updateTag(CACHE_TAGS.DASHBOARD);
     return { ok: true };
   } catch (error: any) {
     return { ok: false, error: error.message || "Failed to update student" };
@@ -173,7 +183,8 @@ export async function updateGuardian(input: {
       });
     }
 
-    revalidatePath("/students");
+    updateTag(CACHE_TAGS.STUDENTS);
+    updateTag(CACHE_TAGS.STUDENT(studentId));
     return { ok: true };
   } catch (error: any) {
     return { ok: false, error: error.message || "Failed to update guardian" };
@@ -196,7 +207,11 @@ export async function toggleStudentActive(
     }
 
     await db.orm.public.Student.where({ id: studentId }).update({ active });
-    revalidatePath("/students");
+    updateTag(CACHE_TAGS.STUDENTS);
+    updateTag(CACHE_TAGS.STUDENT(studentId));
+    updateTag(CACHE_TAGS.CLASSES);
+    updateTag(CACHE_TAGS.ATTENDANCE);
+    updateTag(CACHE_TAGS.DASHBOARD);
     return { ok: true };
   } catch (error: any) {
     return { ok: false, error: error.message || "Failed to update student status" };
@@ -221,6 +236,13 @@ export async function listStudents(params?: {
   showInactive?: boolean;
 }) {
   const user = await requireUser();
+  try {
+    if (params?.classId) {
+      cacheTag(CACHE_TAGS.STUDENTS, CACHE_TAGS.STUDENTS_BY_CLASS(params.classId));
+    } else {
+      cacheTag(CACHE_TAGS.STUDENTS);
+    }
+  } catch {}
 
   // Build filter
   const filter: Record<string, unknown> = {};
@@ -277,5 +299,8 @@ export async function listStudents(params?: {
 // ---------------------------------------------------------------------------
 export async function listClasses() {
   await requireUser();
+  try {
+    cacheTag(CACHE_TAGS.CLASSES);
+  } catch {}
   return db.orm.public.Class.all();
 }

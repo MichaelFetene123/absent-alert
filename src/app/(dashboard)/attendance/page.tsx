@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button";
 import { CalendarCheck, Shield, GraduationCap, ShieldAlert, School } from "lucide-react";
 import Link from "next/link";
 
-export const dynamic = "force-dynamic";
 
 interface AttendancePageProps {
   searchParams: Promise<{
