@@ -5,7 +5,6 @@ import {
 } from "@/actions/teacher.actions";
 import { TeachersManager } from "@/components/teachers-manager";
 
-export const dynamic = "force-dynamic";
 
 export default async function TeachersPage() {
   const user = await requireUser();

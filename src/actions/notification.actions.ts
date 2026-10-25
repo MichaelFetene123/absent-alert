@@ -1,6 +1,7 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { updateTag, cacheTag } from "next/cache";
+import { CACHE_TAGS } from "@/components/cacheTag";
 import { z } from "zod";
 import { db } from "@/lib/db";
 import { requireAdmin, requireUser } from "@/lib/guards";
@@ -32,6 +33,9 @@ export async function listNotifications(
   input?: unknown
 ): Promise<NotificationHistoryResult> {
   const user = await requireUser();
+  try {
+    cacheTag(CACHE_TAGS.NOTIFICATIONS);
+  } catch {}
   const parsed = listNotificationsSchema.parse(input || {});
 
   return getNotificationHistory({
@@ -60,8 +64,9 @@ export async function retryNotification(notificationId: string): Promise<{
   const id = z.string().min(1, "Notification ID is required").parse(notificationId);
 
   const res = await sendOne(id);
-  revalidatePath("/notifications");
-  revalidatePath("/dashboard");
+  updateTag(CACHE_TAGS.NOTIFICATIONS);
+  updateTag(CACHE_TAGS.NOTIFICATION(id));
+  updateTag(CACHE_TAGS.DASHBOARD);
 
   return {
     ok: res.ok,
@@ -97,8 +102,8 @@ export async function batchRetryFailedNotificationsAction(): Promise<{
     const ids = failedNotifs.map((n) => n.id);
     const result: NotificationDispatchResult = await dispatchNotifications(ids);
 
-    revalidatePath("/notifications");
-    revalidatePath("/dashboard");
+    updateTag(CACHE_TAGS.NOTIFICATIONS);
+    updateTag(CACHE_TAGS.DASHBOARD);
 
     return {
       ok: result.failed === 0,
@@ -141,8 +146,8 @@ export async function dispatchPendingNotificationsAction(): Promise<{
     const ids = pending.map((n) => n.id);
     const result: NotificationDispatchResult = await dispatchNotifications(ids);
 
-    revalidatePath("/notifications");
-    revalidatePath("/dashboard");
+    updateTag(CACHE_TAGS.NOTIFICATIONS);
+    updateTag(CACHE_TAGS.DASHBOARD);
 
     return {
       success: true,

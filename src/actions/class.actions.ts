@@ -1,6 +1,7 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { updateTag, cacheTag } from "next/cache";
+import { CACHE_TAGS } from "@/components/cacheTag";
 import { z } from "zod";
 import { db } from "@/lib/db";
 import { requireAdmin, requireUser } from "@/lib/guards";
@@ -39,6 +40,9 @@ export type ActionResult<T = unknown> = {
  */
 export async function listClassesWithDetails(): Promise<ClassItemWithDetails[]> {
   await requireUser();
+  try {
+    cacheTag(CACHE_TAGS.CLASSES);
+  } catch {}
 
   const [allClasses, allStudents, allTeacherLinks, allUsers] = await Promise.all([
     db.orm.public.Class.all(),
@@ -102,6 +106,9 @@ export async function listAvailableTeachers(): Promise<
   Array<{ id: string; name: string; email: string }>
 > {
   await requireUser();
+  try {
+    cacheTag(CACHE_TAGS.TEACHERS);
+  } catch {}
 
   const teachers = await db.orm.public.User.where({ role: "TEACHER" }).all();
   return teachers.map((t) => ({
@@ -174,11 +181,10 @@ export async function createClassAction(input: unknown): Promise<ActionResult<{ 
       }
     }
 
-    revalidatePath("/classes");
-    revalidatePath("/students");
-    revalidatePath("/attendance");
-    revalidatePath("/attendance/overview");
-    revalidatePath("/dashboard");
+    updateTag(CACHE_TAGS.CLASSES);
+    updateTag(CACHE_TAGS.STUDENTS);
+    updateTag(CACHE_TAGS.ATTENDANCE);
+    updateTag(CACHE_TAGS.DASHBOARD);
 
     return { ok: true, data: { id: createdClass.id, name: createdClass.name } };
   } catch (error: any) {
@@ -255,11 +261,11 @@ export async function updateClassAction(input: unknown): Promise<ActionResult> {
       }
     }
 
-    revalidatePath("/classes");
-    revalidatePath("/students");
-    revalidatePath("/attendance");
-    revalidatePath("/attendance/overview");
-    revalidatePath("/dashboard");
+    updateTag(CACHE_TAGS.CLASSES);
+    updateTag(CACHE_TAGS.CLASS(id));
+    updateTag(CACHE_TAGS.STUDENTS);
+    updateTag(CACHE_TAGS.ATTENDANCE);
+    updateTag(CACHE_TAGS.DASHBOARD);
 
     return { ok: true };
   } catch (error: any) {
@@ -306,11 +312,11 @@ export async function deleteClassAction(classId: string): Promise<ActionResult> 
     // Delete the class
     await db.orm.public.Class.where({ id }).delete();
 
-    revalidatePath("/classes");
-    revalidatePath("/students");
-    revalidatePath("/attendance");
-    revalidatePath("/attendance/overview");
-    revalidatePath("/dashboard");
+    updateTag(CACHE_TAGS.CLASSES);
+    updateTag(CACHE_TAGS.CLASS(id));
+    updateTag(CACHE_TAGS.STUDENTS);
+    updateTag(CACHE_TAGS.ATTENDANCE);
+    updateTag(CACHE_TAGS.DASHBOARD);
 
     return { ok: true };
   } catch (error: any) {
@@ -353,10 +359,11 @@ export async function assignTeacherToClassAction(
       });
     }
 
-    revalidatePath("/classes");
-    revalidatePath("/attendance");
-    revalidatePath("/attendance/overview");
-    revalidatePath("/dashboard");
+    updateTag(CACHE_TAGS.CLASSES);
+    updateTag(CACHE_TAGS.CLASS(classId));
+    updateTag(CACHE_TAGS.TEACHERS);
+    updateTag(CACHE_TAGS.ATTENDANCE);
+    updateTag(CACHE_TAGS.DASHBOARD);
 
     return { ok: true };
   } catch (error: any) {
@@ -382,10 +389,11 @@ export async function unassignTeacherFromClassAction(
       userId: teacherId,
     }).delete();
 
-    revalidatePath("/classes");
-    revalidatePath("/attendance");
-    revalidatePath("/attendance/overview");
-    revalidatePath("/dashboard");
+    updateTag(CACHE_TAGS.CLASSES);
+    updateTag(CACHE_TAGS.CLASS(classId));
+    updateTag(CACHE_TAGS.TEACHERS);
+    updateTag(CACHE_TAGS.ATTENDANCE);
+    updateTag(CACHE_TAGS.DASHBOARD);
 
     return { ok: true };
   } catch (error: any) {

@@ -6,13 +6,13 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { studentSchema, type StudentInput } from "@/lib/validations/student";
 import { createStudent, updateStudent } from "@/actions/student.actions";
 import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetDescription,
-  SheetFooter,
-} from "@/components/ui/sheet";
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -53,7 +53,6 @@ export function StudentForm({
     register,
     handleSubmit,
     reset,
-    setValue,
     formState: { errors, isSubmitting },
   } = useForm<StudentInput>({
     resolver: zodResolver(studentSchema),
@@ -128,6 +127,8 @@ export function StudentForm({
       toast.error(err.message || "An unexpected error occurred");
     }
   }
+
+  if (!open) return null;
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
@@ -260,9 +261,10 @@ export function StudentForm({
             </div>
           </div>
 
-          <SheetFooter className="pt-4 border-t border-slate-100 dark:border-slate-800 flex gap-2 sm:justify-end">
+          <DialogFooter className="pt-3 border-t border-slate-100 dark:border-slate-800 flex gap-2 sm:justify-end">
             <Button
               type="button"
+              id="student-form-cancel-btn"
               variant="outline"
               size="sm"
               disabled={isSubmitting}
@@ -273,6 +275,7 @@ export function StudentForm({
             </Button>
             <Button
               type="submit"
+              id="student-form-submit-btn"
               size="sm"
               disabled={isSubmitting}
               className="bg-blue-600 hover:bg-blue-700 text-white rounded-xl min-w-32 font-semibold shadow-md shadow-blue-600/20"
@@ -288,9 +291,9 @@ export function StudentForm({
                 "Register Student"
               )}
             </Button>
-          </SheetFooter>
+          </DialogFooter>
         </form>
-      </SheetContent>
-    </Sheet>
+      </DialogContent>
+    </Dialog>
   );
 }

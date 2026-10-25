@@ -17,6 +17,10 @@ export const db =
   postgres<Contract>({
     contractJson,
     url: process.env["DATABASE_URL"]!,
+    poolOptions: {
+      connectionTimeoutMillis: 60_000,
+      idleTimeoutMillis: 30_000,
+    },
   });
 
 if (process.env.NODE_ENV !== "production") {
