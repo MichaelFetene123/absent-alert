@@ -62,5 +62,4 @@ src/
     ├── contract.d.ts
     ├── contract.json
     └── db.ts
-prisma/
-└── schema.prisma
+
