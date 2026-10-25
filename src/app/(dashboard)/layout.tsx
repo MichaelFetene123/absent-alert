@@ -6,6 +6,7 @@ import { ThemeToggle } from "@/components/theme-toggle";
 import {
   Bell,
   LayoutDashboard,
+  School,
   Users,
   CalendarCheck,
   CalendarDays,
@@ -34,6 +35,12 @@ export default async function DashboardLayout({
       title: "Dashboard",
       href: "/dashboard",
       icon: LayoutDashboard,
+      adminOnly: false,
+    },
+    {
+      title: "Classes",
+      href: "/classes",
+      icon: School,
       adminOnly: false,
     },
     {
