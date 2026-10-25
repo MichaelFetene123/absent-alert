@@ -122,8 +122,7 @@ export function DashboardShell({ user, children }: DashboardShellProps) {
           title: "Daily Attendance",
           href: "/attendance",
           icon: CalendarCheck,
-          badge: "Live",
-          badgeColor: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20",
+          badge: null,
         },
         {
           title: "Two-Week Overview",
@@ -241,12 +240,6 @@ export function DashboardShell({ user, children }: DashboardShellProps) {
 
           {/* Right Controls */}
           <div className="flex items-center gap-2.5">
-            {/* Live Gateway Pill */}
-            <div className="hidden lg:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-300 text-xs font-medium">
-              <span className="size-1.5 rounded-full bg-emerald-500" />
-              <span>SMSHub Active</span>
-            </div>
-
             {/* Quick Action: Mark Attendance */}
             <Link href="/attendance">
               <Button
@@ -373,21 +366,8 @@ export function DashboardShell({ user, children }: DashboardShellProps) {
             </div>
           </div>
 
-          {/* Sidebar Footer: Toggle + Logout */}
-          <div className="pt-3 border-t border-slate-200 dark:border-slate-800 space-y-2">
-            {!collapsed && (
-              <div className="px-2.5 py-2 rounded-lg bg-slate-50 dark:bg-slate-800/40 text-[11px] text-slate-500 space-y-0.5">
-                <div className="flex justify-between">
-                  <span>School Term</span>
-                  <span className="font-semibold text-slate-700 dark:text-slate-300">2026/27</span>
-                </div>
-                <div className="flex items-center gap-1 text-emerald-600 dark:text-emerald-400 text-[10px]">
-                  <CheckCircle2 className="size-2.5" />
-                  <span>Roll-Call Active</span>
-                </div>
-              </div>
-            )}
-
+          {/* Sidebar Footer: Logout */}
+          <div className="pt-3 border-t border-slate-200 dark:border-slate-800">
             <form action={logoutAction} className="w-full">
               <Button
                 variant="ghost"

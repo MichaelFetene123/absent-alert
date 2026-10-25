@@ -395,17 +395,17 @@ export function AttendanceForm({
         </button>
       </div>
 
-      {/* SMS Alert Pipeline Preview Banner */}
+      {/* SMS Alert Notice */}
       {summary.absent > 0 && (
-        <div className="p-3.5 rounded-xl border border-amber-200 dark:border-amber-900/60 bg-amber-50/40 dark:bg-amber-950/20 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+        <div className="p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/60 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
           <div className="flex items-center gap-2.5">
-            <Send className="size-4 text-amber-600 dark:text-amber-400 shrink-0" />
+            <Send className="size-4 text-blue-600 dark:text-blue-400 shrink-0" />
             <p className="text-slate-700 dark:text-slate-300">
-              Saving will dispatch <strong>{summary.absent} SMS alert{summary.absent > 1 ? "s" : ""}</strong> to guardians via the SMSHub gateway.
+              Saving will notify guardians of <strong>{summary.absent} absent student{summary.absent > 1 ? "s" : ""}</strong> by SMS.
             </p>
           </div>
-          <span className="font-medium text-amber-700 dark:text-amber-400 shrink-0">
-            {summary.absent} queued
+          <span className="font-medium text-slate-600 dark:text-slate-400 shrink-0">
+            {summary.absent} {summary.absent === 1 ? "notification" : "notifications"}
           </span>
         </div>
       )}

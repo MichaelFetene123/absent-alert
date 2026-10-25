@@ -773,11 +773,11 @@ export function NotificationsManager({
                 <div className="flex items-center justify-between pr-6">
                   <DialogTitle className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
                     <History className="size-5 text-purple-600" />
-                    SMS Dispatch Log &amp; Gateway Telemetry
+                    SMS Delivery Details &amp; Audit Log
                   </DialogTitle>
                 </div>
                 <DialogDescription className="text-xs">
-                  Detailed delivery audit record for notification #{selectedNotif.id}
+                  Audit record for notification #{selectedNotif.id}
                 </DialogDescription>
               </DialogHeader>
 
@@ -896,7 +896,7 @@ export function NotificationsManager({
 
                         {attempt.error && (
                           <div className="p-2.5 rounded-lg bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900/50 text-rose-800 dark:text-rose-300 text-xs">
-                            <span className="font-semibold">Gateway Error:</span> {attempt.error}
+                            <span className="font-semibold">Error:</span> {attempt.error}
                           </div>
                         )}
 
@@ -904,7 +904,7 @@ export function NotificationsManager({
                           <div className="space-y-1 pt-1">
                             <div className="flex items-center justify-between">
                               <span className="text-[11px] font-mono text-slate-400">
-                                Raw Gateway Response JSON:
+                                Raw Response JSON:
                               </span>
                               <Button
                                 variant="ghost"

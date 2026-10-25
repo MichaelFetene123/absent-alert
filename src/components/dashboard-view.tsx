@@ -91,7 +91,7 @@ export function DashboardView({ data, user }: Props) {
             Dashboard
           </h1>
           <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-            {todayFormatted} · Daily roll-call and SMS alert status
+            {todayFormatted}
           </p>
         </div>
 
@@ -182,14 +182,9 @@ export function DashboardView({ data, user }: Props) {
               <span className="text-2xl font-bold text-rose-600 dark:text-rose-400">
                 {data.todayStats.absent}
               </span>
-              {data.todayStats.absent > 0 && (
-                <Badge variant="outline" className="text-[10px] px-1.5 py-0 font-semibold border-rose-500/30 text-rose-700 dark:text-rose-300 bg-rose-50 dark:bg-rose-950/40">
-                  SMS Queued
-                </Badge>
-              )}
             </div>
             <p className="text-[11px] text-slate-400 mt-0.5">
-              Parent alert pipeline
+              Unexcused absences
             </p>
           </CardContent>
         </Card>
@@ -393,9 +388,8 @@ export function DashboardView({ data, user }: Props) {
             <CardHeader className="p-4 pb-3 border-b border-slate-100 dark:border-slate-800">
               <CardTitle className="text-sm font-semibold text-slate-900 dark:text-white flex items-center gap-2">
                 <History className="size-4 text-slate-600 dark:text-slate-400" />
-                SMSHub Gateway
+                SMS Deliveries
               </CardTitle>
-              <CardDescription className="text-xs">Overall delivery health</CardDescription>
             </CardHeader>
             <CardContent className="p-4 space-y-4">
               <div className="grid grid-cols-2 gap-3 text-xs">

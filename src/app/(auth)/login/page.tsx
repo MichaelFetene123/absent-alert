@@ -52,12 +52,8 @@ export default function LoginPage() {
       <div className="absolute top-1/3 -right-40 size-96 rounded-full bg-indigo-500/15 dark:bg-indigo-600/10 blur-3xl pointer-events-none" />
       <div className="absolute bottom-10 left-1/3 size-80 rounded-full bg-emerald-500/10 dark:bg-emerald-600/5 blur-3xl pointer-events-none" />
 
-      {/* Top Bar with Theme Toggle & Status */}
+      {/* Top Bar with Theme Toggle */}
       <header className="absolute top-4 right-4 sm:top-6 sm:right-6 flex items-center gap-3 z-20">
-        <div className="hidden sm:flex items-center gap-2 px-3 py-1 rounded-full bg-white/70 dark:bg-slate-900/70 border border-slate-200/80 dark:border-slate-800 backdrop-blur-md text-xs text-slate-600 dark:text-slate-400 font-medium shadow-xs">
-          <span className="size-2 rounded-full bg-emerald-500 animate-pulse" />
-          <span>System Live</span>
-        </div>
         <div className="p-1 rounded-xl bg-white/80 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 backdrop-blur-md shadow-xs">
           <ThemeToggle />
         </div>
@@ -73,7 +69,7 @@ export default function LoginPage() {
             AbsentAlert
           </h1>
           <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 max-w-xs mx-auto">
-            High-reliability attendance tracking & instant automated SMS alerts for Ethiopian schools
+            Attendance tracking &amp; automated guardian SMS alerts
           </p>
         </div>
 
@@ -214,22 +210,6 @@ export default function LoginPage() {
             </div>
           </CardContent>
         </Card>
-
-        {/* Security & Features Badges */}
-        <div className="flex items-center justify-center gap-6 text-[11px] text-slate-500 dark:text-slate-400">
-          <span className="flex items-center gap-1.5">
-            <CheckCircle2 className="size-3.5 text-emerald-500" />
-            Bcrypt Enforced
-          </span>
-          <span className="flex items-center gap-1.5">
-            <CheckCircle2 className="size-3.5 text-blue-500" />
-            SMSHub.et Gateway
-          </span>
-          <span className="flex items-center gap-1.5">
-            <CheckCircle2 className="size-3.5 text-purple-500" />
-            Role Guards (RBAC)
-          </span>
-        </div>
       </div>
     </div>
   );

@@ -37,13 +37,10 @@ export default async function AttendancePage({ searchParams }: AttendancePagePro
     return (
       <div className="space-y-6">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white flex items-center gap-2">
-            <CalendarCheck className="size-6 text-emerald-600" />
+          <h1 className="text-xl font-bold tracking-tight text-slate-900 dark:text-white flex items-center gap-2">
+            <CalendarCheck className="size-5 text-slate-700 dark:text-slate-300" />
             Daily Attendance
           </h1>
-          <p className="text-sm text-slate-500 mt-1">
-            School attendance roster & live status tracking.
-          </p>
         </div>
 
         <Card className="border-amber-200 dark:border-amber-900/60 bg-amber-50/30 dark:bg-amber-950/20">
