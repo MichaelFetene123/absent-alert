@@ -501,7 +501,7 @@ export function NotificationsManager({
           <Table>
             <TableHeader className="bg-slate-50 dark:bg-slate-900/80">
               <TableRow>
-                <TableHead className="w-[170px]">Timestamp</TableHead>
+                <TableHead className="w-44">Timestamp</TableHead>
                 <TableHead>Student</TableHead>
                 <TableHead>Class</TableHead>
                 <TableHead>Guardian Phone</TableHead>

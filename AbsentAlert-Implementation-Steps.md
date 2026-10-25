@@ -758,3 +758,8 @@ Mock the SMS client with `vi.mock("@/lib/sms/smshub")` so tests never send real 
 ```
 
 Note: code samples are a starting point written against Prisma, Next.js App Router and Auth.js v5 conventions; library versions change, so if an import or option name differs, check the current docs for that package. The SMSHub parts are placeholders until you complete Step 2.
+
+
+
+
+Ready for your confirmation to proceed to Step 12: Tests and Hardening!

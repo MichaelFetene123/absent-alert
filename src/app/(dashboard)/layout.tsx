@@ -8,6 +8,7 @@ import {
   LayoutDashboard,
   Users,
   CalendarCheck,
+  CalendarDays,
   History,
   LogOut,
   Shield,
@@ -45,6 +46,12 @@ export default async function DashboardLayout({
       title: "Daily Attendance",
       href: "/attendance",
       icon: CalendarCheck,
+      adminOnly: false,
+    },
+    {
+      title: "Two-Week Overview",
+      href: "/attendance/overview",
+      icon: CalendarDays,
       adminOnly: false,
     },
     {

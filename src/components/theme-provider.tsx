@@ -3,6 +3,20 @@
 import * as React from "react"
 import { ThemeProvider as NextThemesProvider, useTheme } from "next-themes"
 
+// Filter out the known false-positive React 19 warning caused by next-themes' anti-flicker inline script
+if (typeof window !== "undefined" && process.env.NODE_ENV === "development") {
+  const originalConsoleError = console.error
+  console.error = (...args: unknown[]) => {
+    if (
+      typeof args[0] === "string" &&
+      args[0].includes("Encountered a script tag while rendering React component")
+    ) {
+      return
+    }
+    originalConsoleError.apply(console, args)
+  }
+}
+
 function ThemeProvider({
   children,
   ...props
