@@ -76,9 +76,9 @@ export default async function DashboardLayout({
   ];
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex flex-col md:flex-row">
+    <div className="min-h-screen md:h-screen md:overflow-hidden bg-slate-50 dark:bg-slate-950 flex flex-col md:flex-row">
       {/* Sidebar Navigation */}
-      <aside className="w-full md:w-64 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 flex flex-col justify-between shrink-0">
+      <aside className="w-full md:w-64 md:h-screen bg-white dark:bg-slate-900 border-b md:border-b-0 md:border-r border-slate-200 dark:border-slate-800 flex flex-col justify-between shrink-0 md:overflow-y-auto">
         <div>
           {/* Brand & Theme Toggle */}
           <div className="p-5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
@@ -161,7 +161,11 @@ export default async function DashboardLayout({
       </aside>
 
       {/* Main Content Area */}
-      <main className="flex-1 p-6 md:p-8 max-w-6xl mx-auto w-full">{children}</main>
+      <main className="flex-1 md:h-screen md:overflow-y-auto">
+        <div className="p-6 md:p-8 max-w-6xl mx-auto w-full">
+          {children}
+        </div>
+      </main>
     </div>
   );
 }
