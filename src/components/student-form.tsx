@@ -257,6 +257,7 @@ export function StudentForm({
           <DialogFooter className="pt-3 border-t border-slate-100 dark:border-slate-800 flex gap-2 sm:justify-end">
             <Button
               type="button"
+              id="student-form-cancel-btn"
               variant="outline"
               size="sm"
               disabled={isSubmitting}
@@ -266,6 +267,7 @@ export function StudentForm({
             </Button>
             <Button
               type="submit"
+              id="student-form-submit-btn"
               size="sm"
               disabled={isSubmitting}
               className="bg-blue-600 hover:bg-blue-700 text-white min-w-24 cursor-pointer"

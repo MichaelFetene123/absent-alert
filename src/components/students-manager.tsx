@@ -226,6 +226,7 @@ export function StudentsManager({
         {/* Add Student Button (Admin only) */}
         {isAdmin ? (
           <Button
+            id="add-student-btn"
             onClick={handleCreate}
             size="sm"
             className="bg-blue-600 hover:bg-blue-700 text-white gap-1.5 shadow-sm"
@@ -357,6 +358,7 @@ export function StudentsManager({
                       <TableCell className="text-right">
                         <div className="flex items-center justify-end gap-1.5">
                           <Button
+                            id={`edit-student-btn-${student.id}`}
                             variant="ghost"
                             size="sm"
                             onClick={() => handleEdit(student)}
@@ -368,6 +370,7 @@ export function StudentsManager({
                           </Button>
 
                           <Button
+                            id={`toggle-active-btn-${student.id}`}
                             variant="ghost"
                             size="sm"
                             disabled={isToggling}
