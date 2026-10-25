@@ -1,0 +1,504 @@
+{
+  "en": {
+    "common": {
+      "appName": "AbsentAlert",
+      "tagline": "School Attendance & Parent SMS Notification Platform",
+      "navigation": {
+        "dashboard": "Dashboard",
+        "todayAttendance": "Today's Attendance",
+        "takeAttendance": "Take Attendance",
+        "twoWeekGrid": "Two-Week Overview",
+        "attendanceExceptions": "Exceptions & Corrections",
+        "academicManagement": "Academic Management",
+        "academicTerms": "Academic Years & Terms",
+        "gradesSections": "Grades & Sections",
+        "timetable": "Timetable & Periods",
+        "schoolCalendar": "Calendar & Holidays",
+        "students": "Student Directory",
+        "guardians": "Parents & Guardians",
+        "parentNotifications": "Parent Notifications",
+        "messageHistory": "Message History",
+        "notificationRules": "Automation Rules",
+        "smsTemplates": "SMS Templates",
+        "smsTestMode": "SMS Test Mode",
+        "smsHubSettings": "SMSHub Integration",
+        "webhookDiagnostics": "Webhook Events",
+        "reports": "Reports & Analytics",
+        "dailyReport": "Daily Attendance",
+        "gradeComparison": "Grade Comparison",
+        "recurringAbsences": "Recurring Absences",
+        "smsAnalytics": "SMS Credit Analytics",
+        "administration": "Administration",
+        "teachers": "Teachers & Staff",
+        "schoolSettings": "School Settings",
+        "parentPortal": "Parent Portal Preview"
+      },
+      "roles": {
+        "admin": "School Administrator",
+        "teacher": "Teacher",
+        "homeroom": "Homeroom Teacher",
+        "attendanceOfficer": "Attendance Officer",
+        "smsAdmin": "SMS & System Admin",
+        "parent": "Parent / Guardian"
+      },
+      "actions": {
+        "save": "Save Changes",
+        "cancel": "Cancel",
+        "delete": "Delete",
+        "edit": "Edit",
+        "retry": "Retry",
+        "export": "Export",
+        "search": "Search...",
+        "filter": "Filter",
+        "close": "Close",
+        "confirm": "Confirm",
+        "refresh": "Refresh",
+        "copy": "Copy",
+        "copied": "Copied!",
+        "viewDetails": "View Details",
+        "switchRole": "Switch Role"
+      },
+      "status": {
+        "present": "Present",
+        "absent": "Absent",
+        "late": "Late",
+        "leave": "Excused Leave",
+        "pending": "Pending",
+        "queued": "Queued",
+        "processing": "Processing",
+        "sent": "Sent to Provider",
+        "failed": "Failed",
+        "suppressed": "Suppressed",
+        "deliveryUnknown": "Delivery Unknown"
+      },
+      "network": {
+        "ethio": "Ethio Telecom",
+        "safaricom": "Safaricom",
+        "ethioCost": "1 credit",
+        "safaricomCost": "2 credits"
+      }
+    },
+    "dashboard": {
+      "title": "School Attendance & Alert Overview",
+      "subtitle": "Daily institutional operational metrics, absent student alerts, and SMSHub carrier communication status.",
+      "academicYear": "Academic Year",
+      "ethiopianDate": "Ethiopian Calendar",
+      "kpis": {
+        "totalStudents": "Active Enrolled",
+        "presentToday": "Present Today",
+        "absentToday": "Absent Today",
+        "lateArrivals": "Late Arrivals",
+        "excusedLeave": "Excused Leave",
+        "submissionRate": "Attendance Submitted",
+        "notificationsSent": "SMS Sent to Provider",
+        "notificationsFailed": "Action Required / Failed"
+      },
+      "questions": {
+        "whoIsAbsent": "Which students are absent today?",
+        "whoMissing": "Which teachers have not submitted attendance?",
+        "whoNotified": "Which absent students have had guardians notified?",
+        "whatFailed": "Which notifications failed or require attention?",
+        "whoRecurring": "Which students have recurring attendance problems?"
+      },
+      "sections": {
+        "absentList": "Today's Absent Students",
+        "missingSubmissions": "Pending Class Submissions",
+        "notifiedList": "Guardian Notification Status",
+        "failedQueue": "Critical SMS Attention Required",
+        "chronicAbsenteeism": "Chronic Absence Alert (>= 3 Days)",
+        "attendanceTrend": "7-Day School Attendance Trend",
+        "gradeBreakdown": "Attendance Rate by Grade"
+      },
+      "alerts": {
+        "lowCredit": "SMSHub Credit Balance is Low! Current balance: {balance} credits. Please recharge to avoid alert delays.",
+        "missingClasses": "{count} classes have not yet submitted attendance today.",
+        "failedSms": "{count} SMS alerts failed or require contact correction."
+      }
+    },
+    "attendance": {
+      "title": "Daily Classroom Attendance",
+      "subtitle": "Fast attendance recording with automated instant parent SMS alert dispatch.",
+      "selectClass": "Select Class",
+      "selectDate": "Attendance Date",
+      "markAllPresent": "Mark All Present",
+      "saveAttendance": "Submit Attendance & Dispatch Alerts",
+      "saving": "Saving & Evaluating Alerts...",
+      "unsavedWarning": "You have unsaved attendance changes. Submitting will update records and evaluate absence alerts.",
+      "roster": {
+        "admissionNo": "Admission No",
+        "student": "Student Name",
+        "status": "Attendance Status",
+        "guardianContact": "Guardian Contact",
+        "notes": "Notes / Excuses",
+        "presentShort": "P",
+        "absentShort": "A",
+        "lateShort": "L",
+        "leaveShort": "E"
+      },
+      "summary": {
+        "total": "Total Roster",
+        "present": "Present",
+        "absent": "Absent",
+        "late": "Late",
+        "leave": "Excused",
+        "unmarked": "Unmarked"
+      },
+      "alertsNotice": "{absentCount} students marked absent will enter the automated SMS alert queue upon submission.",
+      "submittedSuccess": "Attendance recorded: {savedCount} students saved. {smsQueued} absence notifications queued for dispatch.",
+      "exceptions": {
+        "title": "Attendance Exceptions & Corrections",
+        "lateArrivals": "Late Arrivals Log",
+        "reportedAbsences": "Reported Absences & Leave Requests",
+        "correctionHistory": "Audit & Correction History"
+      }
+    },
+    "students": {
+      "title": "Student Directory & Enrollment",
+      "subtitle": "Manage active students, academic placements, and linked parent/guardian communication profiles.",
+      "addStudent": "Register New Student",
+      "columns": {
+        "admissionNo": "Admission No",
+        "name": "Full Name",
+        "class": "Class / Section",
+        "guardian": "Primary Guardian",
+        "phone": "Guardian Phone",
+        "status": "Status",
+        "actions": "Actions"
+      },
+      "filters": {
+        "allClasses": "All Classes",
+        "activeOnly": "Active Students",
+        "showInactive": "Include Inactive"
+      },
+      "stats": {
+        "total": "Total Students",
+        "active": "Active Enrolled",
+        "inactive": "Deactivated",
+        "rate": "Active Rate"
+      }
+    },
+    "notifications": {
+      "title": "Parent Notifications & SMSHub Dispatch",
+      "subtitle": "Controlled, auditable absence alert tracking with SMSHub API integration and carrier diagnostics.",
+      "tabs": {
+        "history": "Message History",
+        "templates": "SMS Templates",
+        "testMode": "SMS Test Mode",
+        "rules": "Automated Triggers",
+        "smshub": "SMSHub Settings",
+        "webhooks": "Webhook Diagnostics"
+      },
+      "columns": {
+        "timestamp": "Dispatched At",
+        "student": "Student",
+        "class": "Class",
+        "guardianPhone": "Recipient Phone",
+        "template": "Template",
+        "language": "Language",
+        "network": "Network",
+        "status": "Provider Status",
+        "credits": "Credits Used",
+        "providerRef": "Message ID",
+        "requestId": "Request ID",
+        "actions": "Actions"
+      },
+      "testMode": {
+        "title": "Zero-Cost SMSHub Test Mode",
+        "description": "Validate Ethiopian mobile format, message length, Amharic encoding, and calculate estimated credits without sending real SMS.",
+        "phoneLabel": "Test Mobile Number",
+        "phonePlaceholder": "0911223344 or 0711223344",
+        "messageLabel": "Message Text",
+        "signatureNotice": "SMSHub automatically appends your account signature. Live character count reflects total segment payload.",
+        "runTest": "Run Validation Test (0 Cost)",
+        "running": "Validating with SMSHub API...",
+        "results": "Validation Result Details",
+        "encoding": "Encoding Mode",
+        "chars": "Total Characters",
+        "charLimit": "Single Segment Limit",
+        "creditsNeeded": "Credits Needed",
+        "creditsUsed": "Credits Used (Always 0)",
+        "wouldSend": "Would Send in Live Mode",
+        "testPassed": "SMSHub Validation Passed: Message structure, signature, and carrier routing are verified."
+      },
+      "templates": {
+        "title": "Notification Templates",
+        "subtitle": "Configured templates for English and Amharic absence and attendance alerts.",
+        "variables": "Available dynamic variables: {student_name}, {class_name}, {date}, {school_name}",
+        "preview": "Live Template Preview",
+        "gsmInfo": "English GSM-7: 160 characters per SMS. Amharic Unicode: 70 characters per SMS including signature."
+      }
+    },
+    "reports": {
+      "title": "Educational Analytics & Attendance Reports",
+      "subtitle": "Institutional attendance statistics, chronic absenteeism indicators, and SMS notification delivery audit.",
+      "tabs": {
+        "daily": "Daily Attendance",
+        "grades": "Grade Comparison",
+        "recurring": "Recurring Absences",
+        "sms": "SMS & Notification Analytics"
+      },
+      "metrics": {
+        "attendanceRate": "Overall Attendance Rate",
+        "totalSessions": "Total Marked Sessions",
+        "chronicStudents": "Students at Risk (Chronic)",
+        "creditsConsumed": "Total SMS Credits Used",
+        "carrierSplit": "Carrier Distribution (Ethio vs Safaricom)"
+      },
+      "export": {
+        "button": "Export Report (CSV)",
+        "print": "Print-Ready Summary"
+      }
+    }
+  },
+  "am": {
+    "common": {
+      "appName": "አብሰንትአለርት",
+      "tagline": "የትምህርት ቤት የተማሪዎች መቅረት መቆጣጠሪያና የወላጅ ኤስኤምኤስ ማሳወቂያ መድረክ",
+      "navigation": {
+        "dashboard": "ዳሽቦርድ",
+        "todayAttendance": "የዛሬ አቴንዳንስ",
+        "takeAttendance": "አቴንዳንስ መዝግብ",
+        "twoWeekGrid": "የሁለት ሳምንት እይታ",
+        "attendanceExceptions": "ልዩነቶችና እርማቶች",
+        "academicManagement": "የትምህርት አስተዳደር",
+        "academicTerms": "የትምህርት ዘመንና ወሰኖች",
+        "gradesSections": "ክፍሎችና ክፍለ-ክፍሎች",
+        "timetable": "የክፍለ-ጊዜ ሰሌዳ",
+        "schoolCalendar": "የቀን መቁጠሪያና በዓላት",
+        "students": "የተማሪዎች ማውጫ",
+        "guardians": "ወላጆችና አሳዳጊዎች",
+        "parentNotifications": "የወላጅ ማሳወቂያዎች",
+        "messageHistory": "የመልእክት ታሪክ",
+        "notificationRules": "የማሳወቂያ ደንቦች",
+        "smsTemplates": "የኤስኤምኤስ ቴምፕሌቶች",
+        "smsTestMode": "የሙከራ ኤስኤምኤስ",
+        "smsHubSettings": "የSMSHub ውቅር",
+        "webhookDiagnostics": "የዌብሁክ ክስተቶች",
+        "reports": "ሪፖርቶችና ትንታኔዎች",
+        "dailyReport": "የዕለት አቴንዳንስ",
+        "gradeComparison": "የክፍል ንጽጽር",
+        "recurringAbsences": "ተደጋጋሚ መቅረቶች",
+        "smsAnalytics": "የኤስኤምኤስ ክሬዲት ትንታኔ",
+        "administration": "አስተዳደር",
+        "teachers": "መምህራንና ሠራተኞች",
+        "schoolSettings": "የት/ቤት ቅንብሮች",
+        "parentPortal": "የወላጅ ፖርታል እይታ"
+      },
+      "roles": {
+        "admin": "የትምህርት ቤት አስተዳዳሪ",
+        "teacher": "መምህር",
+        "homeroom": "የክፍል ኃላፊ መምህር",
+        "attendanceOfficer": "የአቴንዳንስ ኦፊሰር",
+        "smsAdmin": "የኤስኤምኤስና ሲስተም አስተዳዳሪ",
+        "parent": "ወላጅ / አሳዳጊ"
+      },
+      "actions": {
+        "save": "ለውጦችን መዝግብ",
+        "cancel": "ይቅር",
+        "delete": "ሰርዝ",
+        "edit": "አስተካክል",
+        "retry": "እንደገና ሞክር",
+        "export": "አውርድ (Export)",
+        "search": "ፈልግ...",
+        "filter": "አጣራ",
+        "close": "ዝጋ",
+        "confirm": "አረጋግጥ",
+        "refresh": "አድስ",
+        "copy": "ቅዳ",
+        "copied": "ተቀድቷል!",
+        "viewDetails": "ዝርዝር እይ",
+        "switchRole": "ሚና ቀይር"
+      },
+      "status": {
+        "present": "ተገኝቷል",
+        "absent": "ቀሪ",
+        "late": "አርፍዷል",
+        "leave": "በፍቃድ",
+        "pending": "በመጠባበቅ ላይ",
+        "queued": "ተሰልፏል",
+        "processing": "በሂደት ላይ",
+        "sent": "ወደ አቅራቢ ተልኳል",
+        "failed": "አልተሳካም",
+        "suppressed": "በፖሊሲ ታግዷል",
+        "deliveryUnknown": "የደረሰበት አልታወቀም"
+      },
+      "network": {
+        "ethio": "ኢትዮ ቴሌኮም",
+        "safaricom": "ሳፋሪኮም",
+        "ethioCost": "1 ክሬዲት",
+        "safaricomCost": "2 ክሬዲት"
+      }
+    },
+    "dashboard": {
+      "title": "የትምህርት ቤት አቴንዳንስና ማሳወቂያ ዳሽቦርድ",
+      "subtitle": "የዕለት የሥራ አፈጻጸም፣ የቀሪ ተማሪዎች ማሳወቂያ ሁኔታና የSMSHub መልእክት ስርጭት ሁኔታ።",
+      "academicYear": "የትምህርት ዘመን",
+      "ethiopianDate": "የኢትዮጵያ ቀን መቁጠሪያ",
+      "kpis": {
+        "totalStudents": "ጠቅላላ ንቁ ተማሪዎች",
+        "presentToday": "ዛሬ የተገኙ",
+        "absentToday": "ዛሬ የቀሩ",
+        "lateArrivals": "ያረፈዱ ተማሪዎች",
+        "excusedLeave": "በፈቃድ የቀሩ",
+        "submissionRate": "አቴንዳንስ ያስገቡ ክፍሎች",
+        "notificationsSent": "ወደ አቅራቢ የተላኩ ኤስኤምኤሶች",
+        "notificationsFailed": "ትኩረት የሚሹ / ያልተሳኩ"
+      },
+      "questions": {
+        "whoIsAbsent": "ዛሬ የቀሩት ተማሪዎች እነማን ናቸው?",
+        "whoMissing": "አቴንዳንስ ያላስገቡ መምህራን እነማን ናቸው?",
+        "whoNotified": "ለወላጆቻቸው ኤስኤምኤስ የተላከላቸው ተማሪዎች እነማን ናቸው?",
+        "whatFailed": "ያልተሳኩ ወይም ትኩረት የሚሹ መልእክቶች የትኞቹ ናቸው?",
+        "whoRecurring": "ተደጋጋሚ የመቅረት ችግር ያለባቸው ተማሪዎች እነማን ናቸው?"
+      },
+      "sections": {
+        "absentList": "ዛሬ የቀሩ ተማሪዎች ዝርዝር",
+        "missingSubmissions": "አቴንዳንስ ያልተመዘገበባቸው ክፍሎች",
+        "notifiedList": "የወላጅ ማሳወቂያ ሁኔታ",
+        "failedQueue": "አፋጣኝ ትኩረት የሚሹ ያልተሳኩ ኤስኤምኤሶች",
+        "chronicAbsenteeism": "ተደጋጋሚ ቀሪዎች ማስጠንቀቂያ (3+ ቀናት)",
+        "attendanceTrend": "የ7 ቀናት አጠቃላይ የአቴንዳንስ አዝማሚያ",
+        "gradeBreakdown": "የአቴንዳንስ መጠን በየክፍሉ"
+      },
+      "alerts": {
+        "lowCredit": "የSMSHub ክሬዲት መጠን ዝቅተኛ ነው! ቀሪ ክሬዲት፡ {balance}። መልእክቶች እንዳይቋረጡ እባክዎ ክሬዲት ይጨምሩ።",
+        "missingClasses": "{count} ክፍሎች ዛሬ አቴንዳንስ እስካሁን አላስገቡም።",
+        "failedSms": "{count} የኤስኤምኤስ መልእክቶች አልተሳኩም ወይም የስልክ ቁጥር ማስተካከያ ይሻሉ።"
+      }
+    },
+    "attendance": {
+      "title": "የዕለት የክፍል አቴንዳንስ መዝገብ",
+      "subtitle": "ፈጣን የአቴንዳንስ ምዝገባ ከራስ-ሰር የወላጅ ኤስኤምኤስ ማሳወቂያ ስርጭት ጋር።",
+      "selectClass": "ክፍል ይምረጡ",
+      "selectDate": "የአቴንዳንስ ቀን",
+      "markAllPresent": "ሁሉንም 'ተገኝቷል' አድርግ",
+      "saveAttendance": "አቴንዳንስ መዝግብና መልእክት ላክ",
+      "saving": "በመመዝገብና ማሳወቂያዎችን በማዘጋጀት ላይ...",
+      "unsavedWarning": "ያልተመዘገቡ ለውጦች አሉ። ሲመዘግቡ መረጃው ይዘምናል እንዲሁም የቀሪዎች ማሳወቂያ ይላካል።",
+      "roster": {
+        "admissionNo": "የመለያ ቁጥር",
+        "student": "የተማሪ ስም",
+        "status": "የመገኘት ሁኔታ",
+        "guardianContact": "የወላጅ ስልክ",
+        "notes": "ማስታወሻ / ምክንያት",
+        "presentShort": "ተ",
+        "absentShort": "ቀ",
+        "lateShort": "አ",
+        "leaveShort": "ፈ"
+      },
+      "summary": {
+        "total": "ጠቅላላ ተማሪዎች",
+        "present": "ተገኝቷል",
+        "absent": "ቀሪ",
+        "late": "ያረፈደ",
+        "leave": "በፍቃድ",
+        "unmarked": "ያልተሞላ"
+      },
+      "alertsNotice": "{absentCount} የቀሩ ተማሪዎች እንደተመዘገቡ ወዲያውኑ የወላጅ ኤስኤምኤስ ይላክላቸዋል።",
+      "submittedSuccess": "አቴንዳንስ ተመዝግቧል፡ {savedCount} ተማሪዎች ተመዝግበዋል። {smsQueued} የቀሪ ማሳወቂያዎች ለስርጭት ተሰልፈዋል።",
+      "exceptions": {
+        "title": "የአቴንዳንስ ልዩነቶችና እርማቶች",
+        "lateArrivals": "የማርፈድ መዝገብ",
+        "reportedAbsences": "የተመዘገቡ ፈቃዶችና ጥያቄዎች",
+        "correctionHistory": "የእርማትና ኦዲት ታሪክ"
+      }
+    },
+    "students": {
+      "title": "የተማሪዎች ማውጫና ምዝገባ",
+      "subtitle": "ንቁ ተማሪዎችን፣ የክፍል ምደባዎችንና የተገናኙ የወላጅ/አሳዳጊ መረጃዎችን ያስተዳድሩ።",
+      "addStudent": "አዲስ ተማሪ መዝግብ",
+      "columns": {
+        "admissionNo": "የመለያ ቁጥር",
+        "name": "ሙሉ ስም",
+        "class": "ክፍል",
+        "guardian": "ዋና ወላጅ/አሳዳጊ",
+        "phone": "የወላጅ ስልክ",
+        "status": "ሁኔታ",
+        "actions": "እርምጃዎች"
+      },
+      "filters": {
+        "allClasses": "ሁሉም ክፍሎች",
+        "activeOnly": "ንቁ ተማሪዎች",
+        "showInactive": "የተሰረዙትን ጨምር"
+      },
+      "stats": {
+        "total": "ጠቅላላ ተማሪዎች",
+        "active": "ንቁ ተማሪዎች",
+        "inactive": "የቦዘኑ",
+        "rate": "የንቁ ተማሪዎች መጠን"
+      }
+    },
+    "notifications": {
+      "title": "የወላጅ ማሳወቂያዎችና የSMSHub ስርጭት",
+      "subtitle": "የቀሪ ተማሪዎች ማሳወቂያ ክትትል፣ የSMSHub ኤፒአይ ውቅርና የቴሌኮም ኔትወርክ ስታትስቲክስ።",
+      "tabs": {
+        "history": "የመልእክት ታሪክ",
+        "templates": "የኤስኤምኤስ ቴምፕሌቶች",
+        "testMode": "የሙከራ ኤስኤምኤስ (0 ወጪ)",
+        "rules": "የማሳወቂያ ደንቦች",
+        "smshub": "የSMSHub ቅንብሮች",
+        "webhooks": "የዌብሁክ ክስተቶች"
+      },
+      "columns": {
+        "timestamp": "የተላከበት ሰዓት",
+        "student": "ተማሪ",
+        "class": "ክፍል",
+        "guardianPhone": "የተቀባይ ስልክ",
+        "template": "ቴምፕሌት",
+        "language": "ቋንቋ",
+        "network": "ኔትወርክ",
+        "status": "የአቅራቢ ሁኔታ",
+        "credits": "ጥቅም ላይ የዋለ ክሬዲት",
+        "providerRef": "የመልእክት መለያ",
+        "requestId": "የጥያቄ መለያ",
+        "actions": "እርምጃዎች"
+      },
+      "testMode": {
+        "title": "ያለክፍያ የSMSHub ሙከራ (Zero-Cost Test)",
+        "description": "የስልክ ቁጥር ትክክለኛነትን፣ የመልእክት ርዝመትን፣ የአማርኛ ዩኒኮድ ሁኔታንና የሚያስፈልገውን ክሬዲት ያለ ምንም ወጪ ያረጋግጡ።",
+        "phoneLabel": "የሙከራ ስልክ ቁጥር",
+        "phonePlaceholder": "0911223344 ወይም 0711223344",
+        "messageLabel": "የመልእክት ጽሑፍ",
+        "signatureNotice": "SMSHub የት/ቤቱን ፊርማ በራሱ ያያይዛል። አጠቃላይ የፊደላት ቁጥር ከፊርማው ጋር ተደምሮ ይታያል።",
+        "runTest": "ሙከራውን አሂድ (0 ወጪ)",
+        "running": "በSMSHub API በመፈተሽ ላይ...",
+        "results": "የፍተሻ ውጤት ዝርዝር",
+        "encoding": "የኢንኮዲንግ ዓይነት",
+        "chars": "አጠቃላይ ፊደላት",
+        "charLimit": "የአንድ መልእክት ገደብ",
+        "creditsNeeded": "የሚያስፈልግ ክሬዲት",
+        "creditsUsed": "ጥቅም ላይ የዋለ ክሬዲት (ሁሌም 0)",
+        "wouldSend": "በቀጥታ ስርጭት የሚላክ",
+        "testPassed": "የSMSHub ፍተሻ ተሳክቷል፡ የመልእክቱ አወቃቀር፣ ፊርማና የኔትወርክ መስመር በትክክል ተረጋግጧል።"
+      },
+      "templates": {
+        "title": "የማሳወቂያ ቴምፕሌቶች",
+        "subtitle": "በእንግሊዝኛና በአማርኛ የተዘጋጁ የቀሪዎችና የአቴንዳንስ ማሳወቂያ ጽሑፎች።",
+        "variables": "ተለዋዋጭ ቃላት፡ {student_name}, {class_name}, {date}, {school_name}",
+        "preview": "የቴምፕሌት ቅድመ-እይታ",
+        "gsmInfo": "የእንግሊዝኛ GSM-7፡ 160 ፊደላት በአንድ መልእክት። የአማርኛ ዩኒኮድ፡ ከፊርማ ጋር 70 ፊደላት በአንድ መልእክት።"
+      }
+    },
+    "reports": {
+      "title": "የትምህርት ትንታኔዎችና የአቴንዳንስ ሪፖርቶች",
+      "subtitle": "የት/ቤት አጠቃላይ የአቴንዳንስ ስታትስቲክስ፣ ተደጋጋሚ የመቅረት አመላካቾችና የኤስኤምኤስ ስርጭት ኦዲት።",
+      "tabs": {
+        "daily": "የዕለት አቴንዳንስ",
+        "grades": "የክፍሎች ንጽጽር",
+        "recurring": "ተደጋጋሚ መቅረቶች",
+        "sms": "የኤስኤምኤስና ማሳወቂያ ትንታኔ"
+      },
+      "metrics": {
+        "attendanceRate": "አጠቃላይ የመገኘት መጠን",
+        "totalSessions": "ጠቅላላ የተመዘገቡ ክፍለ-ጊዜያት",
+        "chronicStudents": "ስጋት ያለባቸው (ተደጋጋሚ ቀሪዎች)",
+        "creditsConsumed": "ጥቅም ላይ የዋለ አጠቃላይ ክሬዲት",
+        "carrierSplit": "የኔትወርክ ስርጭት (ኢትዮ ቴሌኮም እና ሳፋሪኮም)"
+      },
+      "export": {
+        "button": "ሪፖርቱን አውርድ (CSV)",
+        "print": "ለህትመት የተዘጋጀ ማጠቃለያ"
+      }
+    }
+  }
+}

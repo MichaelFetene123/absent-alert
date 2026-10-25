@@ -18,7 +18,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { Loader2, UserPlus, Save, Phone, School, User, Hash } from "lucide-react";
+import { Loader2, UserPlus, Save, Phone, School, User, Hash, Smartphone, Sparkles } from "lucide-react";
 
 export type StudentItem = {
   id: string;
@@ -131,36 +131,38 @@ export function StudentForm({
   if (!open) return null;
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-lg max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            {isEdit ? (
-              <Save className="size-5 text-blue-600" />
-            ) : (
-              <UserPlus className="size-5 text-blue-600" />
-            )}
-            <span>{isEdit ? "Edit Student" : "Register New Student"}</span>
-          </DialogTitle>
-          <DialogDescription className="text-xs text-slate-500">
-            {isEdit
-              ? "Update student information and primary guardian contact details."
-              : "Enter student details, class assignment, and primary guardian for SMS notifications."}
-          </DialogDescription>
-        </DialogHeader>
+    <Sheet open={open} onOpenChange={onOpenChange}>
+      <SheetContent side="right" className="sm:max-w-md w-full overflow-y-auto rounded-l-3xl border-slate-200 dark:border-slate-800 p-6">
+        <SheetHeader className="pb-4 border-b border-slate-100 dark:border-slate-800">
+          <div className="flex items-center gap-2.5">
+            <div className="p-2 rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400">
+              {isEdit ? <Save className="size-5" /> : <UserPlus className="size-5" />}
+            </div>
+            <div>
+              <SheetTitle className="text-xl font-bold text-slate-900 dark:text-white">
+                {isEdit ? "Edit Student Profile" : "Register New Student"}
+              </SheetTitle>
+              <SheetDescription className="text-xs text-slate-500 mt-0.5">
+                {isEdit
+                  ? "Update academic records and guardian mobile details"
+                  : "Add student to active classroom roster with guardian mobile alert phone"}
+              </SheetDescription>
+            </div>
+          </div>
+        </SheetHeader>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 py-1">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-5 py-4">
           {/* Admission Number */}
           <div className="space-y-1.5">
-            <Label htmlFor="admissionNo" className="text-xs font-semibold flex items-center gap-1.5">
+            <Label htmlFor="admissionNo" className="text-xs font-semibold uppercase tracking-wider text-slate-500 flex items-center gap-1.5">
               <Hash className="size-3.5 text-slate-400" />
               Admission Number <span className="text-red-500">*</span>
             </Label>
             <Input
               id="admissionNo"
-              placeholder="e.g. ADM-006"
+              placeholder="e.g. ADM-008"
               {...register("admissionNo")}
-              className={errors.admissionNo ? "border-red-500" : ""}
+              className={`h-10 rounded-xl font-mono text-sm ${errors.admissionNo ? "border-red-500" : ""}`}
             />
             {errors.admissionNo && (
               <p className="text-xs text-red-600">{errors.admissionNo.message}</p>
@@ -169,7 +171,7 @@ export function StudentForm({
 
           {/* Full Name */}
           <div className="space-y-1.5">
-            <Label htmlFor="fullName" className="text-xs font-semibold flex items-center gap-1.5">
+            <Label htmlFor="fullName" className="text-xs font-semibold uppercase tracking-wider text-slate-500 flex items-center gap-1.5">
               <User className="size-3.5 text-slate-400" />
               Student Full Name <span className="text-red-500">*</span>
             </Label>
@@ -177,7 +179,7 @@ export function StudentForm({
               id="fullName"
               placeholder="e.g. Almaz Kebede"
               {...register("fullName")}
-              className={errors.fullName ? "border-red-500" : ""}
+              className={`h-10 rounded-xl font-semibold ${errors.fullName ? "border-red-500" : ""}`}
             />
             {errors.fullName && (
               <p className="text-xs text-red-600">{errors.fullName.message}</p>
@@ -186,17 +188,17 @@ export function StudentForm({
 
           {/* Class Selection */}
           <div className="space-y-1.5">
-            <Label htmlFor="classId" className="text-xs font-semibold flex items-center gap-1.5">
+            <Label htmlFor="classId" className="text-xs font-semibold uppercase tracking-wider text-slate-500 flex items-center gap-1.5">
               <School className="size-3.5 text-slate-400" />
-              Assigned Class <span className="text-red-500">*</span>
+              Assigned Classroom <span className="text-red-500">*</span>
             </Label>
             <select
               id="classId"
               {...register("classId")}
-              className="w-full h-9 px-3 text-sm rounded-md border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors"
+              className="w-full h-10 px-3 text-sm font-semibold rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-blue-500"
             >
               {classes.length === 0 ? (
-                <option value="">No classes available</option>
+                <option value="">No classrooms available</option>
               ) : (
                 classes.map((cls) => (
                   <option key={cls.id} value={cls.id} className="dark:bg-slate-900">
@@ -210,22 +212,27 @@ export function StudentForm({
             )}
           </div>
 
-          <div className="pt-2 border-t border-slate-100 dark:border-slate-800">
-            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-3">
-              Primary Guardian Details
-            </h4>
+          <div className="pt-3 border-t border-slate-100 dark:border-slate-800 space-y-4">
+            <div className="flex items-center gap-2">
+              <span className="p-1 rounded-md bg-purple-500/10 text-purple-600">
+                <Smartphone className="size-3.5" />
+              </span>
+              <h4 className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                Primary Guardian &amp; SMS Destination
+              </h4>
+            </div>
 
             {/* Guardian Name */}
-            <div className="space-y-1.5 mb-3">
-              <Label htmlFor="guardianName" className="text-xs font-semibold flex items-center gap-1.5">
+            <div className="space-y-1.5">
+              <Label htmlFor="guardianName" className="text-xs font-semibold uppercase tracking-wider text-slate-500 flex items-center gap-1.5">
                 <User className="size-3.5 text-slate-400" />
-                Guardian Name <span className="text-red-500">*</span>
+                Guardian Full Name <span className="text-red-500">*</span>
               </Label>
               <Input
                 id="guardianName"
                 placeholder="e.g. Kebede Tessema"
                 {...register("guardianName")}
-                className={errors.guardianName ? "border-red-500" : ""}
+                className={`h-10 rounded-xl font-semibold ${errors.guardianName ? "border-red-500" : ""}`}
               />
               {errors.guardianName && (
                 <p className="text-xs text-red-600">{errors.guardianName.message}</p>
@@ -234,19 +241,19 @@ export function StudentForm({
 
             {/* Guardian Phone */}
             <div className="space-y-1.5">
-              <Label htmlFor="guardianPhone" className="text-xs font-semibold flex items-center gap-1.5">
+              <Label htmlFor="guardianPhone" className="text-xs font-semibold uppercase tracking-wider text-slate-500 flex items-center gap-1.5">
                 <Phone className="size-3.5 text-slate-400" />
-                Guardian Phone <span className="text-red-500">*</span>
+                Guardian Mobile Phone <span className="text-red-500">*</span>
               </Label>
               <Input
                 id="guardianPhone"
                 type="tel"
                 placeholder="0911223344 or +251911223344"
                 {...register("guardianPhone")}
-                className={errors.guardianPhone ? "border-red-500" : ""}
+                className={`h-10 rounded-xl font-mono text-sm ${errors.guardianPhone ? "border-red-500" : ""}`}
               />
-              <p className="text-[11px] text-slate-400">
-                Ethiopian phone number. Will be normalized to +251 format automatically.
+              <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">
+                Ethiopian mobile number. System automatically sanitizes and normalizes to E.164 (+251...) format for SMSHub.
               </p>
               {errors.guardianPhone && (
                 <p className="text-xs text-red-600">{errors.guardianPhone.message}</p>
@@ -262,6 +269,7 @@ export function StudentForm({
               size="sm"
               disabled={isSubmitting}
               onClick={() => onOpenChange(false)}
+              className="rounded-xl"
             >
               Cancel
             </Button>
@@ -270,7 +278,7 @@ export function StudentForm({
               id="student-form-submit-btn"
               size="sm"
               disabled={isSubmitting}
-              className="bg-blue-600 hover:bg-blue-700 text-white min-w-24 cursor-pointer"
+              className="bg-blue-600 hover:bg-blue-700 text-white rounded-xl min-w-32 font-semibold shadow-md shadow-blue-600/20"
             >
               {isSubmitting ? (
                 <>
