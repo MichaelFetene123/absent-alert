@@ -5,7 +5,6 @@ import {
 } from "@/actions/class.actions";
 import { ClassesManager } from "@/components/classes-manager";
 
-export const dynamic = "force-dynamic";
 
 export default async function ClassesPage() {
   const user = await requireUser();

@@ -2,7 +2,6 @@ import { requireUser } from "@/lib/guards";
 import { listStudents, listClasses } from "@/actions/student.actions";
 import { StudentsManager } from "@/components/students-manager";
 
-export const dynamic = "force-dynamic";
 
 export default async function StudentsPage() {
   const user = await requireUser();
