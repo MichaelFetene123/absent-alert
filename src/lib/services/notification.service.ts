@@ -83,6 +83,9 @@ export async function queueAbsenceNotifications(
   return notificationIds;
 }
 
+// In-flight mutex set to prevent concurrent double-sends for the same notification ID
+const activeClaims = new Set<string>();
+
 /**
  * Claims and dispatches a single notification.
  * - Claims the row by transitioning status: PENDING / FAILED -> SENDING.
@@ -96,48 +99,58 @@ export async function sendOne(notificationId: string): Promise<{
   error?: string;
   providerRef?: string;
 }> {
-  // Claim check: only PENDING or FAILED notifications can be dispatched
-  const notif = await db.orm.public.Notification.where({ id: notificationId }).first();
-  if (!notif) {
-    return { ok: false, skipped: true, error: "Notification not found" };
+  // Prevent concurrent dispatch of the same notification in-flight
+  if (activeClaims.has(notificationId)) {
+    return { ok: false, skipped: true, error: "Notification is already in-flight" };
   }
+  activeClaims.add(notificationId);
 
-  if (notif.status !== "PENDING" && notif.status !== "FAILED") {
-    return { ok: false, skipped: true, error: `Notification is already ${notif.status}` };
+  try {
+    // Claim check: only PENDING or FAILED notifications can be dispatched
+    const notif = await db.orm.public.Notification.where({ id: notificationId }).first();
+    if (!notif) {
+      return { ok: false, skipped: true, error: "Notification not found" };
+    }
+
+    if (notif.status !== "PENDING" && notif.status !== "FAILED") {
+      return { ok: false, skipped: true, error: `Notification is already ${notif.status}` };
+    }
+
+    // Atomically claim
+    await db.orm.public.Notification.where({ id: notificationId }).update({
+      status: "SENDING",
+    });
+
+    // Call SMS provider
+    const result: SendSmsResult = await sendSms(notif.guardianPhone, notif.body);
+
+    // Record attempt
+    await db.orm.public.NotificationAttempt.create({
+      notificationId,
+      httpStatus: result.httpStatus ?? null,
+      success: result.accepted,
+      rawResponse: result.raw as any,
+      error: result.error ?? null,
+    });
+
+    // Update notification record
+    const updates: Record<string, unknown> = {
+      status: result.accepted ? "ACCEPTED" : "FAILED",
+    };
+    if (result.providerRef) {
+      updates.providerRef = result.providerRef;
+    }
+
+    await db.orm.public.Notification.where({ id: notificationId }).update(updates);
+
+    return {
+      ok: result.accepted,
+      error: result.error,
+      providerRef: result.providerRef,
+    };
+  } finally {
+    activeClaims.delete(notificationId);
   }
-
-  // Atomically claim
-  await db.orm.public.Notification.where({ id: notificationId }).update({
-    status: "SENDING",
-  });
-
-  // Call SMS provider
-  const result: SendSmsResult = await sendSms(notif.guardianPhone, notif.body);
-
-  // Record attempt
-  await db.orm.public.NotificationAttempt.create({
-    notificationId,
-    httpStatus: result.httpStatus ?? null,
-    success: result.accepted,
-    rawResponse: result.raw as any,
-    error: result.error ?? null,
-  });
-
-  // Update notification record
-  const updates: Record<string, unknown> = {
-    status: result.accepted ? "ACCEPTED" : "FAILED",
-  };
-  if (result.providerRef) {
-    updates.providerRef = result.providerRef;
-  }
-
-  await db.orm.public.Notification.where({ id: notificationId }).update(updates);
-
-  return {
-    ok: result.accepted,
-    error: result.error,
-    providerRef: result.providerRef,
-  };
 }
 
 /**
