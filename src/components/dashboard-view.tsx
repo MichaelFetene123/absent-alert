@@ -88,14 +88,14 @@ export function DashboardView({ data, user }: Props) {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-slate-200 dark:border-slate-800">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-border">
         <div>
           <div className="flex items-center gap-2.5">
-            <h1 className="text-xl font-bold tracking-tight text-slate-900 dark:text-white">
+            <h1 className="text-xl font-bold tracking-tight text-foreground">
               {locale === "am" ? "የትምህርት ቤት አቴንዳንስ ዳሽቦርድ" : "School Attendance & Alerts"}
             </h1>
           </div>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 font-medium">
+          <p className="text-xs text-muted-foreground mt-1 font-medium">
             {new Date(data.todayDate).toLocaleDateString(locale === "am" ? "am-ET" : "en-US", {
               weekday: "long",
               year: "numeric",
@@ -109,7 +109,7 @@ export function DashboardView({ data, user }: Props) {
         <div className="flex items-center gap-2">
           {data.accessibleClasses.length > 0 && (
             <Link href={`/attendance?classId=${data.accessibleClasses[0]!.id}&date=${data.todayDate}`}>
-              <Button size="sm" className="h-8.5 px-3 rounded-lg text-xs font-medium gap-1.5 bg-indigo-600 hover:bg-indigo-700 text-white shadow-xs">
+              <Button size="sm" className="h-8.5 px-3 rounded-lg text-xs font-medium gap-1.5 shadow-xs">
                 <CalendarCheck className="size-3.5" />
                 {locale === "am" ? "አቴንዳንስ መዝግብ" : "Take Attendance"}
               </Button>
@@ -117,15 +117,15 @@ export function DashboardView({ data, user }: Props) {
           )}
 
           <Link href="/notifications/test">
-            <Button variant="outline" size="sm" className="h-8.5 px-2.5 rounded-lg text-xs font-medium gap-1.5 border-slate-200 dark:border-slate-800">
-              <Zap className="size-3.5 text-indigo-600" />
+            <Button variant="outline" size="sm" className="h-8.5 px-2.5 rounded-lg text-xs font-medium gap-1.5">
+              <Zap className="size-3.5 text-primary" />
               <span>SMS Test (0 Cost)</span>
             </Button>
           </Link>
 
           <Link href="/notifications">
-            <Button variant="outline" size="sm" className="h-8.5 px-2.5 rounded-lg text-xs font-medium gap-1.5 border-slate-200 dark:border-slate-800">
-              <History className="size-3.5 text-slate-500" />
+            <Button variant="outline" size="sm" className="h-8.5 px-2.5 rounded-lg text-xs font-medium gap-1.5">
+              <History className="size-3.5 text-muted-foreground" />
               <span>SMS Logs</span>
             </Button>
           </Link>
@@ -135,82 +135,82 @@ export function DashboardView({ data, user }: Props) {
       {/* KPI Cards Grid */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3.5">
         {/* Total Active Students */}
-        <Card className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs">
+        <Card className="rounded-xl border border-border bg-card text-card-foreground shadow-xs">
           <CardHeader className="p-3.5 pb-1 flex flex-row items-center justify-between space-y-0">
-            <CardTitle className="text-xs font-medium text-slate-500 dark:text-slate-400">
+            <CardTitle className="text-xs font-medium text-muted-foreground">
               {locale === "am" ? "ጠቅላላ ተማሪዎች" : "Total Active Students"}
             </CardTitle>
-            <Users className="size-4 text-slate-400" />
+            <Users className="size-4 text-muted-foreground" />
           </CardHeader>
           <CardContent className="p-3.5 pt-0">
-            <div className="text-2xl font-bold text-slate-900 dark:text-white">
+            <div className="text-2xl font-bold text-foreground">
               {data.totalActiveStudents}
             </div>
-            <p className="text-[11px] text-slate-400 mt-0.5">
+            <p className="text-[11px] text-muted-foreground mt-0.5">
               Across {data.accessibleClasses.length} {data.accessibleClasses.length === 1 ? "class" : "classes"}
             </p>
           </CardContent>
         </Card>
 
         {/* Present Today */}
-        <Card className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs">
+        <Card className="rounded-xl border border-border bg-card text-card-foreground shadow-xs">
           <CardHeader className="p-3.5 pb-1 flex flex-row items-center justify-between space-y-0">
-            <CardTitle className="text-xs font-medium text-slate-500 dark:text-slate-400">
+            <CardTitle className="text-xs font-medium text-muted-foreground">
               {locale === "am" ? "ዛሬ የተገኙ" : "Present Today"}
             </CardTitle>
-            <CheckCircle2 className="size-4 text-emerald-600 dark:text-emerald-400" />
+            <CheckCircle2 className="size-4 text-primary" />
           </CardHeader>
           <CardContent className="p-3.5 pt-0">
             <div className="flex items-baseline justify-between">
-              <span className="text-2xl font-bold text-slate-900 dark:text-white">
+              <span className="text-2xl font-bold text-foreground">
                 {data.todayStats.present}
               </span>
               {data.todayStats.attendanceRate !== null && (
-                <Badge variant="outline" className="text-[10px] px-1.5 py-0 font-semibold border-emerald-500/30 text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/40">
+                <Badge variant="outline" className="text-[10px] px-1.5 py-0 font-semibold border-border text-foreground bg-muted">
                   {data.todayStats.attendanceRate}%
                 </Badge>
               )}
             </div>
-            <p className="text-[11px] text-slate-400 mt-0.5">
+            <p className="text-[11px] text-muted-foreground mt-0.5">
               {data.todayStats.totalMarked} recorded today
             </p>
           </CardContent>
         </Card>
 
         {/* Absent Today */}
-        <Card className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs">
+        <Card className="rounded-xl border border-border bg-card text-card-foreground shadow-xs">
           <CardHeader className="p-3.5 pb-1 flex flex-row items-center justify-between space-y-0">
-            <CardTitle className="text-xs font-medium text-slate-500 dark:text-slate-400">
+            <CardTitle className="text-xs font-medium text-muted-foreground">
               {locale === "am" ? "ዛሬ የቀሩ" : "Absent Today"}
             </CardTitle>
-            <AlertCircle className="size-4 text-rose-600 dark:text-rose-400" />
+            <AlertCircle className="size-4 text-destructive" />
           </CardHeader>
           <CardContent className="p-3.5 pt-0">
             <div className="flex items-baseline justify-between">
-              <span className="text-2xl font-bold text-rose-600 dark:text-rose-400">
+              <span className="text-2xl font-bold text-destructive">
                 {data.todayStats.absent}
               </span>
-              <span className="text-[11px] text-slate-400">Unexcused</span>
+              <span className="text-[11px] text-muted-foreground">Unexcused</span>
             </div>
-            <p className="text-[11px] text-slate-400 mt-0.5">
+            <p className="text-[11px] text-muted-foreground mt-0.5">
               Automated SMS evaluated
             </p>
           </CardContent>
         </Card>
 
         {/* Attendance Submission Progress */}
-        <Card className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs">
+        <Card className="rounded-xl border border-border bg-card text-card-foreground shadow-xs">
           <CardHeader className="p-3.5 pb-1 flex flex-row items-center justify-between space-y-0">
-            <CardTitle className="text-xs font-medium text-slate-500 dark:text-slate-400">
+            <CardTitle className="text-xs font-medium text-muted-foreground">
               {locale === "am" ? "የአቴንዳንስ ምዝገባ" : "Roster Submissions"}
             </CardTitle>
-            <School className="size-4 text-indigo-500" />
+            <School className="size-4 text-primary" />
           </CardHeader>
           <CardContent className="p-3.5 pt-0">
-            <div className="text-2xl font-bold text-slate-900 dark:text-white">
+            <div className="text-2xl font-bold text-foreground">
               {data.unmarkedClasses.length === 0 ? "100%" : `${data.accessibleClasses.length - data.unmarkedClasses.length}/${data.accessibleClasses.length}`}
             </div>
-            <p className="text-[11px] text-slate-400 mt-0.5">
+            <p className="text-[11px] text-muted-foreground mt-0.5">
               {data.unmarkedClasses.length > 0
                 ? `${data.unmarkedClasses.length} class rosters pending`
                 : "All accessible classes submitted"}
@@ -220,28 +220,28 @@ export function DashboardView({ data, user }: Props) {
       </div>
 
       {/* The 5 Critical Questions Interactive Workspace */}
-      <Card className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs overflow-hidden">
-        <CardHeader className="p-4 pb-2 border-b border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/40">
+      <Card className="rounded-xl border border-border bg-card text-card-foreground shadow-xs overflow-hidden">
+        <CardHeader className="p-4 pb-2 border-b border-border bg-muted/40">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
             <div>
-              <CardTitle className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                <ShieldCheck className="size-4 text-indigo-600" />
+              <CardTitle className="text-sm font-bold text-foreground flex items-center gap-2">
+                <ShieldCheck className="size-4 text-primary" />
                 <span>Immediate School Operations Intelligence</span>
               </CardTitle>
-              <CardDescription className="text-xs">
+              <CardDescription className="text-xs text-muted-foreground">
                 Answers to the 5 primary attendance and parent notification questions.
               </CardDescription>
             </div>
 
             {/* Question Selector Tabs */}
-            <div className="flex flex-wrap gap-1 bg-slate-200/60 dark:bg-slate-800 p-1 rounded-lg">
+            <div className="flex flex-wrap gap-1 bg-muted p-1 rounded-lg">
               <button
                 type="button"
                 onClick={() => setActiveQuestionTab("absent")}
                 className={`px-2.5 py-1 text-xs rounded-md font-medium transition-all ${
                   activeQuestionTab === "absent"
-                    ? "bg-white dark:bg-slate-900 text-indigo-600 dark:text-indigo-300 shadow-xs font-bold"
-                    : "text-slate-600 dark:text-slate-400 hover:text-slate-900"
+                    ? "bg-background text-foreground shadow-xs font-bold"
+                    : "text-muted-foreground hover:text-foreground"
                 }`}
               >
                 1. Absent Today ({data.todayStats.absent})
@@ -251,8 +251,8 @@ export function DashboardView({ data, user }: Props) {
                 onClick={() => setActiveQuestionTab("missing")}
                 className={`px-2.5 py-1 text-xs rounded-md font-medium transition-all ${
                   activeQuestionTab === "missing"
-                    ? "bg-white dark:bg-slate-900 text-indigo-600 dark:text-indigo-300 shadow-xs font-bold"
-                    : "text-slate-600 dark:text-slate-400 hover:text-slate-900"
+                    ? "bg-background text-foreground shadow-xs font-bold"
+                    : "text-muted-foreground hover:text-foreground"
                 }`}
               >
                 2. Missing Submissions ({data.unmarkedClasses.length})
@@ -262,8 +262,8 @@ export function DashboardView({ data, user }: Props) {
                 onClick={() => setActiveQuestionTab("notified")}
                 className={`px-2.5 py-1 text-xs rounded-md font-medium transition-all ${
                   activeQuestionTab === "notified"
-                    ? "bg-white dark:bg-slate-900 text-indigo-600 dark:text-indigo-300 shadow-xs font-bold"
-                    : "text-slate-600 dark:text-slate-400 hover:text-slate-900"
+                    ? "bg-background text-foreground shadow-xs font-bold"
+                    : "text-muted-foreground hover:text-foreground"
                 }`}
               >
                 3. Notified Guardians ({notifiedAbsentStudents.length})
@@ -273,8 +273,8 @@ export function DashboardView({ data, user }: Props) {
                 onClick={() => setActiveQuestionTab("failed")}
                 className={`px-2.5 py-1 text-xs rounded-md font-medium transition-all ${
                   activeQuestionTab === "failed"
-                    ? "bg-white dark:bg-slate-900 text-indigo-600 dark:text-indigo-300 shadow-xs font-bold"
-                    : "text-slate-600 dark:text-slate-400 hover:text-slate-900"
+                    ? "bg-background text-foreground shadow-xs font-bold"
+                    : "text-muted-foreground hover:text-foreground"
                 }`}
               >
                 4. Action Required ({data.recentFailedNotifications.length})
@@ -284,8 +284,8 @@ export function DashboardView({ data, user }: Props) {
                 onClick={() => setActiveQuestionTab("recurring")}
                 className={`px-2.5 py-1 text-xs rounded-md font-medium transition-all ${
                   activeQuestionTab === "recurring"
-                    ? "bg-white dark:bg-slate-900 text-indigo-600 dark:text-indigo-300 shadow-xs font-bold"
-                    : "text-slate-600 dark:text-slate-400 hover:text-slate-900"
+                    ? "bg-background text-foreground shadow-xs font-bold"
+                    : "text-muted-foreground hover:text-foreground"
                 }`}
               >
                 5. Recurring Absences
@@ -299,19 +299,19 @@ export function DashboardView({ data, user }: Props) {
           {activeQuestionTab === "absent" && (
             <div className="overflow-x-auto">
               {data.todayAbsentStudents.length === 0 ? (
-                <div className="py-8 text-center text-slate-500 space-y-1">
-                  <CheckCircle2 className="size-6 text-emerald-500 mx-auto" />
-                  <p className="text-xs font-medium text-slate-700 dark:text-slate-300">
+                <div className="py-8 text-center text-muted-foreground space-y-1">
+                  <CheckCircle2 className="size-6 text-primary mx-auto" />
+                  <p className="text-xs font-medium text-foreground">
                     No student absences recorded today
                   </p>
-                  <p className="text-[11px] text-slate-400">
+                  <p className="text-[11px] text-muted-foreground">
                     All students marked present or attendance has not been submitted yet.
                   </p>
                 </div>
               ) : (
                 <Table>
                   <TableHeader>
-                    <TableRow className="border-b border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/40 text-xs">
+                    <TableRow className="border-b border-border bg-muted/40 text-xs">
                       <TableHead className="py-2.5 px-4">Student Name</TableHead>
                       <TableHead className="py-2.5 px-4">Admission No</TableHead>
                       <TableHead className="py-2.5 px-4">Class</TableHead>
@@ -321,28 +321,29 @@ export function DashboardView({ data, user }: Props) {
                   </TableHeader>
                   <TableBody>
                     {data.todayAbsentStudents.map((abs) => (
-                      <TableRow key={abs.studentId} className="hover:bg-slate-50 dark:hover:bg-slate-800/30 text-xs">
-                        <TableCell className="py-2.5 px-4 font-semibold text-slate-900 dark:text-white">
+                      <TableRow key={abs.studentId} className="hover:bg-muted/50 text-xs">
+                        <TableCell className="py-2.5 px-4 font-semibold text-foreground">
                           {abs.studentName}
                         </TableCell>
-                        <TableCell className="py-2.5 px-4 font-mono text-slate-500">
+                        <TableCell className="py-2.5 px-4 font-mono text-muted-foreground">
                           {abs.admissionNo}
                         </TableCell>
-                        <TableCell className="py-2.5 px-4 font-medium text-slate-700 dark:text-slate-300">
+                        <TableCell className="py-2.5 px-4 font-medium text-foreground">
                           {abs.className}
                         </TableCell>
-                        <TableCell className="py-2.5 px-4 font-mono text-slate-600 dark:text-slate-400">
+                        <TableCell className="py-2.5 px-4 font-mono text-muted-foreground">
                           {abs.guardianPhone}
                         </TableCell>
                         <TableCell className="py-2.5 px-4 text-right">
                           <Badge
-                            className={`text-[10px] font-medium ${
+                            variant={
                               abs.notificationStatus === "ACCEPTED" || abs.notificationStatus === "DELIVERED"
-                                ? "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950"
+                                ? "default"
                                 : abs.notificationStatus === "FAILED"
-                                ? "bg-rose-50 text-rose-700 border-rose-200 dark:bg-rose-950"
-                                : "bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-950"
-                            }`}
+                                ? "destructive"
+                                : "secondary"
+                            }
+                            className="text-[10px] font-medium"
                           >
                             {abs.notificationStatus === "ACCEPTED" ? "Sent to Provider" : abs.notificationStatus}
                           </Badge>
@@ -359,19 +360,19 @@ export function DashboardView({ data, user }: Props) {
           {activeQuestionTab === "missing" && (
             <div className="overflow-x-auto">
               {data.unmarkedClasses.length === 0 ? (
-                <div className="py-8 text-center text-slate-500 space-y-1">
-                  <CheckCheck className="size-6 text-emerald-500 mx-auto" />
-                  <p className="text-xs font-semibold text-slate-700 dark:text-slate-300">
+                <div className="py-8 text-center text-muted-foreground space-y-1">
+                  <CheckCheck className="size-6 text-primary mx-auto" />
+                  <p className="text-xs font-semibold text-foreground">
                     All classroom rosters submitted for today
                   </p>
-                  <p className="text-[11px] text-slate-400">
+                  <p className="text-[11px] text-muted-foreground">
                     No missing submissions. 100% of teachers have completed attendance.
                   </p>
                 </div>
               ) : (
                 <Table>
                   <TableHeader>
-                    <TableRow className="border-b border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/40 text-xs">
+                    <TableRow className="border-b border-border bg-muted/40 text-xs">
                       <TableHead className="py-2.5 px-4">Class / Section</TableHead>
                       <TableHead className="py-2.5 px-4">Enrolled Students</TableHead>
                       <TableHead className="py-2.5 px-4">Submission Status</TableHead>
@@ -380,21 +381,21 @@ export function DashboardView({ data, user }: Props) {
                   </TableHeader>
                   <TableBody>
                     {data.unmarkedClasses.map((cls) => (
-                      <TableRow key={cls.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/30 text-xs">
-                        <TableCell className="py-3 px-4 font-semibold text-slate-900 dark:text-white">
+                      <TableRow key={cls.id} className="hover:bg-muted/50 text-xs">
+                        <TableCell className="py-3 px-4 font-semibold text-foreground">
                           {cls.name}
                         </TableCell>
-                        <TableCell className="py-3 px-4 text-slate-500">
+                        <TableCell className="py-3 px-4 text-muted-foreground">
                           {cls.studentCount} active students
                         </TableCell>
                         <TableCell className="py-3 px-4">
-                          <Badge variant="outline" className="border-amber-200 text-amber-700 bg-amber-50 dark:bg-amber-950 text-[10px]">
+                          <Badge variant="outline" className="text-[10px]">
                             Pending Submission
                           </Badge>
                         </TableCell>
                         <TableCell className="py-3 px-4 text-right">
                           <Link href={`/attendance?classId=${cls.id}&date=${data.todayDate}`}>
-                            <Button size="sm" className="h-7.5 px-2.5 text-xs gap-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg">
+                            <Button size="sm" className="h-7.5 px-2.5 text-xs gap-1.5 rounded-lg">
                               <CalendarCheck className="size-3" />
                               Take Attendance
                             </Button>
@@ -412,18 +413,18 @@ export function DashboardView({ data, user }: Props) {
           {activeQuestionTab === "notified" && (
             <div className="overflow-x-auto">
               {notifiedAbsentStudents.length === 0 ? (
-                <div className="py-8 text-center text-slate-500 space-y-1">
-                  <p className="text-xs font-medium text-slate-700 dark:text-slate-300">
+                <div className="py-8 text-center text-muted-foreground space-y-1">
+                  <p className="text-xs font-medium text-foreground">
                     No guardian absence notifications sent yet today
                   </p>
-                  <p className="text-[11px] text-slate-400">
+                  <p className="text-[11px] text-muted-foreground">
                     Submit classroom attendance with absent students to automatically notify parents.
                   </p>
                 </div>
               ) : (
                 <Table>
                   <TableHeader>
-                    <TableRow className="border-b border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/40 text-xs">
+                    <TableRow className="border-b border-border bg-muted/40 text-xs">
                       <TableHead className="py-2.5 px-4">Student</TableHead>
                       <TableHead className="py-2.5 px-4">Class</TableHead>
                       <TableHead className="py-2.5 px-4">Guardian Mobile</TableHead>
@@ -432,18 +433,18 @@ export function DashboardView({ data, user }: Props) {
                   </TableHeader>
                   <TableBody>
                     {notifiedAbsentStudents.map((abs) => (
-                      <TableRow key={abs.studentId} className="hover:bg-slate-50 dark:hover:bg-slate-800/30 text-xs">
-                        <TableCell className="py-2.5 px-4 font-semibold text-slate-900 dark:text-white">
+                      <TableRow key={abs.studentId} className="hover:bg-muted/50 text-xs">
+                        <TableCell className="py-2.5 px-4 font-semibold text-foreground">
                           {abs.studentName}
                         </TableCell>
-                        <TableCell className="py-2.5 px-4 font-medium text-slate-600 dark:text-slate-400">
+                        <TableCell className="py-2.5 px-4 font-medium text-muted-foreground">
                           {abs.className}
                         </TableCell>
-                        <TableCell className="py-2.5 px-4 font-mono text-slate-600 dark:text-slate-400">
+                        <TableCell className="py-2.5 px-4 font-mono text-muted-foreground">
                           {abs.guardianPhone}
                         </TableCell>
                         <TableCell className="py-2.5 px-4 text-right">
-                          <Badge className="bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950 text-[10px]">
+                          <Badge variant="default" className="text-[10px]">
                             ✓ Sent to SMSHub Provider
                           </Badge>
                         </TableCell>
@@ -459,19 +460,19 @@ export function DashboardView({ data, user }: Props) {
           {activeQuestionTab === "failed" && (
             <div className="overflow-x-auto">
               {data.recentFailedNotifications.length === 0 ? (
-                <div className="py-8 text-center text-slate-500 space-y-1">
-                  <CheckCircle2 className="size-6 text-emerald-500 mx-auto" />
-                  <p className="text-xs font-semibold text-slate-700 dark:text-slate-300">
+                <div className="py-8 text-center text-muted-foreground space-y-1">
+                  <CheckCircle2 className="size-6 text-primary mx-auto" />
+                  <p className="text-xs font-semibold text-foreground">
                     Zero failed notifications
                   </p>
-                  <p className="text-[11px] text-slate-400">
+                  <p className="text-[11px] text-muted-foreground">
                     All dispatched parent notifications accepted by provider without errors.
                   </p>
                 </div>
               ) : (
                 <Table>
                   <TableHeader>
-                    <TableRow className="border-b border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/40 text-xs">
+                    <TableRow className="border-b border-border bg-muted/40 text-xs">
                       <TableHead className="py-2.5 px-4">Student</TableHead>
                       <TableHead className="py-2.5 px-4">Class</TableHead>
                       <TableHead className="py-2.5 px-4">Failure Reason</TableHead>
@@ -480,19 +481,19 @@ export function DashboardView({ data, user }: Props) {
                   </TableHeader>
                   <TableBody>
                     {data.recentFailedNotifications.map((fail) => (
-                      <TableRow key={fail.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/30 text-xs">
-                        <TableCell className="py-2.5 px-4 font-semibold text-slate-900 dark:text-white">
+                      <TableRow key={fail.id} className="hover:bg-muted/50 text-xs">
+                        <TableCell className="py-2.5 px-4 font-semibold text-foreground">
                           <div>
                             <span>{fail.studentName}</span>
-                            <span className="text-[11px] font-mono text-slate-400 ml-1.5">
+                            <span className="text-[11px] font-mono text-muted-foreground ml-1.5">
                               ({fail.admissionNo})
                             </span>
                           </div>
                         </TableCell>
-                        <TableCell className="py-2.5 px-4 font-medium text-slate-600">
+                        <TableCell className="py-2.5 px-4 font-medium text-muted-foreground">
                           {fail.className}
                         </TableCell>
-                        <TableCell className="py-2.5 px-4 text-rose-600 dark:text-rose-400 font-medium">
+                        <TableCell className="py-2.5 px-4 text-destructive font-medium">
                           {fail.error || "Carrier rejected or invalid number"}
                         </TableCell>
                         <TableCell className="py-2.5 px-4 text-right">
@@ -501,7 +502,7 @@ export function DashboardView({ data, user }: Props) {
                             size="sm"
                             disabled={retryingId === fail.id}
                             onClick={() => handleRetry(fail.id, fail.studentName)}
-                            className="h-7 text-xs gap-1 border-rose-200 text-rose-700 hover:bg-rose-50"
+                            className="h-7 text-xs gap-1 border-destructive/30 text-destructive hover:bg-destructive/10"
                           >
                             {retryingId === fail.id ? (
                               <Loader2 className="size-3 animate-spin" />
@@ -523,11 +524,11 @@ export function DashboardView({ data, user }: Props) {
           {activeQuestionTab === "recurring" && (
             <div className="p-4 space-y-3">
               <div className="flex items-center justify-between">
-                <span className="text-xs text-slate-600 dark:text-slate-400">
+                <span className="text-xs text-muted-foreground">
                   Students with 3 or more absences in the current evaluation window:
                 </span>
-                <Link href="/reports/recurring">
-                  <Button variant="ghost" size="sm" className="h-7 text-xs text-indigo-600 hover:text-indigo-700 gap-1">
+                <Link href="/reports">
+                  <Button variant="ghost" size="sm" className="h-7 text-xs text-primary gap-1">
                     <span>Full Risk Report</span>
                     <ArrowRight className="size-3" />
                   </Button>
@@ -535,22 +536,22 @@ export function DashboardView({ data, user }: Props) {
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div className="p-3 rounded-lg border border-amber-200 dark:border-amber-900 bg-amber-50/40 dark:bg-amber-950/20 text-xs space-y-1">
-                  <div className="flex items-center justify-between font-bold text-slate-900 dark:text-white">
+                <div className="p-3 rounded-lg border border-border bg-card text-card-foreground text-xs space-y-1">
+                  <div className="flex items-center justify-between font-bold text-foreground">
                     <span>Almaz Kebede (ADM-001)</span>
-                    <Badge className="bg-amber-600 text-white text-[10px]">3 Absences</Badge>
+                    <Badge variant="secondary" className="text-[10px]">3 Absences</Badge>
                   </div>
-                  <p className="text-[11px] text-slate-500">Class 7 B · Guardian: Kebede Tessema (0911223344)</p>
-                  <p className="text-[11px] text-amber-700 dark:text-amber-400 font-medium">Flagged for homeroom teacher phone call</p>
+                  <p className="text-[11px] text-muted-foreground">Class 7 B · Guardian: Kebede Tessema (0911223344)</p>
+                  <p className="text-[11px] text-primary font-medium">Flagged for homeroom teacher phone call</p>
                 </div>
 
-                <div className="p-3 rounded-lg border border-amber-200 dark:border-amber-900 bg-amber-50/40 dark:bg-amber-950/20 text-xs space-y-1">
-                  <div className="flex items-center justify-between font-bold text-slate-900 dark:text-white">
+                <div className="p-3 rounded-lg border border-border bg-card text-card-foreground text-xs space-y-1">
+                  <div className="flex items-center justify-between font-bold text-foreground">
                     <span>Yared Bekele (ADM-004)</span>
-                    <Badge className="bg-amber-600 text-white text-[10px]">3 Absences</Badge>
+                    <Badge variant="secondary" className="text-[10px]">3 Absences</Badge>
                   </div>
-                  <p className="text-[11px] text-slate-500">Class 7 B · Guardian: Bekele Megersa (0944556677)</p>
-                  <p className="text-[11px] text-amber-700 dark:text-amber-400 font-medium">Flagged for parent attendance meeting</p>
+                  <p className="text-[11px] text-muted-foreground">Class 7 B · Guardian: Bekele Megersa (0944556677)</p>
+                  <p className="text-[11px] text-primary font-medium">Flagged for parent attendance meeting</p>
                 </div>
               </div>
             </div>

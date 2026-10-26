@@ -13,7 +13,7 @@ export function DashboardSkeleton() {
       {/* 4 Stats Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {[1, 2, 3, 4].map((i) => (
-          <Card key={i} className="border-slate-200 dark:border-slate-800 shadow-xs">
+          <Card key={i} className="border-border shadow-xs">
             <CardContent className="p-4 flex items-center justify-between">
               <div className="space-y-2">
                 <Skeleton className="h-3 w-28" />
@@ -27,14 +27,14 @@ export function DashboardSkeleton() {
 
       {/* 2-Column Activity & Attendance Section */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card className="border-slate-200 dark:border-slate-800 shadow-xs">
+        <Card className="border-border shadow-xs">
           <CardContent className="p-5 space-y-4">
-            <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+            <div className="flex items-center justify-between border-b border-border pb-3">
               <Skeleton className="h-5 w-40" />
               <Skeleton className="h-4 w-20" />
             </div>
             {[1, 2, 3, 4].map((i) => (
-              <div key={i} className="flex items-center justify-between py-2 border-b border-slate-50 dark:border-slate-800/40 last:border-0">
+              <div key={i} className="flex items-center justify-between py-2 border-b border-border/50 last:border-0">
                 <div className="space-y-1">
                   <Skeleton className="h-4 w-32" />
                   <Skeleton className="h-3 w-20" />
@@ -45,14 +45,14 @@ export function DashboardSkeleton() {
           </CardContent>
         </Card>
 
-        <Card className="border-slate-200 dark:border-slate-800 shadow-xs">
+        <Card className="border-border shadow-xs">
           <CardContent className="p-5 space-y-4">
-            <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+            <div className="flex items-center justify-between border-b border-border pb-3">
               <Skeleton className="h-5 w-44" />
               <Skeleton className="h-4 w-20" />
             </div>
             {[1, 2, 3, 4].map((i) => (
-              <div key={i} className="flex items-center justify-between py-2 border-b border-slate-50 dark:border-slate-800/40 last:border-0">
+              <div key={i} className="flex items-center justify-between py-2 border-b border-border/50 last:border-0">
                 <div className="space-y-1">
                   <Skeleton className="h-4 w-36" />
                   <Skeleton className="h-3 w-24" />

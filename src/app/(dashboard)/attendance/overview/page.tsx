@@ -31,24 +31,24 @@ export default async function AttendanceOverviewPage({
     return (
       <div className="space-y-6">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white flex items-center gap-2">
-            <CalendarDays className="size-6 text-blue-600" />
+          <h1 className="text-2xl font-bold tracking-tight text-foreground flex items-center gap-2">
+            <CalendarDays className="size-6 text-primary" />
             Two-Week Attendance Overview
           </h1>
         </div>
 
-        <Card className="border-amber-200 dark:border-amber-900/60 bg-amber-50/30 dark:bg-amber-950/20">
+        <Card className="border-border bg-card text-card-foreground">
           <CardHeader>
-            <CardTitle className="text-base flex items-center gap-2 text-amber-800 dark:text-amber-400">
-              <School className="size-5" />
+            <CardTitle className="text-base flex items-center gap-2 text-foreground">
+              <School className="size-5 text-muted-foreground" />
               No Assigned Classes Found
             </CardTitle>
-            <CardDescription>
+            <CardDescription className="text-muted-foreground">
               Your account ({user.email}) does not have any assigned classes.
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <p className="text-sm text-slate-600 dark:text-slate-400">
+            <p className="text-sm text-muted-foreground">
               Please contact an administrator to be assigned to a class before viewing the attendance overview.
             </p>
           </CardContent>
@@ -75,24 +75,24 @@ export default async function AttendanceOverviewPage({
     return (
       <div className="space-y-6">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white flex items-center gap-2">
-            <CalendarDays className="size-6 text-blue-600" />
+          <h1 className="text-2xl font-bold tracking-tight text-foreground flex items-center gap-2">
+            <CalendarDays className="size-6 text-primary" />
             Two-Week Attendance Overview
           </h1>
         </div>
 
-        <Card className="border-rose-200 dark:border-rose-900/60 bg-rose-50/30 dark:bg-rose-950/20">
+        <Card className="border-destructive/30 bg-destructive/10">
           <CardHeader>
-            <CardTitle className="text-base flex items-center gap-2 text-rose-800 dark:text-rose-400">
+            <CardTitle className="text-base flex items-center gap-2 text-destructive">
               <ShieldAlert className="size-5" />
               Access Denied
             </CardTitle>
-            <CardDescription>
+            <CardDescription className="text-destructive/80">
               You do not have authorization to view attendance for the requested class.
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <p className="text-sm text-slate-600 dark:text-slate-400 mb-4">
+            <p className="text-sm text-muted-foreground mb-4">
               Teachers can only access attendance records for their assigned classes.
             </p>
             <Link href={`/attendance/overview?classId=${accessibleClasses[0]!.id}`}>

@@ -231,22 +231,22 @@ export function AttendanceForm({
   return (
     <div className="space-y-6 pb-24">
       {/* Filter Controls: Class Selector & Date Picker */}
-      <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
+      <div className="p-4 rounded-xl border border-border bg-card">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
           <div className="flex flex-col sm:flex-row sm:items-center gap-3">
             {/* Class Selector */}
             <div className="space-y-1">
-              <label className="text-xs font-semibold text-slate-500 dark:text-slate-400 flex items-center gap-1.5 uppercase tracking-wider">
-                <School className="size-3.5 text-slate-500" />
+              <label className="text-xs font-semibold text-muted-foreground flex items-center gap-1.5 uppercase tracking-wider">
+                <School className="size-3.5 text-muted-foreground" />
                 Class
               </label>
               <select
                 value={selectedClassId}
                 onChange={(e) => handleClassChange(e.target.value)}
-                className="w-full sm:w-56 h-9 px-3 text-sm font-medium rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-900 dark:text-white outline-none focus:ring-1 focus:ring-slate-400 transition-colors"
+                className="w-full sm:w-56 h-9 px-3 text-sm font-medium rounded-lg border border-border bg-background text-foreground outline-none transition-colors"
               >
                 {classes.map((cls) => (
-                  <option key={cls.id} value={cls.id} className="dark:bg-slate-900">
+                  <option key={cls.id} value={cls.id}>
                     {cls.name}
                   </option>
                 ))}
@@ -255,8 +255,8 @@ export function AttendanceForm({
 
             {/* Date Picker */}
             <div className="space-y-1">
-              <label className="text-xs font-semibold text-slate-500 dark:text-slate-400 flex items-center gap-1.5 uppercase tracking-wider">
-                <Calendar className="size-3.5 text-slate-500" />
+              <label className="text-xs font-semibold text-muted-foreground flex items-center gap-1.5 uppercase tracking-wider">
+                <Calendar className="size-3.5 text-muted-foreground" />
                 Date
               </label>
               <Input
@@ -272,12 +272,12 @@ export function AttendanceForm({
           {/* Status Indicator & Mark All Action */}
           <div className="flex items-center gap-2.5">
             {hasExistingRecords ? (
-              <Badge variant="outline" className="text-xs font-medium text-slate-600 dark:text-slate-400 gap-1.5 py-1 px-2.5">
-                <History className="size-3 text-slate-500" />
+              <Badge variant="outline" className="text-xs font-medium text-muted-foreground gap-1.5 py-1 px-2.5">
+                <History className="size-3 text-muted-foreground" />
                 <span>Recorded</span>
               </Badge>
             ) : (
-              <Badge variant="outline" className="text-xs font-medium text-slate-500 gap-1.5 py-1 px-2.5">
+              <Badge variant="outline" className="text-xs font-medium text-muted-foreground gap-1.5 py-1 px-2.5">
                 <span>New Session</span>
               </Badge>
             )}
@@ -287,7 +287,7 @@ export function AttendanceForm({
               variant="outline"
               size="sm"
               onClick={handleMarkAllPresent}
-              className="text-xs font-medium gap-1.5 h-9 px-3 rounded-lg text-emerald-700 dark:text-emerald-400 border-emerald-300 dark:border-emerald-800 hover:bg-emerald-50 dark:hover:bg-emerald-950/20"
+              className="text-xs font-medium gap-1.5 h-9 px-3 rounded-lg"
             >
               <CheckCheck className="size-3.5" />
               <span>Mark All Present</span>
@@ -304,20 +304,20 @@ export function AttendanceForm({
           onClick={() => setStatusFilter(statusFilter === "PRESENT" ? "ALL" : "PRESENT")}
           className={`p-3.5 rounded-xl border text-left transition-colors ${
             statusFilter === "PRESENT"
-              ? "border-emerald-600 bg-emerald-50/50 dark:bg-emerald-950/20 ring-1 ring-emerald-600"
-              : "border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:border-slate-300"
+              ? "border-primary bg-primary/10 ring-1 ring-primary"
+              : "border-border bg-card hover:bg-muted/50"
           }`}
         >
           <div className="flex items-center justify-between">
-            <span className="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+            <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
               Present
             </span>
-            <CheckCircle2 className="size-4 text-emerald-600 dark:text-emerald-400" />
+            <CheckCircle2 className="size-4 text-primary" />
           </div>
-          <div className="text-2xl font-bold text-slate-900 dark:text-white mt-1">
+          <div className="text-2xl font-bold text-foreground mt-1">
             {summary.present}
           </div>
-          <span className="text-[11px] text-slate-500">
+          <span className="text-[11px] text-muted-foreground">
             {summary.attendanceRate}% of roster
           </span>
         </button>
@@ -328,20 +328,20 @@ export function AttendanceForm({
           onClick={() => setStatusFilter(statusFilter === "ABSENT" ? "ALL" : "ABSENT")}
           className={`p-3.5 rounded-xl border text-left transition-colors ${
             statusFilter === "ABSENT"
-              ? "border-rose-600 bg-rose-50/50 dark:bg-rose-950/20 ring-1 ring-rose-600"
-              : "border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:border-slate-300"
+              ? "border-destructive bg-destructive/10 ring-1 ring-destructive"
+              : "border-border bg-card hover:bg-muted/50"
           }`}
         >
           <div className="flex items-center justify-between">
-            <span className="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+            <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
               Absent
             </span>
-            <XCircle className="size-4 text-rose-600 dark:text-rose-400" />
+            <XCircle className="size-4 text-destructive" />
           </div>
-          <div className="text-2xl font-bold text-slate-900 dark:text-white mt-1">
+          <div className="text-2xl font-bold text-foreground mt-1">
             {summary.absent}
           </div>
-          <span className="text-[11px] text-slate-500">
+          <span className="text-[11px] text-muted-foreground">
             Triggers SMS dispatch
           </span>
         </button>
@@ -352,20 +352,20 @@ export function AttendanceForm({
           onClick={() => setStatusFilter(statusFilter === "LEAVE" ? "ALL" : "LEAVE")}
           className={`p-3.5 rounded-xl border text-left transition-colors ${
             statusFilter === "LEAVE"
-              ? "border-amber-600 bg-amber-50/50 dark:bg-amber-950/20 ring-1 ring-amber-600"
-              : "border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:border-slate-300"
+              ? "border-primary bg-primary/10 ring-1 ring-primary"
+              : "border-border bg-card hover:bg-muted/50"
           }`}
         >
           <div className="flex items-center justify-between">
-            <span className="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+            <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
               Excused Leave
             </span>
-            <FileQuestion className="size-4 text-amber-600 dark:text-amber-400" />
+            <FileQuestion className="size-4 text-muted-foreground" />
           </div>
-          <div className="text-2xl font-bold text-slate-900 dark:text-white mt-1">
+          <div className="text-2xl font-bold text-foreground mt-1">
             {summary.leave}
           </div>
-          <span className="text-[11px] text-slate-500">
+          <span className="text-[11px] text-muted-foreground">
             Excused absence
           </span>
         </button>
@@ -376,20 +376,20 @@ export function AttendanceForm({
           onClick={() => setStatusFilter(statusFilter === "LATE" ? "ALL" : "LATE")}
           className={`p-3.5 rounded-xl border text-left transition-colors ${
             statusFilter === "LATE"
-              ? "border-blue-600 bg-blue-50/50 dark:bg-blue-950/20 ring-1 ring-blue-600"
-              : "border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:border-slate-300"
+              ? "border-primary bg-primary/10 ring-1 ring-primary"
+              : "border-border bg-card hover:bg-muted/50"
           }`}
         >
           <div className="flex items-center justify-between">
-            <span className="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+            <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
               Late Arrival
             </span>
-            <Clock className="size-4 text-blue-600 dark:text-blue-400" />
+            <Clock className="size-4 text-muted-foreground" />
           </div>
-          <div className="text-2xl font-bold text-slate-900 dark:text-white mt-1">
+          <div className="text-2xl font-bold text-foreground mt-1">
             {summary.late}
           </div>
-          <span className="text-[11px] text-slate-500">
+          <span className="text-[11px] text-muted-foreground">
             Arrived after roll call
           </span>
         </button>
@@ -397,14 +397,14 @@ export function AttendanceForm({
 
       {/* SMS Alert Notice */}
       {summary.absent > 0 && (
-        <div className="p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/60 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+        <div className="p-3.5 rounded-xl border border-border bg-muted/50 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
           <div className="flex items-center gap-2.5">
-            <Send className="size-4 text-blue-600 dark:text-blue-400 shrink-0" />
-            <p className="text-slate-700 dark:text-slate-300">
+            <Send className="size-4 text-primary shrink-0" />
+            <p className="text-foreground">
               Saving will notify guardians of <strong>{summary.absent} absent student{summary.absent > 1 ? "s" : ""}</strong> by SMS.
             </p>
           </div>
-          <span className="font-medium text-slate-600 dark:text-slate-400 shrink-0">
+          <span className="font-medium text-muted-foreground shrink-0">
             {summary.absent} {summary.absent === 1 ? "notification" : "notifications"}
           </span>
         </div>
@@ -413,7 +413,7 @@ export function AttendanceForm({
       {/* Search and Filters Bar */}
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
         <div className="relative flex-1 max-w-md">
-          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-slate-400" />
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
           <Input
             type="text"
             placeholder="Search student by name or admission number..."
@@ -429,22 +429,22 @@ export function AttendanceForm({
               variant="ghost"
               size="sm"
               onClick={() => setStatusFilter("ALL")}
-              className="text-xs text-slate-500 hover:text-slate-800 dark:hover:text-slate-200"
+              className="text-xs text-muted-foreground hover:text-foreground"
             >
               Reset Filter
             </Button>
           )}
-          <p className="text-xs font-medium text-slate-500 dark:text-slate-400">
-            Showing <span className="font-bold text-slate-900 dark:text-white">{filteredStudents.length}</span> of {initialStudents.length} students
+          <p className="text-xs font-medium text-muted-foreground">
+            Showing <span className="font-bold text-foreground">{filteredStudents.length}</span> of {initialStudents.length} students
           </p>
         </div>
       </div>
 
       {/* Student Attendance Roster Table */}
-      <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 overflow-hidden">
+      <div className="rounded-xl border border-border bg-card overflow-hidden">
         <Table>
           <TableHeader>
-            <tr className="border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/60 text-slate-600 dark:text-slate-400 font-medium text-xs">
+            <tr className="border-b border-border bg-muted/50 text-foreground font-medium text-xs">
               <TableHead className="w-28 py-2.5 px-4 font-semibold">Adm No</TableHead>
               <TableHead className="py-2.5 px-4 font-semibold">Student Name</TableHead>
               <TableHead className="py-2.5 px-4 text-right font-semibold pr-6">Attendance Status</TableHead>
@@ -453,10 +453,10 @@ export function AttendanceForm({
           <TableBody>
             {filteredStudents.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={3} className="h-32 text-center text-slate-500">
+                <TableCell colSpan={3} className="h-32 text-center text-muted-foreground">
                   <div className="flex flex-col items-center justify-center gap-1.5">
-                    <Users className="size-6 text-slate-400" />
-                    <p className="text-sm font-medium">No students match current search or filter</p>
+                    <Users className="size-6 text-muted-foreground" />
+                    <p className="text-sm font-medium text-foreground">No students match current search or filter</p>
                     {statusFilter !== "ALL" && (
                       <Button
                         variant="outline"
@@ -477,13 +477,13 @@ export function AttendanceForm({
                 return (
                   <TableRow
                     key={student.studentId}
-                    className={`hover:bg-slate-50/70 dark:hover:bg-slate-800/30 transition-colors ${
-                      currentStatus === "ABSENT" ? "bg-rose-50/40 dark:bg-rose-950/10" : ""
+                    className={`hover:bg-muted/50 transition-colors ${
+                      currentStatus === "ABSENT" ? "bg-destructive/5" : ""
                     }`}
                   >
                     {/* Admission Number */}
                     <TableCell className="py-2.5 px-4">
-                      <span className="font-mono text-xs font-medium text-slate-600 dark:text-slate-400">
+                      <span className="font-mono text-xs font-medium text-muted-foreground">
                         {student.admissionNo}
                       </span>
                     </TableCell>
@@ -491,11 +491,11 @@ export function AttendanceForm({
                     {/* Student Full Name */}
                     <TableCell className="py-2.5 px-4">
                       <div className="flex items-center gap-2.5">
-                        <span className="font-medium text-slate-900 dark:text-white text-sm">
+                        <span className="font-medium text-foreground text-sm">
                           {student.fullName}
                         </span>
                         {currentStatus === "ABSENT" && (
-                          <span className="text-[11px] text-rose-600 dark:text-rose-400 flex items-center gap-1 font-medium">
+                          <span className="text-[11px] text-destructive flex items-center gap-1 font-medium">
                             <Send className="size-2.5" />
                             SMS active
                           </span>
@@ -505,15 +505,15 @@ export function AttendanceForm({
 
                     {/* Segmented Status Controller: P · A · L · T */}
                     <TableCell className="text-right py-2.5 px-4 pr-6">
-                      <div className="inline-flex items-center p-0.5 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 gap-0.5">
+                      <div className="inline-flex items-center p-0.5 rounded-lg bg-muted border border-border gap-0.5">
                         {/* PRESENT (P) */}
                         <button
                           type="button"
                           onClick={() => handleStatusChange(student.studentId, "PRESENT")}
                           className={`px-2.5 py-1 text-xs font-semibold rounded-md transition-all ${
                             currentStatus === "PRESENT"
-                              ? "bg-emerald-600 text-white shadow-xs"
-                              : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
+                              ? "bg-primary text-primary-foreground shadow-xs"
+                              : "text-muted-foreground hover:text-foreground"
                           }`}
                           title="Mark Present"
                         >
@@ -526,8 +526,8 @@ export function AttendanceForm({
                           onClick={() => handleStatusChange(student.studentId, "ABSENT")}
                           className={`px-2.5 py-1 text-xs font-semibold rounded-md transition-all ${
                             currentStatus === "ABSENT"
-                              ? "bg-rose-600 text-white shadow-xs"
-                              : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
+                              ? "bg-destructive text-destructive-foreground shadow-xs"
+                              : "text-muted-foreground hover:text-foreground"
                           }`}
                           title="Mark Absent"
                         >
@@ -540,8 +540,8 @@ export function AttendanceForm({
                           onClick={() => handleStatusChange(student.studentId, "LEAVE")}
                           className={`px-2.5 py-1 text-xs font-semibold rounded-md transition-all ${
                             currentStatus === "LEAVE"
-                              ? "bg-amber-600 text-white shadow-xs"
-                              : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
+                              ? "bg-secondary text-secondary-foreground shadow-xs"
+                              : "text-muted-foreground hover:text-foreground"
                           }`}
                           title="Mark On Leave"
                         >
@@ -554,8 +554,8 @@ export function AttendanceForm({
                           onClick={() => handleStatusChange(student.studentId, "LATE")}
                           className={`px-2.5 py-1 text-xs font-semibold rounded-md transition-all ${
                             currentStatus === "LATE"
-                              ? "bg-blue-600 text-white shadow-xs"
-                              : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
+                              ? "bg-secondary text-secondary-foreground shadow-xs"
+                              : "text-muted-foreground hover:text-foreground"
                           }`}
                           title="Mark Late"
                         >
@@ -573,19 +573,19 @@ export function AttendanceForm({
 
       {/* Floating Bottom Sticky Save Action Bar */}
       <div className="fixed bottom-4 left-0 right-0 z-30 px-4 md:px-8 max-w-4xl mx-auto pointer-events-none">
-        <div className="pointer-events-auto p-3 rounded-xl bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border border-slate-200 dark:border-slate-800 shadow-lg flex flex-col sm:flex-row items-center justify-between gap-3">
+        <div className="pointer-events-auto p-3 rounded-xl bg-card/95 backdrop-blur-md border border-border shadow-lg flex flex-col sm:flex-row items-center justify-between gap-3">
           <div className="flex flex-wrap items-center gap-1.5 text-xs">
-            <span className="font-medium text-slate-500 mr-1">Roster:</span>
-            <span className="px-2 py-0.5 rounded-md bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 font-semibold border border-emerald-200 dark:border-emerald-800">
+            <span className="font-medium text-muted-foreground mr-1">Roster:</span>
+            <span className="px-2 py-0.5 rounded-md bg-primary/10 text-primary font-semibold border border-primary/20">
               {summary.present} P
             </span>
-            <span className="px-2 py-0.5 rounded-md bg-rose-50 dark:bg-rose-950/40 text-rose-700 dark:text-rose-400 font-semibold border border-rose-200 dark:border-rose-800">
+            <span className="px-2 py-0.5 rounded-md bg-destructive/10 text-destructive font-semibold border border-destructive/20">
               {summary.absent} A
             </span>
-            <span className="px-2 py-0.5 rounded-md bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400 font-semibold border border-amber-200 dark:border-amber-800">
+            <span className="px-2 py-0.5 rounded-md bg-muted text-muted-foreground font-semibold border border-border">
               {summary.leave} L
             </span>
-            <span className="px-2 py-0.5 rounded-md bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-400 font-semibold border border-blue-200 dark:border-blue-800">
+            <span className="px-2 py-0.5 rounded-md bg-muted text-muted-foreground font-semibold border border-border">
               {summary.late} T
             </span>
           </div>
@@ -606,7 +606,7 @@ export function AttendanceForm({
               type="button"
               onClick={handleSaveClick}
               disabled={isPending || initialStudents.length === 0}
-              className="h-9 px-4 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-medium text-xs gap-1.5 flex-1 sm:flex-initial"
+              className="h-9 px-4 rounded-lg font-medium text-xs gap-1.5 flex-1 sm:flex-initial"
             >
               {isPending ? (
                 <>
@@ -617,7 +617,7 @@ export function AttendanceForm({
                 <>
                   <Save className="size-3.5" />
                   <span>Save Attendance</span>
-                  <span className="hidden lg:inline text-[10px] opacity-75 font-mono ml-1 px-1 rounded bg-emerald-700">
+                  <span className="hidden lg:inline text-[10px] opacity-75 font-mono ml-1 px-1 rounded bg-primary-foreground/20">
                     Ctrl+S
                   </span>
                 </>
@@ -631,20 +631,20 @@ export function AttendanceForm({
       <Dialog open={isConfirmOpen} onOpenChange={setIsConfirmOpen}>
         <DialogContent className="sm:max-w-md rounded-2xl">
           <DialogHeader>
-            <div className="flex items-center gap-2.5 text-rose-600 mb-1">
-              <div className="p-2 bg-rose-500/10 rounded-xl">
+            <div className="flex items-center gap-2.5 text-destructive mb-1">
+              <div className="p-2 bg-destructive/10 rounded-xl">
                 <AlertTriangle className="size-5" />
               </div>
-              <DialogTitle className="text-lg font-bold text-slate-900 dark:text-white">
+              <DialogTitle className="text-lg font-bold text-foreground">
                 High Absence Rate Detected
               </DialogTitle>
             </div>
-            <DialogDescription className="text-sm text-slate-600 dark:text-slate-400 pt-2 leading-relaxed">
+            <DialogDescription className="text-sm text-muted-foreground pt-2 leading-relaxed">
               You are about to save attendance with{" "}
-              <strong className="text-rose-600 font-bold">
+              <strong className="text-destructive font-bold">
                 {summary.absent} out of {summary.total} students ({Math.round(summary.absencePercent)}%)
               </strong>{" "}
-              flagged as <span className="font-semibold text-rose-600">Absent</span> for{" "}
+              flagged as <span className="font-semibold text-destructive">Absent</span> for{" "}
               <strong>{selectedDate}</strong>.
             </DialogDescription>
           </DialogHeader>
@@ -661,9 +661,10 @@ export function AttendanceForm({
             </Button>
             <Button
               type="button"
+              variant="destructive"
               size="sm"
               onClick={executeSave}
-              className="bg-rose-600 hover:bg-rose-700 text-white font-semibold rounded-xl"
+              className="font-semibold rounded-xl"
             >
               Confirm &amp; Dispatch SMS
             </Button>

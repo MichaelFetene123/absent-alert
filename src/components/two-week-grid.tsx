@@ -94,8 +94,8 @@ export function TwoWeekGrid({ data, selectedClassId }: Props) {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">
-            <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white flex items-center gap-2">
-              <CalendarDays className="size-6 text-blue-600 dark:text-blue-400" />
+            <h1 className="text-2xl font-bold tracking-tight text-foreground flex items-center gap-2">
+              <CalendarDays className="size-6 text-primary" />
               Two-Week Attendance Overview
             </h1>
             <Badge variant="outline" className="text-xs font-normal">
@@ -111,13 +111,13 @@ export function TwoWeekGrid({ data, selectedClassId }: Props) {
             onClick={exportToCSV}
             className="h-8 px-2.5 text-xs font-medium gap-1.5"
           >
-            <Download className="size-3.5 text-slate-500" />
+            <Download className="size-3.5 text-muted-foreground" />
             <span>Export CSV</span>
           </Button>
 
           <Link href={`/attendance?classId=${selectedClassId}`}>
             <Button variant="outline" size="sm" className="h-8 px-2.5 text-xs font-medium gap-1.5">
-              <CalendarCheck className="size-3.5 text-emerald-600" />
+              <CalendarCheck className="size-3.5 text-primary" />
               <span>Daily Roster</span>
             </Button>
           </Link>
@@ -125,17 +125,17 @@ export function TwoWeekGrid({ data, selectedClassId }: Props) {
       </div>
 
       {/* Class & Date Selector Controls */}
-      <div className="p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+      <div className="p-3.5 rounded-xl border border-border bg-card flex flex-col lg:flex-row lg:items-center justify-between gap-3">
         {/* Class Dropdown */}
         <div className="flex items-center gap-2">
-          <label htmlFor="class-select" className="text-xs font-medium text-slate-500 dark:text-slate-400 shrink-0">
+          <label htmlFor="class-select" className="text-xs font-medium text-muted-foreground shrink-0">
             Class:
           </label>
           <select
             id="class-select"
             value={selectedClassId}
             onChange={(e) => handleClassChange(e.target.value)}
-            className="h-8 min-w-52 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-2.5 text-xs font-medium text-slate-900 dark:text-slate-100 outline-none focus:ring-1 focus:ring-slate-400"
+            className="h-8 min-w-52 rounded-lg border border-border bg-background px-2.5 text-xs font-medium text-foreground outline-none"
           >
             {data.accessibleClasses.map((c) => (
               <option key={c.id} value={c.id}>
@@ -158,7 +158,7 @@ export function TwoWeekGrid({ data, selectedClassId }: Props) {
             <span>Prev 2 Weeks</span>
           </Button>
 
-          <span className="px-3 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-medium text-xs border border-slate-200 dark:border-slate-700">
+          <span className="px-3 py-1 rounded-lg bg-muted text-foreground font-medium text-xs border border-border">
             {formatDateRange(data.startDate, data.endDate)}
           </span>
 
@@ -178,7 +178,7 @@ export function TwoWeekGrid({ data, selectedClassId }: Props) {
               variant="ghost"
               size="sm"
               onClick={() => handleDateNav(data.currentStartDate)}
-              className="text-xs h-8 px-2 text-blue-600 dark:text-blue-400 gap-1 font-medium"
+              className="text-xs h-8 px-2 text-primary gap-1 font-medium"
             >
               <RotateCcw className="size-3" />
               <span>Current</span>
@@ -190,60 +190,60 @@ export function TwoWeekGrid({ data, selectedClassId }: Props) {
       {/* KPI Cards for the 2-Week Window */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         {/* Total Active Students */}
-        <Card className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
+        <Card className="rounded-xl border border-border bg-card">
           <CardContent className="p-4">
-            <p className="text-xs font-medium text-slate-500 uppercase tracking-wider">
+            <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
               Enrolled
             </p>
-            <div className="text-2xl font-bold text-slate-900 dark:text-white mt-1">
+            <div className="text-2xl font-bold text-foreground mt-1">
               {data.totals.totalStudents}
             </div>
-            <p className="text-[11px] text-slate-500 mt-0.5">
+            <p className="text-[11px] text-muted-foreground mt-0.5">
               {data.classInfo?.name}
             </p>
           </CardContent>
         </Card>
 
         {/* Overall Attendance Rate */}
-        <Card className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
+        <Card className="rounded-xl border border-border bg-card">
           <CardContent className="p-4">
-            <p className="text-xs font-medium text-slate-500 uppercase tracking-wider">
+            <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
               Attendance Rate
             </p>
-            <div className="text-2xl font-bold text-emerald-600 dark:text-emerald-400 mt-1">
+            <div className="text-2xl font-bold text-primary mt-1">
               {data.totals.overallAttendanceRate !== null ? `${data.totals.overallAttendanceRate}%` : "—"}
             </div>
-            <p className="text-[11px] text-slate-500 mt-0.5">
+            <p className="text-[11px] text-muted-foreground mt-0.5">
               {data.totals.totalPresent} presence marks
             </p>
           </CardContent>
         </Card>
 
         {/* Total Absences */}
-        <Card className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
+        <Card className="rounded-xl border border-border bg-card">
           <CardContent className="p-4">
-            <p className="text-xs font-medium text-slate-500 uppercase tracking-wider">
+            <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
               Total Absences
             </p>
-            <div className="text-2xl font-bold text-rose-600 dark:text-rose-400 mt-1">
+            <div className="text-2xl font-bold text-destructive mt-1">
               {data.totals.totalAbsent}
             </div>
-            <p className="text-[11px] text-slate-500 mt-0.5">
+            <p className="text-[11px] text-muted-foreground mt-0.5">
               14-day window
             </p>
           </CardContent>
         </Card>
 
         {/* Chronic Absence Alert Count */}
-        <Card className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
+        <Card className="rounded-xl border border-border bg-card">
           <CardContent className="p-4">
-            <p className="text-xs font-medium text-slate-500 uppercase tracking-wider">
+            <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
               Chronic Absence
             </p>
-            <div className={`text-2xl font-bold mt-1 ${highAbsenceStudents.length > 0 ? "text-amber-600 dark:text-amber-400" : "text-slate-900 dark:text-white"}`}>
+            <div className={`text-2xl font-bold mt-1 ${highAbsenceStudents.length > 0 ? "text-destructive" : "text-foreground"}`}>
               {highAbsenceStudents.length}
             </div>
-            <p className="text-[11px] text-slate-500 mt-0.5">
+            <p className="text-[11px] text-muted-foreground mt-0.5">
               &ge; 3 absences
             </p>
           </CardContent>
@@ -252,13 +252,13 @@ export function TwoWeekGrid({ data, selectedClassId }: Props) {
 
       {/* Chronic Absence Warning (if applicable) */}
       {highAbsenceStudents.length > 0 && (
-        <div className="p-3 rounded-xl border border-rose-200 dark:border-rose-900/60 bg-rose-50/40 dark:bg-rose-950/20 flex items-start gap-2.5 text-xs">
-          <AlertTriangle className="size-4 text-rose-600 shrink-0 mt-0.5" />
+        <div className="p-3 rounded-xl border border-destructive/20 bg-destructive/10 flex items-start gap-2.5 text-xs">
+          <AlertTriangle className="size-4 text-destructive shrink-0 mt-0.5" />
           <div className="space-y-0.5">
-            <span className="font-semibold text-rose-900 dark:text-rose-200">
+            <span className="font-semibold text-destructive">
               Chronic Absence Warning:
             </span>
-            <p className="text-rose-800/90 dark:text-rose-300">
+            <p className="text-foreground">
               <strong>{highAbsenceStudents.length} student(s)</strong> ({highAbsenceStudents.map((s) => s.fullName).join(", ")}) have reached 3 or more absences during this window.
             </p>
           </div>
@@ -266,67 +266,67 @@ export function TwoWeekGrid({ data, selectedClassId }: Props) {
       )}
 
       {/* Legend */}
-      <div className="flex flex-wrap items-center justify-between gap-3 text-xs text-slate-500 dark:text-slate-400 bg-white dark:bg-slate-900 p-3 rounded-xl border border-slate-200 dark:border-slate-800">
+      <div className="flex flex-wrap items-center justify-between gap-3 text-xs text-muted-foreground bg-card p-3 rounded-xl border border-border">
         <div className="flex flex-wrap items-center gap-3">
-          <span className="font-medium text-slate-700 dark:text-slate-300">Legend:</span>
+          <span className="font-medium text-foreground">Legend:</span>
           <div className="flex items-center gap-1">
-            <span className="size-5 rounded flex items-center justify-center font-bold text-[10px] bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 border border-emerald-300 dark:border-emerald-800">
+            <span className="size-5 rounded flex items-center justify-center font-bold text-[10px] bg-primary/10 text-primary border border-primary/20">
               P
             </span>
             <span>Present</span>
           </div>
           <div className="flex items-center gap-1">
-            <span className="size-5 rounded flex items-center justify-center font-bold text-[10px] bg-rose-50 dark:bg-rose-950/40 text-rose-700 dark:text-rose-400 border border-rose-300 dark:border-rose-800">
+            <span className="size-5 rounded flex items-center justify-center font-bold text-[10px] bg-destructive/10 text-destructive border border-destructive/20">
               A
             </span>
             <span>Absent</span>
           </div>
           <div className="flex items-center gap-1">
-            <span className="size-5 rounded flex items-center justify-center font-bold text-[10px] bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400 border border-amber-300 dark:border-amber-800">
+            <span className="size-5 rounded flex items-center justify-center font-bold text-[10px] bg-secondary text-secondary-foreground border border-border">
               L
             </span>
             <span>Leave</span>
           </div>
           <div className="flex items-center gap-1">
-            <span className="size-5 rounded flex items-center justify-center font-bold text-[10px] bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-400 border border-blue-300 dark:border-blue-800">
+            <span className="size-5 rounded flex items-center justify-center font-bold text-[10px] bg-secondary text-secondary-foreground border border-border">
               T
             </span>
             <span>Late</span>
           </div>
           <div className="flex items-center gap-1">
-            <span className="size-5 rounded flex items-center justify-center font-bold text-[10px] bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400 border border-slate-200 dark:border-slate-700">
+            <span className="size-5 rounded flex items-center justify-center font-bold text-[10px] bg-muted text-muted-foreground border border-border">
               H
             </span>
             <span>Weekend</span>
           </div>
           <div className="flex items-center gap-1">
-            <span className="text-slate-400 font-bold px-1">—</span>
+            <span className="text-muted-foreground font-bold px-1">—</span>
             <span>Unrecorded</span>
           </div>
         </div>
       </div>
 
       {/* Two-Week Grid Table */}
-      <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 overflow-hidden">
+      <div className="rounded-xl border border-border bg-card overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-xs text-left border-collapse">
             <thead>
               {/* Header Row: Column Titles & Dates */}
-              <tr className="bg-slate-100/90 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800">
-                <th className="p-3 font-bold text-slate-700 dark:text-slate-300 sticky left-0 z-20 bg-slate-100 dark:bg-slate-900 min-w-28 border-r border-slate-200 dark:border-slate-800 uppercase tracking-wider text-[11px]">
+              <tr className="bg-muted/50 border-b border-border">
+                <th className="p-3 font-bold text-foreground sticky left-0 z-20 bg-card min-w-28 border-r border-border uppercase tracking-wider text-[11px]">
                   Adm No
                 </th>
-                <th className="p-3 font-bold text-slate-700 dark:text-slate-300 sticky left-28 z-20 bg-slate-100 dark:bg-slate-900 min-w-48 border-r border-slate-200 dark:border-slate-800 uppercase tracking-wider text-[11px]">
+                <th className="p-3 font-bold text-foreground sticky left-28 z-20 bg-card min-w-48 border-r border-border uppercase tracking-wider text-[11px]">
                   Student Name
                 </th>
                 <th
-                  className="p-2 text-center font-bold text-rose-700 dark:text-rose-400 bg-rose-50/70 dark:bg-rose-950/40 w-12 border-r border-slate-200 dark:border-slate-800"
+                  className="p-2 text-center font-bold text-destructive bg-destructive/5 w-12 border-r border-border"
                   title="Total Absences in 2 weeks"
                 >
                   Abs
                 </th>
                 <th
-                  className="p-2 text-center font-bold text-amber-700 dark:text-amber-400 bg-amber-50/70 dark:bg-amber-950/40 w-12 border-r border-slate-200 dark:border-slate-800"
+                  className="p-2 text-center font-bold text-muted-foreground bg-muted/40 w-12 border-r border-border"
                   title="Total Leaves in 2 weeks"
                 >
                   Lve
@@ -336,10 +336,10 @@ export function TwoWeekGrid({ data, selectedClassId }: Props) {
                 {data.days.map((d) => (
                   <th
                     key={d.date}
-                    className={`p-2 text-center min-w-12 border-r border-slate-200 dark:border-slate-800 transition-colors ${
+                    className={`p-2 text-center min-w-12 border-r border-border transition-colors ${
                       d.isWeekend
-                        ? "bg-slate-200/40 dark:bg-slate-800/30 text-slate-400"
-                        : "hover:bg-blue-50 dark:hover:bg-blue-950/40 cursor-pointer"
+                        ? "bg-muted/30 text-muted-foreground"
+                        : "hover:bg-muted/80 cursor-pointer"
                     }`}
                   >
                     <Link
@@ -347,10 +347,10 @@ export function TwoWeekGrid({ data, selectedClassId }: Props) {
                       className="block group"
                       title={`Open attendance roster for ${d.date}`}
                     >
-                      <div className="text-[10px] uppercase font-bold text-slate-500 dark:text-slate-400 group-hover:text-blue-600">
+                      <div className="text-[10px] uppercase font-bold text-muted-foreground group-hover:text-primary">
                         {d.dayOfWeek}
                       </div>
-                      <div className="text-xs font-extrabold text-slate-900 dark:text-slate-100 group-hover:text-blue-600">
+                      <div className="text-xs font-extrabold text-foreground group-hover:text-primary">
                         {d.dayOfMonth}
                       </div>
                     </Link>
@@ -360,24 +360,24 @@ export function TwoWeekGrid({ data, selectedClassId }: Props) {
 
               {/* Summary Rows Directly Below Headers */}
               {/* Row 1: Total Present */}
-              <tr className="bg-emerald-500/10 border-b border-emerald-500/20 font-semibold text-[11px]">
+              <tr className="bg-primary/5 border-b border-border font-semibold text-[11px]">
                 <td
                   colSpan={2}
-                  className="p-2.5 text-emerald-950 dark:text-emerald-200 sticky left-0 z-20 bg-emerald-500/15 dark:bg-emerald-950/90 border-r border-slate-200 dark:border-slate-800 font-bold"
+                  className="p-2.5 text-primary sticky left-0 z-20 bg-card border-r border-border font-bold"
                 >
                   Total Present
                 </td>
-                <td className="p-1 text-center font-extrabold text-emerald-800 dark:text-emerald-300 border-r border-slate-200 dark:border-slate-800">
+                <td className="p-1 text-center font-extrabold text-primary border-r border-border">
                   {data.totals.totalPresent}
                 </td>
-                <td className="p-1 text-center text-slate-400 border-r border-slate-200 dark:border-slate-800">
+                <td className="p-1 text-center text-muted-foreground border-r border-border">
                   —
                 </td>
                 {data.dailySummaries.map((s) => (
                   <td
                     key={`present-${s.date}`}
-                    className={`p-1 text-center border-r border-slate-200 dark:border-slate-800 ${
-                      s.isWeekend ? "bg-slate-200/30 dark:bg-slate-800/20 text-slate-400" : "text-emerald-700 dark:text-emerald-300 font-bold"
+                    className={`p-1 text-center border-r border-border ${
+                      s.isWeekend ? "bg-muted/20 text-muted-foreground" : "text-primary font-bold"
                     }`}
                   >
                     {s.isWeekend ? "—" : s.present}
@@ -386,24 +386,24 @@ export function TwoWeekGrid({ data, selectedClassId }: Props) {
               </tr>
 
               {/* Row 2: Total Absent */}
-              <tr className="bg-rose-500/10 border-b border-rose-500/20 font-semibold text-[11px]">
+              <tr className="bg-destructive/5 border-b border-border font-semibold text-[11px]">
                 <td
                   colSpan={2}
-                  className="p-2.5 text-rose-950 dark:text-rose-200 sticky left-0 z-20 bg-rose-500/15 dark:bg-rose-950/90 border-r border-slate-200 dark:border-slate-800 font-bold"
+                  className="p-2.5 text-destructive sticky left-0 z-20 bg-card border-r border-border font-bold"
                 >
                   Total Absent
                 </td>
-                <td className="p-1 text-center font-extrabold text-rose-800 dark:text-rose-300 border-r border-slate-200 dark:border-slate-800">
+                <td className="p-1 text-center font-extrabold text-destructive border-r border-border">
                   {data.totals.totalAbsent}
                 </td>
-                <td className="p-1 text-center text-slate-400 border-r border-slate-200 dark:border-slate-800">
+                <td className="p-1 text-center text-muted-foreground border-r border-border">
                   —
                 </td>
                 {data.dailySummaries.map((s) => (
                   <td
                     key={`absent-${s.date}`}
-                    className={`p-1 text-center border-r border-slate-200 dark:border-slate-800 ${
-                      s.isWeekend ? "bg-slate-200/30 dark:bg-slate-800/20 text-slate-400" : s.absent > 0 ? "text-rose-700 dark:text-rose-300 font-bold" : "text-slate-400"
+                    className={`p-1 text-center border-r border-border ${
+                      s.isWeekend ? "bg-muted/20 text-muted-foreground" : s.absent > 0 ? "text-destructive font-bold" : "text-muted-foreground"
                     }`}
                   >
                     {s.isWeekend ? "—" : s.absent}
@@ -412,28 +412,28 @@ export function TwoWeekGrid({ data, selectedClassId }: Props) {
               </tr>
 
               {/* Row 3: Daily Attendance % */}
-              <tr className="bg-slate-50 dark:bg-slate-900/60 border-b border-slate-200 dark:border-slate-800 text-[11px] font-semibold">
+              <tr className="bg-muted/30 border-b border-border text-[11px] font-semibold">
                 <td
                   colSpan={2}
-                  className="p-2.5 text-slate-700 dark:text-slate-300 sticky left-0 z-20 bg-slate-50 dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 font-bold"
+                  className="p-2.5 text-foreground sticky left-0 z-20 bg-card border-r border-border font-bold"
                 >
                   Daily Attendance Rate
                 </td>
-                <td className="p-1 text-center font-extrabold text-blue-700 dark:text-blue-300 border-r border-slate-200 dark:border-slate-800">
+                <td className="p-1 text-center font-extrabold text-primary border-r border-border">
                   {data.totals.overallAttendanceRate !== null ? `${data.totals.overallAttendanceRate}%` : "—"}
                 </td>
-                <td className="p-1 text-center text-slate-400 border-r border-slate-200 dark:border-slate-800">
+                <td className="p-1 text-center text-muted-foreground border-r border-border">
                   —
                 </td>
                 {data.dailySummaries.map((s) => (
                   <td
                     key={`rate-${s.date}`}
-                    className={`p-1 text-center border-r border-slate-200 dark:border-slate-800 ${
+                    className={`p-1 text-center border-r border-border ${
                       s.isWeekend
-                        ? "bg-slate-200/30 dark:bg-slate-800/20 text-slate-400"
+                        ? "bg-muted/20 text-muted-foreground"
                         : s.attendanceRate !== null
-                        ? "text-slate-800 dark:text-slate-200 font-bold"
-                        : "text-slate-400"
+                        ? "text-foreground font-bold"
+                        : "text-muted-foreground"
                     }`}
                   >
                     {s.isWeekend ? "—" : s.attendanceRate !== null ? `${s.attendanceRate}%` : "—"}
@@ -443,10 +443,10 @@ export function TwoWeekGrid({ data, selectedClassId }: Props) {
             </thead>
 
             {/* Student Attendance Rows */}
-            <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60 bg-white dark:bg-slate-950">
+            <tbody className="divide-y divide-border bg-card">
               {data.students.length === 0 ? (
                 <tr>
-                  <td colSpan={18} className="text-center py-16 text-slate-500">
+                  <td colSpan={18} className="text-center py-16 text-muted-foreground">
                     No active students enrolled in this class.
                   </td>
                 </tr>
@@ -454,17 +454,17 @@ export function TwoWeekGrid({ data, selectedClassId }: Props) {
                 data.students.map((student) => (
                   <tr
                     key={student.studentId}
-                    className="hover:bg-slate-50/80 dark:hover:bg-slate-900/40 transition-colors"
+                    className="hover:bg-muted/40 transition-colors"
                   >
                     {/* Admission No */}
-                    <td className="p-2.5 font-mono text-slate-600 dark:text-slate-400 sticky left-0 z-10 bg-white dark:bg-slate-950 border-r border-slate-200 dark:border-slate-800">
-                      <span className="px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-[11px] font-semibold">
+                    <td className="p-2.5 font-mono text-muted-foreground sticky left-0 z-10 bg-card border-r border-border">
+                      <span className="px-2 py-0.5 rounded bg-muted text-[11px] font-semibold text-foreground">
                         {student.admissionNo}
                       </span>
                     </td>
 
                     {/* Student Name */}
-                    <td className="p-2.5 font-semibold text-slate-900 dark:text-slate-100 sticky left-28 z-10 bg-white dark:bg-slate-950 border-r border-slate-200 dark:border-slate-800">
+                    <td className="p-2.5 font-semibold text-foreground sticky left-28 z-10 bg-card border-r border-border">
                       <div className="flex items-center justify-between gap-2">
                         <span className="truncate">{student.fullName}</span>
                         {student.isHighAbsence && (
@@ -481,10 +481,10 @@ export function TwoWeekGrid({ data, selectedClassId }: Props) {
 
                     {/* Total Absences */}
                     <td
-                      className={`p-1.5 text-center font-bold border-r border-slate-200 dark:border-slate-800 ${
+                      className={`p-1.5 text-center font-bold border-r border-border ${
                         student.totalAbsent > 0
-                          ? "text-rose-600 dark:text-rose-400 bg-rose-500/10"
-                          : "text-slate-400"
+                          ? "text-destructive bg-destructive/10"
+                          : "text-muted-foreground"
                       }`}
                     >
                       {student.totalAbsent}
@@ -492,10 +492,10 @@ export function TwoWeekGrid({ data, selectedClassId }: Props) {
 
                     {/* Total Leaves */}
                     <td
-                      className={`p-1.5 text-center font-semibold border-r border-slate-200 dark:border-slate-800 ${
+                      className={`p-1.5 text-center font-semibold border-r border-border ${
                         student.totalLeave > 0
-                          ? "text-amber-600 dark:text-amber-400 bg-amber-500/10"
-                          : "text-slate-400"
+                          ? "text-foreground bg-muted"
+                          : "text-muted-foreground"
                       }`}
                     >
                       {student.totalLeave}
@@ -508,47 +508,47 @@ export function TwoWeekGrid({ data, selectedClassId }: Props) {
                       return (
                         <td
                           key={`${student.studentId}-${d.date}`}
-                          className={`p-1 text-center border-r border-slate-200 dark:border-slate-800 ${
-                            d.isWeekend ? "bg-slate-50/80 dark:bg-slate-900/30" : ""
+                          className={`p-1 text-center border-r border-border ${
+                            d.isWeekend ? "bg-muted/20" : ""
                           }`}
                         >
                           <Link
                             href={`/attendance?classId=${selectedClassId}&date=${d.date}`}
-                            className="inline-flex items-center justify-center size-7 rounded-lg hover:ring-2 hover:ring-blue-400 transition-all hover-lift"
+                            className="inline-flex items-center justify-center size-7 rounded-lg hover:ring-2 hover:ring-ring transition-all"
                             title={`${student.fullName} on ${d.date}: ${status || "No record"} (Click to edit roster)`}
                           >
                             {status === "PRESENT" && (
-                              <span className="size-6 rounded-md flex items-center justify-center font-bold text-[11px] bg-emerald-500/15 text-emerald-800 dark:text-emerald-300 border border-emerald-500/30">
+                              <span className="size-6 rounded-md flex items-center justify-center font-bold text-[11px] bg-primary/10 text-primary border border-primary/20">
                                 P
                               </span>
                             )}
 
                             {status === "ABSENT" && (
-                              <span className="size-6 rounded-md flex items-center justify-center font-bold text-[11px] bg-rose-500/15 text-rose-800 dark:text-rose-300 border border-rose-500/30">
+                              <span className="size-6 rounded-md flex items-center justify-center font-bold text-[11px] bg-destructive/10 text-destructive border border-destructive/20">
                                 A
                               </span>
                             )}
 
                             {status === "LEAVE" && (
-                              <span className="size-6 rounded-md flex items-center justify-center font-bold text-[11px] bg-amber-500/15 text-amber-800 dark:text-amber-300 border border-amber-500/30">
+                              <span className="size-6 rounded-md flex items-center justify-center font-bold text-[11px] bg-secondary text-secondary-foreground border border-border">
                                 L
                               </span>
                             )}
 
                             {status === "LATE" && (
-                              <span className="size-6 rounded-md flex items-center justify-center font-bold text-[11px] bg-blue-500/15 text-blue-800 dark:text-blue-300 border border-blue-500/30">
+                              <span className="size-6 rounded-md flex items-center justify-center font-bold text-[11px] bg-secondary text-secondary-foreground border border-border">
                                 T
                               </span>
                             )}
 
                             {status === null && d.isWeekend && (
-                              <span className="font-semibold text-xs text-slate-400 dark:text-slate-600">
+                              <span className="font-semibold text-xs text-muted-foreground">
                                 H
                               </span>
                             )}
 
                             {status === null && !d.isWeekend && (
-                              <span className="text-slate-300 dark:text-slate-700 font-bold">
+                              <span className="text-muted-foreground/40 font-bold">
                                 —
                               </span>
                             )}

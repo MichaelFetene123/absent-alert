@@ -36,7 +36,6 @@ const ROLES_META: Array<{
   titleKey: string;
   descKey: string;
   icon: any;
-  color: string;
   badge: string;
 }> = [
   {
@@ -44,7 +43,6 @@ const ROLES_META: Array<{
     titleKey: "School Administrator",
     descKey: "Full access to school-wide metrics, class submissions, SMSHub balances, teacher roster, and settings.",
     icon: Shield,
-    color: "text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/50 border-indigo-200 dark:border-indigo-800",
     badge: "Admin",
   },
   {
@@ -52,7 +50,6 @@ const ROLES_META: Array<{
     titleKey: "Subject Teacher",
     descKey: "High-speed classroom attendance-taking for assigned classes with roster shortcuts.",
     icon: GraduationCap,
-    color: "text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/50 border-emerald-200 dark:border-emerald-800",
     badge: "Teacher",
   },
   {
@@ -60,7 +57,6 @@ const ROLES_META: Array<{
     titleKey: "Homeroom / Class Teacher",
     descKey: "Assigned section roster tracking, chronic absenteeism follow-up, and direct parent contact review.",
     icon: UserCheck,
-    color: "text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/50 border-amber-200 dark:border-amber-800",
     badge: "Homeroom",
   },
   {
@@ -68,7 +64,6 @@ const ROLES_META: Array<{
     titleKey: "Attendance Officer",
     descKey: "Consolidated missing attendance queue, late arrivals processing, and attendance correction reviews.",
     icon: ClipboardCheck,
-    color: "text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/50 border-blue-200 dark:border-blue-800",
     badge: "Officer",
   },
   {
@@ -76,7 +71,6 @@ const ROLES_META: Array<{
     titleKey: "SMS & System Administrator",
     descKey: "SMSHub API credentials, test mode validation, credit consumption monitoring, and webhook logs.",
     icon: Smartphone,
-    color: "text-purple-600 dark:text-purple-400 bg-purple-50 dark:bg-purple-950/50 border-purple-200 dark:border-purple-800",
     badge: "SMS Admin",
   },
   {
@@ -84,7 +78,6 @@ const ROLES_META: Array<{
     titleKey: "Parent & Guardian Management",
     descKey: "Guardian records, verified phone numbers, and notification delivery channels.",
     icon: Users,
-    color: "text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-950/50 border-rose-200 dark:border-rose-800",
     badge: "Guardian",
   },
 ];
@@ -140,26 +133,26 @@ export function RoleSwitcher({ currentRole, onRoleChange }: RoleSwitcherProps) {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-xs"
+        className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg border border-border bg-muted/50 hover:bg-muted transition-colors text-xs"
         title="Switch role view"
       >
-        <Icon className="size-3.5 text-indigo-600 dark:text-indigo-400 shrink-0" />
-        <span className="font-semibold text-slate-800 dark:text-slate-200 max-w-[100px] sm:max-w-none truncate">
+        <Icon className="size-3.5 text-primary shrink-0" />
+        <span className="font-semibold text-foreground max-w-25 sm:max-w-none truncate">
           {activeMeta.badge}
         </span>
-        <ChevronDown className="size-3 text-slate-400" />
+        <ChevronDown className="size-3 text-muted-foreground" />
       </button>
 
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="sm:max-w-lg p-5">
-          <DialogHeader className="pb-3 border-b border-slate-100 dark:border-slate-800">
+          <DialogHeader className="pb-3 border-b border-border">
             <div className="flex items-center gap-2">
-              <Shield className="size-5 text-indigo-600 dark:text-indigo-400" />
-              <DialogTitle className="text-base font-bold text-slate-900 dark:text-white">
+              <Shield className="size-5 text-primary" />
+              <DialogTitle className="text-base font-bold text-foreground">
                 {locale === "am" ? "የስራ ሚና እይታ ቀይር (Role Preview)" : "Role-Based SaaS Experience"}
               </DialogTitle>
             </div>
-            <DialogDescription className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+            <DialogDescription className="text-xs text-muted-foreground mt-1">
               {locale === "am"
                 ? "የተለያዩ ባለድርሻ አካላት (አስተዳዳሪ፣ መምህር፣ የክፍል ኃላፊ፣ የአቴንዳንስ ኦፊሰር፣ የወላጅ ፖርታል) የሚያዩትን ገጽ ይሞክሩ።"
                 : "Experience the platform from the perspective of each key educational stakeholder."}
@@ -177,25 +170,25 @@ export function RoleSwitcher({ currentRole, onRoleChange }: RoleSwitcherProps) {
                   onClick={() => handleSelectRole(role.id)}
                   className={`flex flex-col text-left p-3 rounded-xl border transition-all relative ${
                     isSelected
-                      ? "border-indigo-600 dark:border-indigo-500 bg-indigo-50/60 dark:bg-indigo-950/40 shadow-xs ring-1 ring-indigo-500/20"
-                      : "border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 bg-white dark:bg-slate-900"
+                      ? "border-primary bg-primary/10 shadow-xs ring-1 ring-primary/20"
+                      : "border-border hover:border-foreground/20 bg-card text-card-foreground"
                   }`}
                 >
                   <div className="flex items-center justify-between w-full mb-1.5">
-                    <div className={`p-1.5 rounded-lg border ${role.color}`}>
+                    <div className="p-1.5 rounded-lg border border-border bg-muted text-foreground">
                       <RoleIcon className="size-4" />
                     </div>
                     {isSelected && (
-                      <Badge className="bg-indigo-600 text-white text-[10px] h-5 px-1.5 gap-1">
+                      <Badge className="text-[10px] h-5 px-1.5 gap-1">
                         <Check className="size-3" />
                         Active
                       </Badge>
                     )}
                   </div>
-                  <div className="font-semibold text-xs text-slate-900 dark:text-white">
+                  <div className="font-semibold text-xs text-foreground">
                     {role.titleKey}
                   </div>
-                  <div className="text-[11px] text-slate-500 dark:text-slate-400 line-clamp-2 mt-1 leading-snug">
+                  <div className="text-[11px] text-muted-foreground line-clamp-2 mt-1 leading-snug">
                     {role.descKey}
                   </div>
                 </button>

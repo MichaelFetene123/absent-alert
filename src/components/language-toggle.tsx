@@ -26,10 +26,10 @@ export function LanguageToggle() {
         variant="outline"
         size="sm"
         onClick={() => setOpen(true)}
-        className="h-8 gap-1.5 px-2.5 text-xs font-medium border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800"
+        className="h-8 gap-1.5 px-2.5 text-xs font-medium"
         aria-label="Change Language"
       >
-        <Globe className="size-3.5 text-indigo-600 dark:text-indigo-400" />
+        <Globe className="size-3.5 text-primary" />
         <span className="hidden sm:inline font-semibold">
           {locale === "am" ? "አማርኛ" : "English"}
         </span>
@@ -37,10 +37,10 @@ export function LanguageToggle() {
       </Button>
 
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="sm:max-w-[340px] p-4">
-          <DialogHeader className="pb-2 border-b border-slate-100 dark:border-slate-800">
-            <DialogTitle className="text-sm font-semibold flex items-center gap-2">
-              <Globe className="size-4 text-indigo-600 dark:text-indigo-400" />
+        <DialogContent className="sm:max-w-xs p-4">
+          <DialogHeader className="pb-2 border-b border-border">
+            <DialogTitle className="text-sm font-semibold flex items-center gap-2 text-foreground">
+              <Globe className="size-4 text-primary" />
               {locale === "am" ? "የስርዓቱን ቋንቋ ይምረጡ" : "Select Interface Language"}
             </DialogTitle>
           </DialogHeader>
@@ -58,23 +58,23 @@ export function LanguageToggle() {
                   }}
                   className={`w-full flex items-center justify-between p-2.5 rounded-lg text-left text-xs transition-colors border ${
                     isSelected
-                      ? "bg-indigo-50/80 dark:bg-indigo-950/40 border-indigo-200 dark:border-indigo-800 text-indigo-900 dark:text-indigo-200 font-semibold"
-                      : "border-transparent hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300"
+                      ? "bg-primary/10 border-primary/20 text-primary font-semibold"
+                      : "border-transparent hover:bg-muted text-foreground"
                   }`}
                 >
                   <div className="flex items-center gap-2.5">
                     <span className="text-base">{lang.flag}</span>
                     <div>
-                      <div className="font-medium text-slate-900 dark:text-white">
+                      <div className="font-medium text-foreground">
                         {lang.nativeName}
                       </div>
-                      <div className="text-[11px] text-slate-500 dark:text-slate-400">
+                      <div className="text-[11px] text-muted-foreground">
                         {lang.name}
                       </div>
                     </div>
                   </div>
                   {isSelected && (
-                    <Check className="size-4 text-indigo-600 dark:text-indigo-400 shrink-0" />
+                    <Check className="size-4 text-primary shrink-0" />
                   )}
                 </button>
               );

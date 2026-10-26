@@ -63,13 +63,13 @@ export function TemplatesManager() {
   return (
     <div className="space-y-6 max-w-5xl">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-slate-200 dark:border-slate-800">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-border">
         <div>
-          <h1 className="text-xl font-bold tracking-tight text-slate-900 dark:text-white flex items-center gap-2">
-            <FileText className="size-5 text-indigo-600 dark:text-indigo-400" />
+          <h1 className="text-xl font-bold tracking-tight text-foreground flex items-center gap-2">
+            <FileText className="size-5 text-primary" />
             {locale === "am" ? "የኤስኤምኤስ ማሳወቂያ ቴምፕሌቶች (Templates)" : "SMS Notification Templates"}
           </h1>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+          <p className="text-xs text-muted-foreground mt-0.5">
             {locale === "am"
               ? "በእንግሊዝኛና በአማርኛ የተዘጋጁ የቀሪዎች፣ የማርፈድና የእርማት ማሳወቂያ መልእክቶች።"
               : "Pre-configured and editable English and Amharic templates for student absence and attendance alerts."}
@@ -77,14 +77,14 @@ export function TemplatesManager() {
         </div>
 
         {/* Language Filter */}
-        <div className="flex items-center gap-1.5 bg-slate-100 dark:bg-slate-800 p-1 rounded-lg">
+        <div className="flex items-center gap-1.5 bg-muted p-1 rounded-lg">
           <button
             type="button"
             onClick={() => setLanguageFilter("ALL")}
             className={`px-2.5 py-1 text-xs rounded-md font-medium transition-colors ${
               languageFilter === "ALL"
-                ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-xs"
-                : "text-slate-600 dark:text-slate-400"
+                ? "bg-background text-foreground shadow-xs font-semibold"
+                : "text-muted-foreground hover:text-foreground"
             }`}
           >
             All ({templates.length})
@@ -94,8 +94,8 @@ export function TemplatesManager() {
             onClick={() => setLanguageFilter("en")}
             className={`px-2.5 py-1 text-xs rounded-md font-medium transition-colors ${
               languageFilter === "en"
-                ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-xs"
-                : "text-slate-600 dark:text-slate-400"
+                ? "bg-background text-foreground shadow-xs font-semibold"
+                : "text-muted-foreground hover:text-foreground"
             }`}
           >
             English
@@ -105,8 +105,8 @@ export function TemplatesManager() {
             onClick={() => setLanguageFilter("am")}
             className={`px-2.5 py-1 text-xs rounded-md font-medium transition-colors ${
               languageFilter === "am"
-                ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-xs"
-                : "text-slate-600 dark:text-slate-400"
+                ? "bg-background text-foreground shadow-xs font-semibold"
+                : "text-muted-foreground hover:text-foreground"
             }`}
           >
             አማርኛ (Amharic)
@@ -117,7 +117,7 @@ export function TemplatesManager() {
       <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
         {/* Templates List */}
         <div className="md:col-span-5 space-y-2.5">
-          <Label className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
+          <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
             Available Templates
           </Label>
           <div className="space-y-2">
@@ -130,26 +130,22 @@ export function TemplatesManager() {
                   onClick={() => setSelectedTemplate(tpl)}
                   className={`w-full text-left p-3 rounded-xl border transition-all ${
                     isSelected
-                      ? "border-indigo-600 dark:border-indigo-500 bg-indigo-50/60 dark:bg-indigo-950/40 ring-1 ring-indigo-500/20"
-                      : "border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:border-slate-300 dark:hover:border-slate-700"
+                      ? "border-primary bg-primary/10 ring-1 ring-primary/20"
+                      : "border-border bg-card hover:bg-muted/50"
                   }`}
                 >
                   <div className="flex items-center justify-between mb-1">
-                    <span className="font-semibold text-xs text-slate-900 dark:text-white">
+                    <span className="font-semibold text-xs text-foreground">
                       {locale === "am" ? tpl.nameAm : tpl.name}
                     </span>
                     <Badge
                       variant="outline"
-                      className={`text-[10px] uppercase font-mono px-1.5 py-0 ${
-                        tpl.language === "am"
-                          ? "border-amber-200 text-amber-700 bg-amber-50 dark:bg-amber-950/40"
-                          : "border-blue-200 text-blue-700 bg-blue-50 dark:bg-blue-950/40"
-                      }`}
+                      className="text-[10px] uppercase font-mono px-1.5 py-0"
                     >
                       {tpl.language}
                     </Badge>
                   </div>
-                  <p className="text-[11px] text-slate-500 dark:text-slate-400 line-clamp-2 leading-relaxed">
+                  <p className="text-[11px] text-muted-foreground line-clamp-2 leading-relaxed">
                     {tpl.body}
                   </p>
                 </button>
@@ -160,18 +156,18 @@ export function TemplatesManager() {
 
         {/* Template Detail & Preview */}
         <div className="md:col-span-7 space-y-4">
-          <Card className="border-slate-200 dark:border-slate-800 shadow-xs">
-            <CardHeader className="pb-3 border-b border-slate-100 dark:border-slate-800">
+          <Card className="border-border shadow-xs">
+            <CardHeader className="pb-3 border-b border-border">
               <div className="flex items-center justify-between">
                 <div>
-                  <CardTitle className="text-sm font-semibold">
+                  <CardTitle className="text-sm font-semibold text-foreground">
                     {locale === "am" ? selectedTemplate.nameAm : selectedTemplate.name}
                   </CardTitle>
-                  <CardDescription className="text-xs mt-0.5">
+                  <CardDescription className="text-xs mt-0.5 text-muted-foreground">
                     Trigger Event: {selectedTemplate.triggerEvent} · Language: {selectedTemplate.language.toUpperCase()}
                   </CardDescription>
                 </div>
-                <Badge className="bg-emerald-600 text-white text-[10px]">Active</Badge>
+                <Badge variant="default" className="text-[10px]">Active</Badge>
               </div>
             </CardHeader>
 
@@ -179,8 +175,8 @@ export function TemplatesManager() {
               {/* Editable Body */}
               <div className="space-y-1.5">
                 <div className="flex items-center justify-between">
-                  <Label className="text-xs font-semibold">Message Template Pattern</Label>
-                  <span className="text-[11px] text-slate-400">
+                  <Label className="text-xs font-semibold text-foreground">Message Template Pattern</Label>
+                  <span className="text-[11px] text-muted-foreground">
                     Supports &#123;student_name&#125;, &#123;class_name&#125;, &#123;date&#125;
                   </span>
                 </div>
@@ -194,49 +190,49 @@ export function TemplatesManager() {
                       prev.map((t) => (t.id === selectedTemplate.id ? { ...t, body: newBody } : t))
                     );
                   }}
-                  className="w-full text-xs p-2.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 focus:outline-hidden focus:ring-2 focus:ring-indigo-500 leading-relaxed"
+                  className="w-full text-xs p-2.5 rounded-lg border border-border bg-background focus:outline-hidden focus:ring-2 focus:ring-ring text-foreground leading-relaxed"
                 />
               </div>
 
               {/* Live Preview Box */}
               <div className="space-y-1.5">
-                <Label className="text-xs font-semibold flex items-center gap-1.5 text-slate-700 dark:text-slate-300">
-                  <Smartphone className="size-3.5 text-indigo-600" />
+                <Label className="text-xs font-semibold flex items-center gap-1.5 text-foreground">
+                  <Smartphone className="size-3.5 text-primary" />
                   Live Handset Preview (Rendered With Account Signature)
                 </Label>
-                <div className="p-3.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 text-xs leading-relaxed">
-                  <span className="text-slate-900 dark:text-white font-medium">
+                <div className="p-3.5 rounded-xl border border-border bg-muted/40 text-xs leading-relaxed">
+                  <span className="text-foreground font-medium">
                     {renderedBody}
                   </span>
-                  <span className="text-slate-400 dark:text-slate-500 font-normal">
+                  <span className="text-muted-foreground font-normal">
                     {accountSignature}
                   </span>
                 </div>
               </div>
 
               {/* Character & Segment Breakdown */}
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 p-3 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 p-3 rounded-xl bg-muted/40 border border-border text-xs">
                 <div>
-                  <span className="text-slate-500 text-[11px] block">Encoding</span>
-                  <span className="font-semibold text-slate-900 dark:text-white uppercase font-mono">
+                  <span className="text-muted-foreground text-[11px] block">Encoding</span>
+                  <span className="font-semibold text-foreground uppercase font-mono">
                     {isUnicode ? "Unicode" : "GSM-7"}
                   </span>
                 </div>
                 <div>
-                  <span className="text-slate-500 text-[11px] block">Total Chars</span>
-                  <span className="font-semibold text-slate-900 dark:text-white">
+                  <span className="text-muted-foreground text-[11px] block">Total Chars</span>
+                  <span className="font-semibold text-foreground">
                     {totalLength} / {charLimit}
                   </span>
                 </div>
                 <div>
-                  <span className="text-slate-500 text-[11px] block">Segments</span>
-                  <span className="font-semibold text-slate-900 dark:text-white">
+                  <span className="text-muted-foreground text-[11px] block">Segments</span>
+                  <span className="font-semibold text-foreground">
                     {segments} SMS
                   </span>
                 </div>
                 <div>
-                  <span className="text-slate-500 text-[11px] block">Est. Cost</span>
-                  <span className="font-bold text-indigo-600 dark:text-indigo-400">
+                  <span className="text-muted-foreground text-[11px] block">Est. Cost</span>
+                  <span className="font-bold text-primary">
                     {segments} - {segments * 2} credits
                   </span>
                 </div>
@@ -245,7 +241,7 @@ export function TemplatesManager() {
               <div className="flex items-center justify-end gap-2 pt-2">
                 <Button
                   size="sm"
-                  className="bg-indigo-600 hover:bg-indigo-700 text-white text-xs h-8"
+                  className="text-xs h-8"
                   onClick={() => toast.success("Template changes saved successfully.")}
                 >
                   Save Template

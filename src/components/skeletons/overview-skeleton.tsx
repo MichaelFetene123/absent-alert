@@ -13,7 +13,7 @@ export function OverviewSkeleton() {
       </div>
 
       {/* Navigation & Class Controls */}
-      <Card className="border-slate-200 dark:border-slate-800 shadow-xs">
+      <Card className="border-border shadow-xs">
         <CardContent className="p-4 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
           <Skeleton className="h-9 w-full sm:w-56" />
           <div className="flex items-center gap-2">
@@ -27,7 +27,7 @@ export function OverviewSkeleton() {
       {/* Metrics Row */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         {[1, 2, 3, 4].map((i) => (
-          <div key={i} className="p-3 rounded-lg border border-slate-200 dark:border-slate-800 space-y-2">
+          <div key={i} className="p-3 rounded-lg border border-border space-y-2">
             <Skeleton className="h-3 w-20" />
             <Skeleton className="h-6 w-12" />
           </div>
@@ -35,9 +35,9 @@ export function OverviewSkeleton() {
       </div>
 
       {/* Two-Week Grid Skeleton */}
-      <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-xs p-4 space-y-4">
+      <div className="bg-card text-card-foreground rounded-xl border border-border overflow-hidden shadow-xs p-4 space-y-4">
         {/* Header with 14 date columns */}
-        <div className="flex items-center justify-between py-2 border-b border-slate-100 dark:border-slate-800">
+        <div className="flex items-center justify-between py-2 border-b border-border">
           <Skeleton className="h-4 w-36" />
           <div className="flex gap-2">
             {Array.from({ length: 14 }).map((_, i) => (
@@ -51,7 +51,7 @@ export function OverviewSkeleton() {
         {[1, 2, 3, 4, 5, 6].map((i) => (
           <div
             key={i}
-            className="flex items-center justify-between py-2.5 border-b border-slate-50 dark:border-slate-800/60 last:border-0"
+            className="flex items-center justify-between py-2.5 border-b border-border/50 last:border-0"
           >
             <div className="flex items-center gap-2">
               <Skeleton className="size-6 rounded-full" />

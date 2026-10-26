@@ -228,10 +228,10 @@ export function NotificationsManager({
   return (
     <div className="space-y-6 pb-12">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-slate-200 dark:border-slate-800 pb-4">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-border pb-4">
         <div className="flex items-center gap-2">
-          <History className="size-5 text-slate-700 dark:text-slate-300" />
-          <h1 className="text-xl font-bold tracking-tight text-slate-900 dark:text-white">
+          <History className="size-5 text-foreground" />
+          <h1 className="text-xl font-bold tracking-tight text-foreground">
             SMS Notifications
           </h1>
         </div>
@@ -260,7 +260,7 @@ export function NotificationsManager({
             onClick={() => router.refresh()}
             className="gap-1.5 h-8 px-2.5 rounded-lg text-xs font-medium"
           >
-            <RefreshCw className="size-3.5 text-slate-500" />
+            <RefreshCw className="size-3.5 text-muted-foreground" />
             <span>Refresh</span>
           </Button>
         </div>
@@ -269,27 +269,27 @@ export function NotificationsManager({
       {/* KPI Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
         {/* Total Card */}
-        <Card className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
+        <Card className="rounded-xl border border-border bg-card">
           <CardContent className="p-4">
-            <p className="text-xs font-medium text-slate-500 uppercase tracking-wider">
+            <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
               Total Notifications
             </p>
-            <div className="text-2xl font-bold text-slate-900 dark:text-white mt-1">
+            <div className="text-2xl font-bold text-foreground mt-1">
               {initialData.summary.total}
             </div>
           </CardContent>
         </Card>
 
         {/* Accepted by Provider */}
-        <Card className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
+        <Card className="rounded-xl border border-border bg-card">
           <CardContent className="p-4">
-            <p className="text-xs font-medium text-slate-500 uppercase tracking-wider">
+            <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
               Accepted by Provider
             </p>
-            <div className="text-2xl font-bold text-emerald-600 dark:text-emerald-400 mt-1">
+            <div className="text-2xl font-bold text-primary mt-1">
               {initialData.summary.accepted}
             </div>
-            <p className="text-[11px] text-slate-500 mt-0.5">
+            <p className="text-[11px] text-muted-foreground mt-0.5">
               {initialData.summary.total > 0
                 ? `${Math.round((initialData.summary.accepted / initialData.summary.total) * 100)}% accepted`
                 : "No logs yet"}
@@ -298,37 +298,37 @@ export function NotificationsManager({
         </Card>
 
         {/* Failed Delivery */}
-        <Card className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
+        <Card className="rounded-xl border border-border bg-card">
           <CardContent className="p-4">
-            <p className="text-xs font-medium text-slate-500 uppercase tracking-wider">
+            <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
               Failed Delivery
             </p>
-            <div className="text-2xl font-bold text-rose-600 dark:text-rose-400 mt-1">
+            <div className="text-2xl font-bold text-destructive mt-1">
               {initialData.summary.failed}
             </div>
-            <p className="text-[11px] text-slate-500 mt-0.5">
+            <p className="text-[11px] text-muted-foreground mt-0.5">
               Eligible for retry
             </p>
           </CardContent>
         </Card>
 
         {/* Queued / In Flight */}
-        <Card className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
+        <Card className="rounded-xl border border-border bg-card">
           <CardContent className="p-4">
-            <p className="text-xs font-medium text-slate-500 uppercase tracking-wider">
+            <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
               Queued / Transit
             </p>
             <div className="flex items-baseline gap-2 mt-1">
-              <span className="text-2xl font-bold text-amber-600 dark:text-amber-400">
+              <span className="text-2xl font-bold text-foreground">
                 {initialData.summary.pending + initialData.summary.sending}
               </span>
               {initialData.summary.needsReview > 0 && (
-                <span className="text-[10px] px-1.5 py-0.5 rounded font-medium bg-amber-50 dark:bg-amber-950/40 text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-800">
+                <span className="text-[10px] px-1.5 py-0.5 rounded font-medium bg-muted text-foreground border border-border">
                   {initialData.summary.needsReview} Stalled
                 </span>
               )}
             </div>
-            <p className="text-[11px] text-slate-500 mt-0.5">
+            <p className="text-[11px] text-muted-foreground mt-0.5">
               {initialData.summary.pending} queued · {initialData.summary.sending} sending
             </p>
           </CardContent>
@@ -336,11 +336,11 @@ export function NotificationsManager({
       </div>
 
       {/* Filter Toolbar */}
-      <div className="p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs space-y-3">
+      <div className="p-3.5 rounded-xl border border-border bg-card shadow-xs space-y-3">
         <div className="flex flex-col md:flex-row gap-2.5">
           {/* Search Input */}
           <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-slate-400" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
             <Input
               placeholder="Search by student name, admission number, guardian phone, or provider ID..."
               value={search}
@@ -360,7 +360,7 @@ export function NotificationsManager({
                 setClassFilter(e.target.value);
                 setPage(1);
               }}
-              className="w-full h-9 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-3 py-1.5 text-xs font-medium text-slate-900 dark:text-slate-100 focus:outline-hidden focus:ring-1 focus:ring-purple-500 shadow-xs"
+              className="w-full h-9 rounded-lg border border-border bg-background px-3 py-1.5 text-xs font-medium text-foreground outline-none shadow-xs"
             >
               <option value="ALL">All Classrooms</option>
               {initialData.accessibleClasses.map((c) => (
@@ -382,7 +382,7 @@ export function NotificationsManager({
                 setSearch("");
                 setPage(1);
               }}
-              className="h-9 text-slate-500 hover:text-slate-900 dark:hover:text-slate-100 gap-1.5 rounded-lg text-xs font-medium"
+              className="h-9 text-muted-foreground hover:text-foreground gap-1.5 rounded-lg text-xs font-medium"
             >
               <FilterX className="size-3.5" />
               Reset Filters
@@ -391,8 +391,8 @@ export function NotificationsManager({
         </div>
 
         {/* Status Filter Badges */}
-        <div className="flex flex-wrap items-center gap-1.5 pt-2.5 border-t border-slate-100 dark:border-slate-800/80">
-          <span className="text-[11px] font-medium uppercase tracking-wider text-slate-400 dark:text-slate-500 mr-1">
+        <div className="flex flex-wrap items-center gap-1.5 pt-2.5 border-t border-border">
+          <span className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground mr-1">
             Status:
           </span>
 
@@ -415,13 +415,9 @@ export function NotificationsManager({
               setStatusFilter("ACCEPTED");
               setPage(1);
             }}
-            className={`h-7 text-xs px-2.5 rounded-lg font-medium ${
-              statusFilter === "ACCEPTED"
-                ? "bg-emerald-600 text-white"
-                : "border-emerald-500/30 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-500/10"
-            }`}
+            className="h-7 text-xs px-2.5 rounded-lg font-medium"
           >
-            <CheckCircle2 className="size-3 text-emerald-500 mr-1" />
+            <CheckCircle2 className="size-3 mr-1 text-primary" />
             Accepted ({initialData.summary.accepted})
           </Button>
 
@@ -432,13 +428,9 @@ export function NotificationsManager({
               setStatusFilter("FAILED");
               setPage(1);
             }}
-            className={`h-7 text-xs px-2.5 rounded-lg font-medium ${
-              statusFilter === "FAILED"
-                ? "bg-rose-600 text-white"
-                : "border-rose-500/30 text-rose-700 dark:text-rose-300 hover:bg-rose-500/10"
-            }`}
+            className="h-7 text-xs px-2.5 rounded-lg font-medium"
           >
-            <AlertCircle className="size-3 text-rose-500 mr-1" />
+            <AlertCircle className="size-3 mr-1 text-destructive" />
             Failed ({initialData.summary.failed})
           </Button>
 
@@ -451,7 +443,7 @@ export function NotificationsManager({
             }}
             className="h-7 text-xs px-2.5 rounded-lg font-medium"
           >
-            <Clock className="size-3 text-slate-500 mr-1" />
+            <Clock className="size-3 text-muted-foreground mr-1" />
             Queued ({initialData.summary.pending})
           </Button>
 
@@ -462,9 +454,9 @@ export function NotificationsManager({
               setStatusFilter("SENDING");
               setPage(1);
             }}
-            className="h-7 text-xs px-2.5 rounded-lg font-medium border-blue-500/30"
+            className="h-7 text-xs px-2.5 rounded-lg font-medium"
           >
-            <Loader2 className="size-3 text-blue-500 mr-1 animate-spin" />
+            <Loader2 className="size-3 mr-1 animate-spin" />
             Sending ({initialData.summary.sending})
           </Button>
 
@@ -476,9 +468,9 @@ export function NotificationsManager({
                 setStatusFilter("NEEDS_REVIEW");
                 setPage(1);
               }}
-              className="h-7 text-xs px-2.5 rounded-lg font-medium border-amber-500/40 bg-amber-500/10 text-amber-800 dark:text-amber-300"
+              className="h-7 text-xs px-2.5 rounded-lg font-medium"
             >
-              <AlertTriangle className="size-3 text-amber-500 mr-1" />
+              <AlertTriangle className="size-3 mr-1 text-destructive" />
               Needs Review ({initialData.summary.needsReview})
             </Button>
           )}
@@ -486,11 +478,11 @@ export function NotificationsManager({
       </div>
 
       {/* Main Table */}
-      <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs overflow-hidden">
+      <div className="rounded-xl border border-border bg-card shadow-xs overflow-hidden">
         <div className="overflow-x-auto">
           <Table>
-            <TableHeader className="bg-slate-50/70 dark:bg-slate-900/50">
-              <TableRow className="border-b border-slate-100 dark:border-slate-800 text-xs font-medium text-slate-500">
+            <TableHeader className="bg-muted/50">
+              <TableRow className="border-b border-border text-xs font-medium text-muted-foreground">
                 <TableHead className="w-44 py-2.5 px-3.5">Timestamp</TableHead>
                 <TableHead className="py-2.5 px-3.5">Student</TableHead>
                 <TableHead className="py-2.5 px-3.5">Class</TableHead>
@@ -505,12 +497,12 @@ export function NotificationsManager({
               {paginatedItems.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={8} className="text-center py-14">
-                    <div className="flex flex-col items-center justify-center text-slate-500 space-y-1.5">
-                      <History className="size-8 text-slate-300 dark:text-slate-700" />
-                      <p className="text-xs font-semibold text-slate-700 dark:text-slate-300">
+                    <div className="flex flex-col items-center justify-center text-muted-foreground space-y-1.5">
+                      <History className="size-8 text-muted-foreground/40" />
+                      <p className="text-xs font-semibold text-foreground">
                         No notifications match the filter
                       </p>
-                      <p className="text-[11px] text-slate-400">
+                      <p className="text-[11px] text-muted-foreground">
                         Try adjusting your search query, status, or class selection.
                       </p>
                     </div>
@@ -523,15 +515,15 @@ export function NotificationsManager({
                   return (
                     <TableRow
                       key={notif.id}
-                      className="hover:bg-slate-50/80 dark:hover:bg-slate-800/50 transition-colors"
+                      className="hover:bg-muted/50 transition-colors"
                     >
                       {/* Timestamp */}
                       <TableCell className="align-middle py-2.5 px-3.5">
                         <div className="flex flex-col">
-                          <span className="text-xs font-medium text-slate-900 dark:text-slate-100">
+                          <span className="text-xs font-medium text-foreground">
                             {formatDateTime(notif.createdAt)}
                           </span>
-                          <span className="text-[11px] text-slate-400 flex items-center gap-1 mt-0.5">
+                          <span className="text-[11px] text-muted-foreground flex items-center gap-1 mt-0.5">
                             <Clock className="size-3" />
                             {formatRelativeTime(notif.createdAt)}
                           </span>
@@ -541,14 +533,14 @@ export function NotificationsManager({
                       {/* Student */}
                       <TableCell className="align-middle py-2.5 px-3.5">
                         <div className="flex items-center gap-2">
-                          <div className="size-6 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-semibold text-[11px] flex items-center justify-center shrink-0 border border-slate-200 dark:border-slate-700">
+                          <div className="size-6 rounded-full bg-muted text-foreground font-semibold text-[11px] flex items-center justify-center shrink-0 border border-border">
                             {notif.student.fullName.charAt(0).toUpperCase()}
                           </div>
                           <div className="flex flex-col">
-                            <span className="font-medium text-xs text-slate-900 dark:text-slate-100">
+                            <span className="font-medium text-xs text-foreground">
                               {notif.student.fullName}
                             </span>
-                            <span className="text-[11px] font-mono text-slate-400">
+                            <span className="text-[11px] font-mono text-muted-foreground">
                               {notif.student.admissionNo}
                             </span>
                           </div>
@@ -559,17 +551,17 @@ export function NotificationsManager({
                       <TableCell className="align-middle py-2.5 px-3.5">
                         <Badge
                           variant="secondary"
-                          className="font-medium text-[11px] bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300"
+                          className="font-medium text-[11px]"
                         >
-                          <School className="size-3 mr-1 text-slate-400" />
+                          <School className="size-3 mr-1 text-muted-foreground" />
                           {notif.student.className}
                         </Badge>
                       </TableCell>
 
                       {/* Guardian Phone */}
                       <TableCell className="align-middle py-2.5 px-3.5">
-                        <div className="flex items-center gap-1.5 font-mono text-xs text-slate-600 dark:text-slate-300">
-                          <Smartphone className="size-3 text-slate-400" />
+                        <div className="flex items-center gap-1.5 font-mono text-xs text-foreground">
+                          <Smartphone className="size-3 text-muted-foreground" />
                           {notif.guardianPhone}
                         </div>
                       </TableCell>
@@ -578,36 +570,36 @@ export function NotificationsManager({
                       <TableCell className="align-middle py-2.5 px-3.5">
                         <div className="flex flex-col items-start gap-1">
                           {notif.status === "ACCEPTED" && (
-                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-medium bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border border-emerald-500/20">
-                              <CheckCircle2 className="size-3 text-emerald-600 dark:text-emerald-400" />
+                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-medium bg-primary/10 text-primary border border-primary/20">
+                              <CheckCircle2 className="size-3 text-primary" />
                               Accepted
                             </span>
                           )}
 
                           {notif.status === "DELIVERED" && (
-                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-medium bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border border-emerald-500/20">
-                              <CheckCheck className="size-3 text-emerald-600 dark:text-emerald-400" />
+                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-medium bg-primary/10 text-primary border border-primary/20">
+                              <CheckCheck className="size-3 text-primary" />
                               Delivered
                             </span>
                           )}
 
                           {notif.status === "FAILED" && (
-                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-medium bg-rose-500/10 text-rose-700 dark:text-rose-300 border border-rose-500/20">
-                              <AlertCircle className="size-3 text-rose-600 dark:text-rose-400" />
+                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-medium bg-destructive/10 text-destructive border border-destructive/20">
+                              <AlertCircle className="size-3 text-destructive" />
                               Failed
                             </span>
                           )}
 
                           {notif.status === "PENDING" && (
-                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-medium bg-amber-500/10 text-amber-700 dark:text-amber-300 border border-amber-500/20">
-                              <Clock className="size-3 text-amber-500" />
+                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-medium bg-muted text-muted-foreground border border-border">
+                              <Clock className="size-3 text-muted-foreground" />
                               Queued
                             </span>
                           )}
 
                           {notif.status === "SENDING" && (
-                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-medium bg-blue-500/10 text-blue-700 dark:text-blue-300 border border-blue-500/20">
-                              <Loader2 className="size-3 text-blue-600 dark:text-blue-400 animate-spin" />
+                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-medium bg-primary/10 text-primary border border-primary/20">
+                              <Loader2 className="size-3 text-primary animate-spin" />
                               Sending
                             </span>
                           )}
@@ -616,7 +608,7 @@ export function NotificationsManager({
                           {notif.needsReview && (
                             <Badge
                               variant="outline"
-                              className="text-[10px] py-0 px-1.5 border-amber-400 bg-amber-50 dark:bg-amber-950/40 text-amber-800 dark:text-amber-300 gap-1 font-medium"
+                              className="text-[10px] py-0 px-1.5 border-destructive/30 bg-destructive/10 text-destructive gap-1 font-medium"
                             >
                               <AlertTriangle className="size-2.5" />
                               Needs Review (&gt;5m)
@@ -634,11 +626,11 @@ export function NotificationsManager({
                             setSelectedNotif(notif);
                             setDialogOpen(true);
                           }}
-                          className="h-6 text-xs px-2 gap-1 text-slate-600 dark:text-slate-300 hover:text-purple-600 hover:bg-purple-500/10 rounded font-medium"
+                          className="h-6 text-xs px-2 gap-1 text-muted-foreground hover:text-foreground hover:bg-muted rounded font-medium"
                         >
                           <span className="font-semibold">{notif.attempts.length}</span>
                           <span>{notif.attempts.length === 1 ? "attempt" : "attempts"}</span>
-                          <Info className="size-3 text-slate-400" />
+                          <Info className="size-3 text-muted-foreground" />
                         </Button>
                       </TableCell>
 
@@ -646,7 +638,7 @@ export function NotificationsManager({
                       <TableCell className="align-middle py-2.5 px-3.5">
                         {notif.providerRef ? (
                           <div className="flex items-center gap-1.5 group">
-                            <span className="font-mono text-xs text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded border border-slate-200 dark:border-slate-700">
+                            <span className="font-mono text-xs text-foreground bg-muted px-1.5 py-0.5 rounded border border-border">
                               {notif.providerRef.length > 16
                                 ? `${notif.providerRef.slice(0, 14)}…`
                                 : notif.providerRef}
@@ -654,18 +646,18 @@ export function NotificationsManager({
                             <button
                               type="button"
                               onClick={() => copyToClipboard(notif.providerRef!, notif.id)}
-                              className="text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 transition-colors p-0.5"
+                              className="text-muted-foreground hover:text-foreground transition-colors p-0.5"
                               title="Copy provider reference"
                             >
                               {copiedRefId === notif.id ? (
-                                <Check className="size-3 text-emerald-600" />
+                                <Check className="size-3 text-primary" />
                               ) : (
                                 <Copy className="size-3" />
                               )}
                             </button>
                           </div>
                         ) : (
-                          <span className="text-slate-400 text-xs">—</span>
+                          <span className="text-muted-foreground text-xs">—</span>
                         )}
                       </TableCell>
 
@@ -680,7 +672,7 @@ export function NotificationsManager({
                               setSelectedNotif(notif);
                               setDialogOpen(true);
                             }}
-                            className="h-7 px-2 text-xs text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white rounded"
+                            className="h-7 px-2 text-xs text-muted-foreground hover:text-foreground rounded"
                             title="View Attempt Logs & Response"
                           >
                             <Info className="size-3 mr-1" />
@@ -699,7 +691,7 @@ export function NotificationsManager({
                                   ? "Retry SMS Dispatch"
                                   : "Admin privilege required to retry SMS"
                               }
-                              className="h-7 px-2 text-xs border-rose-300 dark:border-rose-800 text-rose-700 dark:text-rose-300 hover:bg-rose-50 dark:hover:bg-rose-950/40 gap-1 rounded font-medium"
+                              className="h-7 px-2 text-xs border-destructive/30 text-destructive hover:bg-destructive/10 gap-1 rounded font-medium"
                             >
                               {isRetrying ? (
                                 <Loader2 className="size-3 animate-spin" />
@@ -721,7 +713,7 @@ export function NotificationsManager({
 
         {/* Pagination controls */}
         {totalPages > 1 && (
-          <div className="p-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs text-slate-500">
+          <div className="p-3 border-t border-border flex items-center justify-between text-xs text-muted-foreground">
             <div>
               Showing {Math.min((page - 1) * pageSize + 1, totalItems)} to{" "}
               {Math.min(page * pageSize, totalItems)} of {totalItems} items
@@ -737,7 +729,7 @@ export function NotificationsManager({
               >
                 Previous
               </Button>
-              <span className="font-medium text-slate-700 dark:text-slate-300">
+              <span className="font-medium text-foreground">
                 Page {page} of {totalPages}
               </span>
               <Button
@@ -761,36 +753,36 @@ export function NotificationsManager({
             <div className="space-y-6">
               <DialogHeader>
                 <div className="flex items-center justify-between pr-6">
-                  <DialogTitle className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                    <History className="size-5 text-purple-600" />
+                  <DialogTitle className="text-lg font-bold text-foreground flex items-center gap-2">
+                    <History className="size-5 text-primary" />
                     SMS Delivery Details &amp; Audit Log
                   </DialogTitle>
                 </div>
               </DialogHeader>
 
               {/* Student and recipient summary */}
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 p-4 bg-slate-50 dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 text-xs">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 p-4 bg-muted/50 rounded-xl border border-border text-xs">
                 <div>
-                  <span className="text-slate-400 block text-[11px] font-medium uppercase">Student</span>
-                  <span className="font-bold text-slate-800 dark:text-slate-200 text-sm">
+                  <span className="text-muted-foreground block text-[11px] font-medium uppercase">Student</span>
+                  <span className="font-bold text-foreground text-sm">
                     {selectedNotif.student.fullName}
                   </span>
                 </div>
                 <div>
-                  <span className="text-slate-400 block text-[11px] font-medium uppercase">Class</span>
-                  <span className="font-semibold text-slate-800 dark:text-slate-200">
+                  <span className="text-muted-foreground block text-[11px] font-medium uppercase">Class</span>
+                  <span className="font-semibold text-foreground">
                     {selectedNotif.student.className}
                   </span>
                 </div>
                 <div>
-                  <span className="text-slate-400 block text-[11px] font-medium uppercase">Guardian Phone</span>
-                  <span className="font-mono font-semibold text-slate-800 dark:text-slate-200">
+                  <span className="text-muted-foreground block text-[11px] font-medium uppercase">Guardian Phone</span>
+                  <span className="font-mono font-semibold text-foreground">
                     {selectedNotif.guardianPhone}
                   </span>
                 </div>
                 <div>
-                  <span className="text-slate-400 block text-[11px] font-medium uppercase">Current Status</span>
-                  <span className="font-semibold text-slate-800 dark:text-slate-200">
+                  <span className="text-muted-foreground block text-[11px] font-medium uppercase">Current Status</span>
+                  <span className="font-semibold text-foreground">
                     {selectedNotif.status}
                   </span>
                 </div>
@@ -798,10 +790,10 @@ export function NotificationsManager({
 
               {/* Message body preview */}
               <div className="space-y-2">
-                <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
                   SMS Message Body Delivered
                 </span>
-                <div className="p-4 bg-slate-50 dark:bg-slate-900/60 rounded-xl border border-slate-200 dark:border-slate-800 text-xs text-slate-800 dark:text-slate-200 font-sans leading-relaxed">
+                <div className="p-4 bg-muted/40 rounded-xl border border-border text-xs text-foreground font-sans leading-relaxed">
                   {selectedNotif.body}
                 </div>
               </div>
@@ -809,7 +801,7 @@ export function NotificationsManager({
               {/* Attempts Timeline */}
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                  <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
                     Dispatch Attempts ({selectedNotif.attempts.length})
                   </span>
 
@@ -819,7 +811,7 @@ export function NotificationsManager({
                       size="sm"
                       onClick={() => handleRetry(selectedNotif)}
                       disabled={retryingId === selectedNotif.id}
-                      className="h-8 text-xs border-rose-300 text-rose-700 dark:text-rose-300 gap-1.5 rounded-xl font-semibold"
+                      className="h-8 text-xs border-destructive/30 text-destructive gap-1.5 rounded-xl font-semibold hover:bg-destructive/10"
                     >
                       {retryingId === selectedNotif.id ? (
                         <Loader2 className="size-3.5 animate-spin" />
@@ -832,7 +824,7 @@ export function NotificationsManager({
                 </div>
 
                 {selectedNotif.attempts.length === 0 ? (
-                  <p className="text-xs text-slate-400 italic">
+                  <p className="text-xs text-muted-foreground italic">
                     No attempt rows recorded yet. The message is queued in PENDING state.
                   </p>
                 ) : (
@@ -840,15 +832,15 @@ export function NotificationsManager({
                     {selectedNotif.attempts.map((attempt, idx) => (
                       <div
                         key={attempt.id}
-                        className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 space-y-2 text-xs"
+                        className="p-4 rounded-xl border border-border bg-card space-y-2 text-xs"
                       >
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-2">
-                            <span className="font-bold text-slate-800 dark:text-slate-200">
+                            <span className="font-bold text-foreground">
                               Attempt #{idx + 1}
                             </span>
-                            <span className="text-slate-400">·</span>
-                            <span className="text-slate-500 dark:text-slate-400">
+                            <span className="text-muted-foreground">·</span>
+                            <span className="text-muted-foreground">
                               {formatDateTime(attempt.attemptedAt)}
                             </span>
                           </div>
@@ -859,8 +851,8 @@ export function NotificationsManager({
                                 variant="outline"
                                 className={`text-[11px] font-mono ${
                                   attempt.httpStatus >= 200 && attempt.httpStatus < 300
-                                    ? "border-emerald-300 text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/30"
-                                    : "border-rose-300 text-rose-700 dark:text-rose-300 bg-rose-50 dark:bg-rose-950/30"
+                                    ? "border-primary/30 text-primary bg-primary/10"
+                                    : "border-destructive/30 text-destructive bg-destructive/10"
                                 }`}
                               >
                                 HTTP {attempt.httpStatus}
@@ -868,12 +860,12 @@ export function NotificationsManager({
                             )}
 
                             {attempt.success ? (
-                              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border border-emerald-500/20">
+                              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-primary/10 text-primary border border-primary/20">
                                 <CheckCircle2 className="size-3" />
                                 Success
                               </span>
                             ) : (
-                              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-rose-500/10 text-rose-700 dark:text-rose-300 border border-rose-500/20">
+                              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-destructive/10 text-destructive border border-destructive/20">
                                 <AlertCircle className="size-3" />
                                 Failed
                               </span>
@@ -882,7 +874,7 @@ export function NotificationsManager({
                         </div>
 
                         {attempt.error && (
-                          <div className="p-2.5 rounded-lg bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900/50 text-rose-800 dark:text-rose-300 text-xs">
+                          <div className="p-2.5 rounded-lg bg-destructive/10 border border-destructive/20 text-destructive text-xs">
                             <span className="font-semibold">Error:</span> {attempt.error}
                           </div>
                         )}
@@ -890,24 +882,24 @@ export function NotificationsManager({
                         {attempt.rawResponse && (
                           <div className="space-y-1 pt-1">
                             <div className="flex items-center justify-between">
-                              <span className="text-[11px] font-mono text-slate-400">
+                              <span className="text-[11px] font-mono text-muted-foreground">
                                 Raw Response JSON:
                               </span>
                               <Button
                                 variant="ghost"
                                 size="sm"
                                 onClick={() => copyRawResponse(attempt.rawResponse)}
-                                className="h-6 text-[10px] px-2 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 rounded-md"
+                                className="h-6 text-[10px] px-2 text-muted-foreground hover:text-foreground rounded-md"
                               >
                                 {copiedJson ? (
-                                  <Check className="size-3 text-emerald-500 mr-1" />
+                                  <Check className="size-3 text-primary mr-1" />
                                 ) : (
                                   <Copy className="size-3 mr-1" />
                                 )}
                                 Copy JSON
                               </Button>
                             </div>
-                            <pre className="p-3 rounded-xl bg-slate-900 text-slate-100 dark:bg-slate-950 font-mono text-[11px] overflow-x-auto max-h-48 leading-relaxed">
+                            <pre className="p-3 rounded-xl bg-muted text-foreground border border-border font-mono text-[11px] overflow-x-auto max-h-48 leading-relaxed">
                               {JSON.stringify(attempt.rawResponse, null, 2)}
                             </pre>
                           </div>

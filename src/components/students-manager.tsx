@@ -144,20 +144,20 @@ export function StudentsManager({
   return (
     <div className="space-y-6 pb-12">
       {/* Page Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-slate-200 dark:border-slate-800 pb-4">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-border pb-4">
         <div className="flex items-center gap-2">
-          <Users className="size-5 text-slate-700 dark:text-slate-300" />
-          <h1 className="text-xl font-bold tracking-tight text-slate-900 dark:text-white">
+          <Users className="size-5 text-foreground" />
+          <h1 className="text-xl font-bold tracking-tight text-foreground">
             Students
           </h1>
           {isAdmin ? (
-            <Badge variant="outline" className="text-xs font-medium text-slate-600 dark:text-slate-400 gap-1 py-0.5 px-2">
-              <ShieldCheck className="size-3 text-slate-500" />
+            <Badge variant="outline" className="text-xs font-medium text-muted-foreground gap-1 py-0.5 px-2">
+              <ShieldCheck className="size-3 text-muted-foreground" />
               <span>Admin</span>
             </Badge>
           ) : (
-            <Badge variant="outline" className="text-xs font-medium text-slate-600 dark:text-slate-400 gap-1 py-0.5 px-2">
-              <Lock className="size-3 text-slate-500" />
+            <Badge variant="outline" className="text-xs font-medium text-muted-foreground gap-1 py-0.5 px-2">
+              <Lock className="size-3 text-muted-foreground" />
               <span>Teacher (Masked)</span>
             </Badge>
           )}
@@ -167,7 +167,7 @@ export function StudentsManager({
           <Button
             onClick={handleCreate}
             size="sm"
-            className="h-8 px-3 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-medium text-xs gap-1.5 shrink-0"
+            className="h-8 px-3 rounded-lg font-medium text-xs gap-1.5 shrink-0"
           >
             <UserPlus className="size-3.5" />
             <span>Add Student</span>
@@ -178,53 +178,53 @@ export function StudentsManager({
       {/* Metrics Row */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
         {/* Total Enrolled */}
-        <Card className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
+        <Card className="rounded-xl border border-border bg-card">
           <CardContent className="p-4">
-            <p className="text-xs font-medium text-slate-500 uppercase tracking-wider">
+            <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
               Total Enrolled
             </p>
-            <h3 className="text-2xl font-bold text-slate-900 dark:text-white mt-1">
+            <h3 className="text-2xl font-bold text-foreground mt-1">
               {stats.total}
             </h3>
-            <p className="text-[11px] text-slate-500 mt-0.5">Across {classes.length} classrooms</p>
+            <p className="text-[11px] text-muted-foreground mt-0.5">Across {classes.length} classrooms</p>
           </CardContent>
         </Card>
 
         {/* Active Students */}
-        <Card className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
+        <Card className="rounded-xl border border-border bg-card">
           <CardContent className="p-4">
-            <p className="text-xs font-medium text-slate-500 uppercase tracking-wider">
+            <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
               Active Enrolled
             </p>
-            <h3 className="text-2xl font-bold text-emerald-600 dark:text-emerald-400 mt-1">
+            <h3 className="text-2xl font-bold text-foreground mt-1">
               {stats.active}
             </h3>
-            <p className="text-[11px] text-slate-500 mt-0.5">
+            <p className="text-[11px] text-muted-foreground mt-0.5">
               {stats.activeRate}% active rate
             </p>
           </CardContent>
         </Card>
 
         {/* Inactive */}
-        <Card className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
+        <Card className="rounded-xl border border-border bg-card">
           <CardContent className="p-4">
-            <p className="text-xs font-medium text-slate-500 uppercase tracking-wider">
+            <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
               Inactive / Suspended
             </p>
-            <h3 className="text-2xl font-bold text-slate-600 dark:text-slate-400 mt-1">
+            <h3 className="text-2xl font-bold text-muted-foreground mt-1">
               {stats.inactive}
             </h3>
-            <p className="text-[11px] text-slate-500 mt-0.5">Excluded from roll call</p>
+            <p className="text-[11px] text-muted-foreground mt-0.5">Excluded from roll call</p>
           </CardContent>
         </Card>
       </div>
 
       {/* Action Bar: Search, Class Filter, Inactive Toggle */}
-      <div className="p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+      <div className="p-3.5 rounded-xl border border-border bg-card flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
         <div className="flex flex-1 flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
           {/* Search Input */}
           <div className="relative flex-1 max-w-sm">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-3.5 text-slate-400" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-3.5 text-muted-foreground" />
             <Input
               type="text"
               placeholder="Search by student, adm no, or guardian..."
@@ -238,7 +238,7 @@ export function StudentsManager({
           <select
             value={selectedClassId}
             onChange={(e) => setSelectedClassId(e.target.value)}
-            className="h-8 px-2.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-xs text-slate-700 dark:text-slate-200 outline-none"
+            className="h-8 px-2.5 rounded-lg border border-border bg-background text-xs text-foreground outline-none"
           >
             <option value="ALL">
               All Classrooms ({classes.length})
@@ -251,34 +251,34 @@ export function StudentsManager({
           </select>
 
           {/* Inactive Checkbox Toggle */}
-          <label className="flex items-center gap-1.5 text-xs text-slate-600 dark:text-slate-400 cursor-pointer select-none px-2 py-1 rounded hover:bg-slate-50 dark:hover:bg-slate-800/50">
+          <label className="flex items-center gap-1.5 text-xs text-muted-foreground cursor-pointer select-none px-2 py-1 rounded hover:bg-muted/50">
             <input
               type="checkbox"
               checked={showInactive}
               onChange={(e) => setShowInactive(e.target.checked)}
-              className="rounded border-slate-300 text-blue-600"
+              className="rounded border-border accent-primary"
             />
             <span>Include Inactive</span>
           </label>
         </div>
 
-        <p className="text-xs text-slate-500 self-end sm:self-auto font-medium">
-          Showing <span className="font-bold text-slate-900 dark:text-white">{filteredStudents.length}</span> of {students.length}
+        <p className="text-xs text-muted-foreground self-end sm:self-auto font-medium">
+          Showing <span className="font-bold text-foreground">{filteredStudents.length}</span> of {students.length}
         </p>
       </div>
 
       {/* Students Table */}
-      <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 overflow-hidden">
+      <div className="rounded-xl border border-border bg-card overflow-hidden">
         <div className="overflow-x-auto">
           <Table>
-            <TableHeader className="bg-slate-50 dark:bg-slate-900/60">
-              <TableRow className="border-b border-slate-200 dark:border-slate-800 text-xs font-medium">
-                <TableHead className="w-28 py-2.5 px-4 font-semibold text-slate-700 dark:text-slate-300">Adm No</TableHead>
-                <TableHead className="py-2.5 px-4 font-semibold text-slate-700 dark:text-slate-300">Student Name</TableHead>
-                <TableHead className="py-2.5 px-4 font-semibold text-slate-700 dark:text-slate-300">Classroom</TableHead>
-                <TableHead className="py-2.5 px-4 font-semibold text-slate-700 dark:text-slate-300">Primary Guardian</TableHead>
-                <TableHead className="py-2.5 px-4 font-semibold text-slate-700 dark:text-slate-300">Status</TableHead>
-                {isAdmin && <TableHead className="text-right py-2.5 px-4 font-semibold text-slate-700 dark:text-slate-300">Actions</TableHead>}
+            <TableHeader className="bg-muted/50">
+              <TableRow className="border-b border-border text-xs font-medium">
+                <TableHead className="w-28 py-2.5 px-4 font-semibold text-foreground">Adm No</TableHead>
+                <TableHead className="py-2.5 px-4 font-semibold text-foreground">Student Name</TableHead>
+                <TableHead className="py-2.5 px-4 font-semibold text-foreground">Classroom</TableHead>
+                <TableHead className="py-2.5 px-4 font-semibold text-foreground">Primary Guardian</TableHead>
+                <TableHead className="py-2.5 px-4 font-semibold text-foreground">Status</TableHead>
+                {isAdmin && <TableHead className="text-right py-2.5 px-4 font-semibold text-foreground">Actions</TableHead>}
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -286,11 +286,11 @@ export function StudentsManager({
                 <TableRow>
                   <TableCell
                     colSpan={isAdmin ? 6 : 5}
-                    className="h-32 text-center text-slate-500 dark:text-slate-400"
+                    className="h-32 text-center text-muted-foreground"
                   >
                     <div className="flex flex-col items-center justify-center gap-1.5">
-                      <Users className="size-6 text-slate-400" />
-                      <p className="text-sm font-medium text-slate-800 dark:text-slate-200">No students match current search or class filter</p>
+                      <Users className="size-6 text-muted-foreground" />
+                      <p className="text-sm font-medium text-foreground">No students match current search or class filter</p>
                       {isAdmin && (
                         <Button
                           variant="outline"
@@ -311,17 +311,17 @@ export function StudentsManager({
                   return (
                     <TableRow
                       key={student.id}
-                      className={`hover:bg-slate-50/70 dark:hover:bg-slate-800/40 transition-colors ${
-                        !student.active ? "opacity-60 bg-slate-50/40 dark:bg-slate-900/40" : ""
+                      className={`hover:bg-muted/50 transition-colors ${
+                        !student.active ? "opacity-60 bg-muted/20" : ""
                       }`}
                     >
                       {/* Admission Number */}
-                      <TableCell className="py-2.5 px-4 font-mono text-xs text-slate-600 dark:text-slate-400">
+                      <TableCell className="py-2.5 px-4 font-mono text-xs text-muted-foreground">
                         {student.admissionNo}
                       </TableCell>
 
                       {/* Student Full Name */}
-                      <TableCell className="py-2.5 px-4 font-medium text-slate-900 dark:text-white text-sm">
+                      <TableCell className="py-2.5 px-4 font-medium text-foreground text-sm">
                         {student.fullName}
                       </TableCell>
 
@@ -338,14 +338,14 @@ export function StudentsManager({
                       {/* Primary Guardian & Phone */}
                       <TableCell className="py-2.5 px-4">
                         <div className="space-y-0.5">
-                          <p className="text-xs text-slate-900 dark:text-slate-100 font-medium">
+                          <p className="text-xs text-foreground font-medium">
                             {student.guardianName}
                           </p>
-                          <div className="flex items-center gap-1.5 text-xs text-slate-500 font-mono">
-                            <Smartphone className="size-3 text-slate-400" />
+                          <div className="flex items-center gap-1.5 text-xs text-muted-foreground font-mono">
+                            <Smartphone className="size-3 text-muted-foreground" />
                             <span>{student.guardianPhone}</span>
                             {!isAdmin && (
-                              <span className="text-[10px] text-slate-400 font-sans">
+                              <span className="text-[10px] text-muted-foreground font-sans">
                                 (masked)
                               </span>
                             )}
@@ -353,11 +353,11 @@ export function StudentsManager({
                               <button
                                 type="button"
                                 onClick={() => copyPhone(student.guardianPhone, student.id)}
-                                className="text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 transition-colors p-0.5"
+                                className="text-muted-foreground hover:text-foreground transition-colors p-0.5"
                                 title="Copy guardian phone"
                               >
                                 {copiedPhoneId === student.id ? (
-                                  <Check className="size-3 text-emerald-600" />
+                                  <Check className="size-3 text-primary" />
                                 ) : (
                                   <Copy className="size-3" />
                                 )}
@@ -370,13 +370,13 @@ export function StudentsManager({
                       {/* Active Status Badge */}
                       <TableCell className="py-2.5 px-4">
                         {student.active ? (
-                          <span className="inline-flex items-center gap-1.5 text-xs text-emerald-600 dark:text-emerald-400 font-medium">
-                            <span className="size-1.5 rounded-full bg-emerald-500" />
+                          <span className="inline-flex items-center gap-1.5 text-xs text-primary font-medium">
+                            <span className="size-1.5 rounded-full bg-primary" />
                             Active
                           </span>
                         ) : (
-                          <span className="inline-flex items-center gap-1.5 text-xs text-slate-400 font-medium">
-                            <span className="size-1.5 rounded-full bg-slate-400" />
+                          <span className="inline-flex items-center gap-1.5 text-xs text-muted-foreground font-medium">
+                            <span className="size-1.5 rounded-full bg-muted-foreground" />
                             Inactive
                           </span>
                         )}
@@ -390,7 +390,7 @@ export function StudentsManager({
                               variant="ghost"
                               size="sm"
                               onClick={() => handleEdit(student)}
-                              className="size-7 p-0 text-slate-500 hover:text-slate-900 dark:hover:text-white rounded"
+                              className="size-7 p-0 text-muted-foreground hover:text-foreground rounded"
                               title="Edit Student Profile"
                             >
                               <Edit2 className="size-3.5" />
@@ -402,11 +402,7 @@ export function StudentsManager({
                               size="sm"
                               disabled={isToggling}
                               onClick={() => handleToggleActive(student)}
-                              className={`size-7 p-0 rounded ${
-                                student.active
-                                  ? "text-slate-400 hover:text-amber-600"
-                                  : "text-emerald-600 hover:text-emerald-700"
-                              }`}
+                              className="size-7 p-0 rounded text-muted-foreground hover:text-foreground"
                               title={student.active ? "Deactivate Student" : "Reactivate Student"}
                             >
                               {student.active ? (

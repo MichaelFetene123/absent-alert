@@ -132,17 +132,17 @@ export function StudentForm({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-lg max-h-[90vh] overflow-y-auto rounded-3xl border-slate-200 dark:border-slate-800 p-6">
-        <DialogHeader className="pb-4 border-b border-slate-100 dark:border-slate-800">
+      <DialogContent className="sm:max-w-lg max-h-[90vh] overflow-y-auto rounded-3xl border-border p-6">
+        <DialogHeader className="pb-4 border-b border-border">
           <div className="flex items-center gap-2.5">
-            <div className="p-2 rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400">
+            <div className="p-2 rounded-xl bg-primary/10 text-primary">
               {isEdit ? <Save className="size-5" /> : <UserPlus className="size-5" />}
             </div>
             <div>
-              <DialogTitle className="text-xl font-bold text-slate-900 dark:text-white">
+              <DialogTitle className="text-xl font-bold text-foreground">
                 {isEdit ? "Edit Student Profile" : "Register New Student"}
               </DialogTitle>
-              <DialogDescription className="text-xs text-slate-500 mt-0.5">
+              <DialogDescription className="text-xs text-muted-foreground mt-0.5">
                 {isEdit
                   ? "Update academic records and guardian mobile details"
                   : "Add student to active classroom roster with guardian mobile alert phone"}
@@ -154,111 +154,111 @@ export function StudentForm({
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-5 py-4">
           {/* Admission Number */}
           <div className="space-y-1.5">
-            <Label htmlFor="admissionNo" className="text-xs font-semibold uppercase tracking-wider text-slate-500 flex items-center gap-1.5">
-              <Hash className="size-3.5 text-slate-400" />
-              Admission Number <span className="text-red-500">*</span>
+            <Label htmlFor="admissionNo" className="text-xs font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
+              <Hash className="size-3.5 text-muted-foreground" />
+              Admission Number <span className="text-destructive">*</span>
             </Label>
             <Input
               id="admissionNo"
               placeholder="e.g. ADM-008"
               {...register("admissionNo")}
-              className={`h-10 rounded-xl font-mono text-sm ${errors.admissionNo ? "border-red-500" : ""}`}
+              className={`h-10 rounded-xl font-mono text-sm ${errors.admissionNo ? "border-destructive" : ""}`}
             />
             {errors.admissionNo && (
-              <p className="text-xs text-red-600">{errors.admissionNo.message}</p>
+              <p className="text-xs text-destructive">{errors.admissionNo.message}</p>
             )}
           </div>
 
           {/* Full Name */}
           <div className="space-y-1.5">
-            <Label htmlFor="fullName" className="text-xs font-semibold uppercase tracking-wider text-slate-500 flex items-center gap-1.5">
-              <User className="size-3.5 text-slate-400" />
-              Student Full Name <span className="text-red-500">*</span>
+            <Label htmlFor="fullName" className="text-xs font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
+              <User className="size-3.5 text-muted-foreground" />
+              Student Full Name <span className="text-destructive">*</span>
             </Label>
             <Input
               id="fullName"
               placeholder="e.g. Almaz Kebede"
               {...register("fullName")}
-              className={`h-10 rounded-xl font-semibold ${errors.fullName ? "border-red-500" : ""}`}
+              className={`h-10 rounded-xl font-semibold ${errors.fullName ? "border-destructive" : ""}`}
             />
             {errors.fullName && (
-              <p className="text-xs text-red-600">{errors.fullName.message}</p>
+              <p className="text-xs text-destructive">{errors.fullName.message}</p>
             )}
           </div>
 
           {/* Class Selection */}
           <div className="space-y-1.5">
-            <Label htmlFor="classId" className="text-xs font-semibold uppercase tracking-wider text-slate-500 flex items-center gap-1.5">
-              <School className="size-3.5 text-slate-400" />
-              Assigned Classroom <span className="text-red-500">*</span>
+            <Label htmlFor="classId" className="text-xs font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
+              <School className="size-3.5 text-muted-foreground" />
+              Assigned Classroom <span className="text-destructive">*</span>
             </Label>
             <select
               id="classId"
               {...register("classId")}
-              className="w-full h-10 px-3 text-sm font-semibold rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full h-10 px-3 text-sm font-semibold rounded-xl border border-border bg-background text-foreground outline-none"
             >
               {classes.length === 0 ? (
                 <option value="">No classrooms available</option>
               ) : (
                 classes.map((cls) => (
-                  <option key={cls.id} value={cls.id} className="dark:bg-slate-900">
+                  <option key={cls.id} value={cls.id}>
                     {cls.name}
                   </option>
                 ))
               )}
             </select>
             {errors.classId && (
-              <p className="text-xs text-red-600">{errors.classId.message}</p>
+              <p className="text-xs text-destructive">{errors.classId.message}</p>
             )}
           </div>
 
-          <div className="pt-3 border-t border-slate-100 dark:border-slate-800 space-y-4">
+          <div className="pt-3 border-t border-border space-y-4">
             <div className="flex items-center gap-2">
-              <span className="p-1 rounded-md bg-purple-500/10 text-purple-600">
+              <span className="p-1 rounded-md bg-primary/10 text-primary">
                 <Smartphone className="size-3.5" />
               </span>
-              <h4 className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+              <h4 className="text-xs font-bold uppercase tracking-wider text-foreground">
                 Primary Guardian &amp; SMS Destination
               </h4>
             </div>
 
             {/* Guardian Name */}
             <div className="space-y-1.5">
-              <Label htmlFor="guardianName" className="text-xs font-semibold uppercase tracking-wider text-slate-500 flex items-center gap-1.5">
-                <User className="size-3.5 text-slate-400" />
-                Guardian Full Name <span className="text-red-500">*</span>
+              <Label htmlFor="guardianName" className="text-xs font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
+                <User className="size-3.5 text-muted-foreground" />
+                Guardian Full Name <span className="text-destructive">*</span>
               </Label>
               <Input
                 id="guardianName"
                 placeholder="e.g. Kebede Tessema"
                 {...register("guardianName")}
-                className={`h-10 rounded-xl font-semibold ${errors.guardianName ? "border-red-500" : ""}`}
+                className={`h-10 rounded-xl font-semibold ${errors.guardianName ? "border-destructive" : ""}`}
               />
               {errors.guardianName && (
-                <p className="text-xs text-red-600">{errors.guardianName.message}</p>
+                <p className="text-xs text-destructive">{errors.guardianName.message}</p>
               )}
             </div>
 
             {/* Guardian Phone */}
             <div className="space-y-1.5">
-              <Label htmlFor="guardianPhone" className="text-xs font-semibold uppercase tracking-wider text-slate-500 flex items-center gap-1.5">
-                <Phone className="size-3.5 text-slate-400" />
-                Guardian Mobile Phone <span className="text-red-500">*</span>
+              <Label htmlFor="guardianPhone" className="text-xs font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
+                <Phone className="size-3.5 text-muted-foreground" />
+                Guardian Mobile Phone <span className="text-destructive">*</span>
               </Label>
               <Input
                 id="guardianPhone"
                 type="tel"
                 placeholder="0911223344 or +251911223344"
                 {...register("guardianPhone")}
-                className={`h-10 rounded-xl font-mono text-sm ${errors.guardianPhone ? "border-red-500" : ""}`}
+                className={`h-10 rounded-xl font-mono text-sm ${errors.guardianPhone ? "border-destructive" : ""}`}
               />
               {errors.guardianPhone && (
-                <p className="text-xs text-red-600">{errors.guardianPhone.message}</p>
+                <p className="text-xs text-destructive">{errors.guardianPhone.message}</p>
               )}
             </div>
           </div>
 
-          <DialogFooter className="pt-3 border-t border-slate-100 dark:border-slate-800 flex gap-2 sm:justify-end">
+          <DialogFooter className="pt-3 border-t border-border flex gap-2 sm:justify-end">
             <Button
               type="button"
               id="student-form-cancel-btn"
@@ -275,7 +275,7 @@ export function StudentForm({
               id="student-form-submit-btn"
               size="sm"
               disabled={isSubmitting}
-              className="bg-blue-600 hover:bg-blue-700 text-white rounded-xl min-w-32 font-semibold shadow-md shadow-blue-600/20"
+              className="rounded-xl min-w-32 font-semibold"
             >
               {isSubmitting ? (
                 <>

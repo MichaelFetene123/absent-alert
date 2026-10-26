@@ -267,17 +267,17 @@ export function PoliciesManager() {
   return (
     <div className="space-y-6 max-w-6xl">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200 dark:border-slate-800">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-border">
         <div>
           <div className="flex items-center gap-2">
-            <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
+            <h1 className="text-2xl font-bold tracking-tight text-foreground">
               {locale === "am" ? "የመቅረት ማስጠንቀቂያ ፖሊሲዎች" : "Absence Alert Policies"}
             </h1>
-            <Badge variant="outline" className="border-indigo-500/30 text-indigo-600 dark:text-indigo-400 bg-indigo-500/10 text-xs">
+            <Badge variant="outline" className="border-primary/30 text-primary bg-primary/10 text-xs">
               Policy Engine v1.2
             </Badge>
           </div>
-          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+          <p className="text-sm text-muted-foreground mt-1">
             {locale === "am"
               ? "የትምህርት ቤቱን የመቅረት ማሳወቂያ ደንቦች፣ የእርማት መስኮቶች፣ የተፈቀደ ፈቃድ ማጣሪያዎች እና የማሳወቂያ መንገዶች ማዋቀሪያ።"
               : "Configure deterministic school attendance rules, post-submission correction windows, holiday suppression, and guardian recipient policies."}
@@ -289,9 +289,9 @@ export function PoliciesManager() {
             variant="outline"
             size="sm"
             onClick={() => setActiveTab("simulate")}
-            className="text-xs h-9 border-slate-200 dark:border-slate-700"
+            className="text-xs h-9"
           >
-            <PlayCircle className="h-4 w-4 mr-1.5 text-indigo-500" />
+            <PlayCircle className="h-4 w-4 mr-1.5 text-primary" />
             {locale === "am" ? "ፖሊሲ ሞካሪ (ሲሙሌተር)" : "Policy Simulator"}
           </Button>
 
@@ -301,7 +301,7 @@ export function PoliciesManager() {
               setIsWizardOpen(true);
               setWizardStep(1);
             }}
-            className="text-xs h-9 bg-indigo-600 hover:bg-indigo-700 text-white"
+            className="text-xs h-9"
           >
             <Plus className="h-4 w-4 mr-1.5" />
             {locale === "am" ? "አዲስ ፖሊሲ አዋቅር" : "Create New Policy"}
@@ -311,57 +311,57 @@ export function PoliciesManager() {
 
       {/* Operational KPI Metric Strip */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3.5">
-        <Card className="p-3.5 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 shadow-sm">
-          <span className="text-[11px] font-medium text-slate-400 uppercase tracking-wider block">
+        <Card className="p-3.5 bg-card border-border shadow-xs">
+          <span className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider block">
             {locale === "am" ? "ተግባራዊ ፖሊሲ" : "Active Policy"}
           </span>
-          <div className="text-base font-bold text-slate-900 dark:text-slate-100 mt-1 truncate">
+          <div className="text-base font-bold text-foreground mt-1 truncate">
             {locale === "am" ? activePolicy.nameAm : activePolicy.name}
           </div>
-          <div className="flex items-center gap-1.5 mt-1 text-xs text-emerald-600 dark:text-emerald-400">
+          <div className="flex items-center gap-1.5 mt-1 text-xs text-primary">
             <CheckCircle2 className="h-3.5 w-3.5" />
             <span>{activePolicy.version} (Live Active)</span>
           </div>
         </Card>
 
-        <Card className="p-3.5 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 shadow-sm">
-          <span className="text-[11px] font-medium text-slate-400 uppercase tracking-wider block">
+        <Card className="p-3.5 bg-card border-border shadow-xs">
+          <span className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider block">
             {locale === "am" ? "የማሳወቂያ ሰዓት / መዘግየት" : "Trigger Timing"}
           </span>
-          <div className="text-base font-bold text-slate-900 dark:text-slate-100 mt-1">
+          <div className="text-base font-bold text-foreground mt-1">
             {activePolicy.triggerType === "DELAYED"
               ? `${activePolicy.triggerDelayMinutes}m Window`
               : activePolicy.triggerType === "SCHEDULED_TIME"
               ? activePolicy.scheduledTime
               : "Immediate"}
           </div>
-          <div className="flex items-center gap-1.5 mt-1 text-xs text-slate-500">
+          <div className="flex items-center gap-1.5 mt-1 text-xs text-muted-foreground">
             <Clock className="h-3.5 w-3.5" />
             <span>Post-submission delay</span>
           </div>
         </Card>
 
-        <Card className="p-3.5 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 shadow-sm">
-          <span className="text-[11px] font-medium text-slate-400 uppercase tracking-wider block">
+        <Card className="p-3.5 bg-card border-border shadow-xs">
+          <span className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider block">
             {locale === "am" ? "የድግግሞሽ መከላከያ" : "Deduplication Rule"}
           </span>
-          <div className="text-base font-bold text-slate-900 dark:text-slate-100 mt-1">
+          <div className="text-base font-bold text-foreground mt-1">
             Max {activePolicy.maxAlertsPerStudentPerDay} / student / day
           </div>
-          <div className="flex items-center gap-1.5 mt-1 text-xs text-slate-500">
+          <div className="flex items-center gap-1.5 mt-1 text-xs text-muted-foreground">
             <ShieldCheck className="h-3.5 w-3.5" />
             <span>24h Cooldown window</span>
           </div>
         </Card>
 
-        <Card className="p-3.5 bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 shadow-sm">
-          <span className="text-[11px] font-medium text-slate-400 uppercase tracking-wider block">
+        <Card className="p-3.5 bg-card border-border shadow-xs">
+          <span className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider block">
             {locale === "am" ? "ማጣሪያዎችና እገዳዎች" : "Suppression Rules"}
           </span>
-          <div className="text-base font-bold text-slate-900 dark:text-slate-100 mt-1">
+          <div className="text-base font-bold text-foreground mt-1">
             Leave & Holidays
           </div>
-          <div className="flex items-center gap-1.5 mt-1 text-xs text-indigo-600 dark:text-indigo-400">
+          <div className="flex items-center gap-1.5 mt-1 text-xs text-primary">
             <Zap className="h-3.5 w-3.5" />
             <span>False-alarm safeguards on</span>
           </div>
@@ -369,13 +369,13 @@ export function PoliciesManager() {
       </div>
 
       {/* Navigation Tabs */}
-      <div className="flex border-b border-slate-200 dark:border-slate-800 gap-6">
+      <div className="flex border-b border-border gap-6">
         <button
           onClick={() => setActiveTab("active")}
           className={`pb-3 text-sm font-medium border-b-2 transition-colors ${
             activeTab === "active"
-              ? "border-indigo-600 text-indigo-600 dark:text-indigo-400 dark:border-indigo-400"
-              : "border-transparent text-slate-500 hover:text-slate-700"
+              ? "border-primary text-primary"
+              : "border-transparent text-muted-foreground hover:text-foreground"
           }`}
         >
           {locale === "am" ? "ተግባራዊ ፖሊሲ ዝርዝር" : "Active Policy Overview"}
@@ -384,8 +384,8 @@ export function PoliciesManager() {
           onClick={() => setActiveTab("all")}
           className={`pb-3 text-sm font-medium border-b-2 transition-colors ${
             activeTab === "all"
-              ? "border-indigo-600 text-indigo-600 dark:text-indigo-400 dark:border-indigo-400"
-              : "border-transparent text-slate-500 hover:text-slate-700"
+              ? "border-primary text-primary"
+              : "border-transparent text-muted-foreground hover:text-foreground"
           }`}
         >
           {locale === "am"
@@ -396,8 +396,8 @@ export function PoliciesManager() {
           onClick={() => setActiveTab("simulate")}
           className={`pb-3 text-sm font-medium border-b-2 transition-colors ${
             activeTab === "simulate"
-              ? "border-indigo-600 text-indigo-600 dark:text-indigo-400 dark:border-indigo-400"
-              : "border-transparent text-slate-500 hover:text-slate-700"
+              ? "border-primary text-primary"
+              : "border-transparent text-muted-foreground hover:text-foreground"
           }`}
         >
           {locale === "am" ? "የፖሊሲ ሲሙሌተርና ማረጋገጫ" : "Policy Simulator & Workbench"}
@@ -407,21 +407,21 @@ export function PoliciesManager() {
       {/* TAB 1: ACTIVE POLICY OVERVIEW */}
       {activeTab === "active" && (
         <div className="space-y-6">
-          <Card className="border-indigo-500/20 bg-white dark:bg-slate-900 shadow-sm overflow-hidden">
-            <div className="bg-indigo-500/5 px-6 py-4 border-b border-indigo-500/10 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <Card className="border-border bg-card shadow-xs overflow-hidden">
+            <div className="bg-muted/50 px-6 py-4 border-b border-border flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div>
                 <div className="flex items-center gap-2.5">
-                  <span className="font-semibold text-lg text-slate-900 dark:text-slate-100">
+                  <span className="font-semibold text-lg text-foreground">
                     {locale === "am" ? activePolicy.nameAm : activePolicy.name}
                   </span>
-                  <Badge className="bg-emerald-500/10 text-emerald-600 border-emerald-500/20 text-xs">
+                  <Badge className="bg-primary/10 text-primary border-primary/20 text-xs">
                     ACTIVE LIVE
                   </Badge>
                   <Badge variant="outline" className="text-xs">
                     {activePolicy.version}
                   </Badge>
                 </div>
-                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                <p className="text-xs text-muted-foreground mt-1">
                   {activePolicy.description}
                 </p>
               </div>
@@ -431,7 +431,7 @@ export function PoliciesManager() {
                   variant="outline"
                   size="sm"
                   onClick={() => handleDuplicatePolicy(activePolicy.id)}
-                  className="text-xs h-8 border-slate-200 dark:border-slate-700"
+                  className="text-xs h-8"
                 >
                   <Copy className="h-3.5 w-3.5 mr-1" />
                   {locale === "am" ? "ረቂቅ ቅጂ ፍጠር" : "Duplicate as Draft"}
@@ -442,7 +442,7 @@ export function PoliciesManager() {
                     setSimPolicyId(activePolicy.id);
                     setActiveTab("simulate");
                   }}
-                  className="text-xs h-8 bg-indigo-600 hover:bg-indigo-700 text-white"
+                  className="text-xs h-8"
                 >
                   <PlayCircle className="h-3.5 w-3.5 mr-1" />
                   {locale === "am" ? "በሲሙሌተር ሞክር" : "Simulate Live Policy"}
@@ -452,92 +452,92 @@ export function PoliciesManager() {
 
             <CardContent className="p-6 space-y-6">
               {/* Plain-Language Human Summary (Section 8 Requirement) */}
-              <div className="p-4 rounded-lg bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60">
-                <span className="text-xs font-semibold text-indigo-600 dark:text-indigo-400 uppercase tracking-wide block mb-1">
+              <div className="p-4 rounded-lg bg-muted/40 border border-border">
+                <span className="text-xs font-semibold text-primary uppercase tracking-wide block mb-1">
                   {locale === "am" ? "የፖሊሲው አጠቃላይ ማጠቃለያ (Human-Readable Summary)" : "Auditable Policy Summary"}
                 </span>
-                <p className="text-sm text-slate-700 dark:text-slate-300 leading-relaxed">
+                <p className="text-sm text-foreground leading-relaxed">
                   {renderHumanSummary(activePolicy, locale)}
                 </p>
               </div>
 
               {/* 8-Step Parameter Grid */}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div className="p-3.5 rounded border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/30">
-                  <span className="text-[11px] font-medium text-slate-400 uppercase block">1. Scope</span>
-                  <div className="text-sm font-semibold text-slate-800 dark:text-slate-200 mt-0.5">
+                <div className="p-3.5 rounded border border-border bg-muted/30">
+                  <span className="text-[11px] font-medium text-muted-foreground uppercase block">1. Scope</span>
+                  <div className="text-sm font-semibold text-foreground mt-0.5">
                     {activePolicy.scope === "DAILY" ? "Daily Attendance" : activePolicy.scope}
                   </div>
-                  <span className="text-xs text-slate-500 block mt-1">Homeroom morning register</span>
+                  <span className="text-xs text-muted-foreground block mt-1">Homeroom morning register</span>
                 </div>
 
-                <div className="p-3.5 rounded border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/30">
-                  <span className="text-[11px] font-medium text-slate-400 uppercase block">2. Trigger Mechanism</span>
-                  <div className="text-sm font-semibold text-slate-800 dark:text-slate-200 mt-0.5">
+                <div className="p-3.5 rounded border border-border bg-muted/30">
+                  <span className="text-[11px] font-medium text-muted-foreground uppercase block">2. Trigger Mechanism</span>
+                  <div className="text-sm font-semibold text-foreground mt-0.5">
                     {activePolicy.triggerDelayMinutes}m Post-Submission Delay
                   </div>
-                  <span className="text-xs text-slate-500 block mt-1">Allows teacher correction</span>
+                  <span className="text-xs text-muted-foreground block mt-1">Allows teacher correction</span>
                 </div>
 
-                <div className="p-3.5 rounded border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/30">
-                  <span className="text-[11px] font-medium text-slate-400 uppercase block">3. Recipient Strategy</span>
-                  <div className="text-sm font-semibold text-slate-800 dark:text-slate-200 mt-0.5">
+                <div className="p-3.5 rounded border border-border bg-muted/30">
+                  <span className="text-[11px] font-medium text-muted-foreground uppercase block">3. Recipient Strategy</span>
+                  <div className="text-sm font-semibold text-foreground mt-0.5">
                     Primary Guardian Only
                   </div>
-                  <span className="text-xs text-slate-500 block mt-1">E.164 verified numbers</span>
+                  <span className="text-xs text-muted-foreground block mt-1">E.164 verified numbers</span>
                 </div>
 
-                <div className="p-3.5 rounded border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/30">
-                  <span className="text-[11px] font-medium text-slate-400 uppercase block">4. Language Strategy</span>
-                  <div className="text-sm font-semibold text-slate-800 dark:text-slate-200 mt-0.5">
+                <div className="p-3.5 rounded border border-border bg-muted/30">
+                  <span className="text-[11px] font-medium text-muted-foreground uppercase block">4. Language Strategy</span>
+                  <div className="text-sm font-semibold text-foreground mt-0.5">
                     Guardian Preferred (አማርኛ / EN)
                   </div>
-                  <span className="text-xs text-slate-500 block mt-1">Fallback: Amharic</span>
+                  <span className="text-xs text-muted-foreground block mt-1">Fallback: Amharic</span>
                 </div>
 
-                <div className="p-3.5 rounded border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/30">
-                  <span className="text-[11px] font-medium text-slate-400 uppercase block">5. Leave Suppression</span>
-                  <div className="text-sm font-semibold text-emerald-600 dark:text-emerald-400 mt-0.5 flex items-center gap-1">
+                <div className="p-3.5 rounded border border-border bg-muted/30">
+                  <span className="text-[11px] font-medium text-muted-foreground uppercase block">5. Leave Suppression</span>
+                  <div className="text-sm font-semibold text-primary mt-0.5 flex items-center gap-1">
                     <CheckCircle2 className="h-3.5 w-3.5" />
                     <span>Enabled</span>
                   </div>
-                  <span className="text-xs text-slate-500 block mt-1">Excludes medical/family leave</span>
+                  <span className="text-xs text-muted-foreground block mt-1">Excludes medical/family leave</span>
                 </div>
 
-                <div className="p-3.5 rounded border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/30">
-                  <span className="text-[11px] font-medium text-slate-400 uppercase block">6. Holiday Suppression</span>
-                  <div className="text-sm font-semibold text-emerald-600 dark:text-emerald-400 mt-0.5 flex items-center gap-1">
+                <div className="p-3.5 rounded border border-border bg-muted/30">
+                  <span className="text-[11px] font-medium text-muted-foreground uppercase block">6. Holiday Suppression</span>
+                  <div className="text-sm font-semibold text-primary mt-0.5 flex items-center gap-1">
                     <CheckCircle2 className="h-3.5 w-3.5" />
                     <span>Enabled</span>
                   </div>
-                  <span className="text-xs text-slate-500 block mt-1">Excludes Ethiopian holidays</span>
+                  <span className="text-xs text-muted-foreground block mt-1">Excludes Ethiopian holidays</span>
                 </div>
 
-                <div className="p-3.5 rounded border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/30">
-                  <span className="text-[11px] font-medium text-slate-400 uppercase block">7. Late Arrival Alerts</span>
-                  <div className="text-sm font-semibold text-slate-800 dark:text-slate-200 mt-0.5">
+                <div className="p-3.5 rounded border border-border bg-muted/30">
+                  <span className="text-[11px] font-medium text-muted-foreground uppercase block">7. Late Arrival Alerts</span>
+                  <div className="text-sm font-semibold text-foreground mt-0.5">
                     Enabled (&gt;15 mins)
                   </div>
-                  <span className="text-xs text-slate-500 block mt-1">Gate check alert</span>
+                  <span className="text-xs text-muted-foreground block mt-1">Gate check alert</span>
                 </div>
 
-                <div className="p-3.5 rounded border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/30">
-                  <span className="text-[11px] font-medium text-slate-400 uppercase block">8. Bounded Retries</span>
-                  <div className="text-sm font-semibold text-slate-800 dark:text-slate-200 mt-0.5">
+                <div className="p-3.5 rounded border border-border bg-muted/30">
+                  <span className="text-[11px] font-medium text-muted-foreground uppercase block">8. Bounded Retries</span>
+                  <div className="text-sm font-semibold text-foreground mt-0.5">
                     3 Attempts (Exp Backoff)
                   </div>
-                  <span className="text-xs text-slate-500 block mt-1">429, 500, 502, 503 only</span>
+                  <span className="text-xs text-muted-foreground block mt-1">429, 500, 502, 503 only</span>
                 </div>
               </div>
 
               {/* Audit Trail & Metadata */}
-              <div className="flex flex-wrap items-center justify-between text-xs text-slate-500 border-t border-slate-200 dark:border-slate-800 pt-4">
+              <div className="flex flex-wrap items-center justify-between text-xs text-muted-foreground border-t border-border pt-4">
                 <div className="flex items-center gap-4">
-                  <span>Tenant ID: <strong className="text-slate-700 dark:text-slate-300">{activePolicy.schoolId}</strong></span>
-                  <span>Effective From: <strong className="text-slate-700 dark:text-slate-300">{activePolicy.effectiveFrom}</strong></span>
-                  <span>Last Updated: <strong className="text-slate-700 dark:text-slate-300">{activePolicy.updatedAt.slice(0, 10)} by {activePolicy.updatedBy}</strong></span>
+                  <span>Tenant ID: <strong className="text-foreground">{activePolicy.schoolId}</strong></span>
+                  <span>Effective From: <strong className="text-foreground">{activePolicy.effectiveFrom}</strong></span>
+                  <span>Last Updated: <strong className="text-foreground">{activePolicy.updatedAt.slice(0, 10)} by {activePolicy.updatedBy}</strong></span>
                 </div>
-                <div className="flex items-center gap-2 text-indigo-600 dark:text-indigo-400">
+                <div className="flex items-center gap-2 text-primary">
                   <ShieldCheck className="h-4 w-4" />
                   <span>Single Source of Truth for Absence Eligibility</span>
                 </div>
@@ -560,38 +560,38 @@ export function PoliciesManager() {
               return (
                 <Card
                   key={p.id}
-                  className={`p-4 bg-white dark:bg-slate-900 border transition-all ${
+                  className={`p-4 bg-card border transition-all ${
                     isActive
-                      ? "border-indigo-500/40 shadow-sm"
-                      : "border-slate-200 dark:border-slate-800"
+                      ? "border-primary/50 shadow-xs"
+                      : "border-border"
                   }`}
                 >
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div className="space-y-1">
                       <div className="flex items-center gap-2">
-                        <span className="font-semibold text-base text-slate-900 dark:text-slate-100">
+                        <span className="font-semibold text-base text-foreground">
                           {locale === "am" ? p.nameAm : p.name}
                         </span>
                         <Badge
                           variant="outline"
                           className={
                             isActive
-                              ? "bg-emerald-500/10 text-emerald-600 border-emerald-500/20 text-xs"
+                              ? "bg-primary/10 text-primary border-primary/20 text-xs"
                               : isDraft
-                              ? "bg-amber-500/10 text-amber-600 border-amber-500/20 text-xs"
+                              ? "bg-muted text-muted-foreground border-border text-xs"
                               : isScheduled
-                              ? "bg-blue-500/10 text-blue-600 border-blue-500/20 text-xs"
-                              : "bg-slate-100 text-slate-500 text-xs"
+                              ? "bg-muted text-foreground border-border text-xs"
+                              : "bg-muted text-muted-foreground text-xs"
                           }
                         >
                           {p.status}
                         </Badge>
-                        <span className="text-xs font-mono text-slate-400">{p.version}</span>
+                        <span className="text-xs font-mono text-muted-foreground">{p.version}</span>
                       </div>
-                      <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-1">
+                      <p className="text-xs text-muted-foreground line-clamp-1">
                         {p.description}
                       </p>
-                      <div className="flex items-center gap-4 text-xs text-slate-400 pt-1">
+                      <div className="flex items-center gap-4 text-xs text-muted-foreground pt-1">
                         <span>Scope: <strong>{p.scope}</strong></span>
                         <span>Trigger: <strong>{p.triggerType}</strong></span>
                         <span>Language: <strong>{p.defaultLanguage.toUpperCase()}</strong></span>
@@ -604,7 +604,7 @@ export function PoliciesManager() {
                         <Button
                           size="sm"
                           onClick={() => handleActivatePolicy(p.id)}
-                          className="text-xs h-8 bg-indigo-600 hover:bg-indigo-700 text-white"
+                          className="text-xs h-8"
                         >
                           {locale === "am" ? "አሁን አንቃ (Activate)" : "Activate"}
                         </Button>
@@ -614,7 +614,7 @@ export function PoliciesManager() {
                         variant="outline"
                         size="sm"
                         onClick={() => handleDuplicatePolicy(p.id)}
-                        className="text-xs h-8 border-slate-200 dark:border-slate-700"
+                        className="text-xs h-8"
                       >
                         <Copy className="h-3.5 w-3.5 mr-1" />
                         {locale === "am" ? "ቅጂ" : "Duplicate"}
@@ -627,9 +627,9 @@ export function PoliciesManager() {
                           setSimPolicyId(p.id);
                           setActiveTab("simulate");
                         }}
-                        className="text-xs h-8 border-slate-200 dark:border-slate-700"
+                        className="text-xs h-8"
                       >
-                        <PlayCircle className="h-3.5 w-3.5 mr-1 text-indigo-500" />
+                        <PlayCircle className="h-3.5 w-3.5 mr-1 text-primary" />
                         {locale === "am" ? "ሞክር" : "Simulate"}
                       </Button>
 
@@ -638,7 +638,7 @@ export function PoliciesManager() {
                           variant="ghost"
                           size="sm"
                           onClick={() => handleArchivePolicy(p.id)}
-                          className="text-xs h-8 text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/20"
+                          className="text-xs h-8 text-destructive hover:bg-destructive/10"
                         >
                           {locale === "am" ? "አስቀምጥ" : "Archive"}
                         </Button>
@@ -655,14 +655,14 @@ export function PoliciesManager() {
       {/* TAB 3: POLICY SIMULATOR & WORKBENCH */}
       {activeTab === "simulate" && (
         <div className="space-y-6">
-          <Card className="p-4 bg-indigo-50/50 dark:bg-indigo-950/10 border border-indigo-500/20">
+          <Card className="p-4 bg-muted/40 border border-border">
             <div className="flex items-start gap-3">
-              <HelpCircle className="h-5 w-5 text-indigo-600 dark:text-indigo-400 mt-0.5 shrink-0" />
+              <HelpCircle className="h-5 w-5 text-primary mt-0.5 shrink-0" />
               <div>
-                <h4 className="text-sm font-semibold text-indigo-900 dark:text-indigo-200">
+                <h4 className="text-sm font-semibold text-foreground">
                   {locale === "am" ? "የፖሊሲ ሲሙሌሽን እና ማረጋገጫ መስኮት" : "Policy Validation & Simulation Workbench"}
                 </h4>
-                <p className="text-xs text-indigo-800/80 dark:text-indigo-300/80 mt-0.5 leading-relaxed">
+                <p className="text-xs text-muted-foreground mt-0.5 leading-relaxed">
                   {locale === "am"
                     ? "ይህ ሞካሪ ልክ እንደቀጥታ ሥርዓቱ ተመሳሳይ የአቴንዳንስ ማጣሪያ ደንቦችን ይጠቀማል፤ ነገር ግን ምንም ዓይነት የኤስኤምኤስ ክፍያ ወይም የቀጥታ መልእክት አይልክም። ፖሊሲውን ከማንቃትዎ በፊት የውሳኔውን ትክክለኛነት ያረጋግጡ።"
                     : "Simulate attendance events through the exact backend policy engine without sending real SMS messages or consuming credits. Test edge cases such as approved leave, holiday suppression, correction windows, and invalid phone formats before activating a policy."}
@@ -673,7 +673,7 @@ export function PoliciesManager() {
 
           {/* Quick Scenario Preset Strip */}
           <div className="space-y-2">
-            <span className="text-xs font-medium text-slate-500 uppercase tracking-wider block">
+            <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider block">
               {locale === "am" ? "ፈጣን የሙከራ ሁኔታዎች (Quick Test Scenarios)" : "Pre-Configured Test Scenarios"}
             </span>
             <div className="flex flex-wrap gap-2">
@@ -681,54 +681,54 @@ export function PoliciesManager() {
                 variant="outline"
                 size="sm"
                 onClick={() => loadScenario("standard")}
-                className="text-xs h-8 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900"
+                className="text-xs h-8 bg-card"
               >
-                <CheckCircle2 className="h-3.5 w-3.5 mr-1 text-emerald-500" />
+                <CheckCircle2 className="h-3.5 w-3.5 mr-1 text-primary" />
                 Case A: Unexplained Absence (Eligible)
               </Button>
               <Button
                 variant="outline"
                 size="sm"
                 onClick={() => loadScenario("leave")}
-                className="text-xs h-8 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900"
+                className="text-xs h-8 bg-card"
               >
-                <AlertCircle className="h-3.5 w-3.5 mr-1 text-amber-500" />
+                <AlertCircle className="h-3.5 w-3.5 mr-1 text-muted-foreground" />
                 Case B: Medical Leave (Suppressed)
               </Button>
               <Button
                 variant="outline"
                 size="sm"
                 onClick={() => loadScenario("window")}
-                className="text-xs h-8 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900"
+                className="text-xs h-8 bg-card"
               >
-                <Clock className="h-3.5 w-3.5 mr-1 text-blue-500" />
+                <Clock className="h-3.5 w-3.5 mr-1 text-primary" />
                 Case C: Within 10m Window (Pending)
               </Button>
               <Button
                 variant="outline"
                 size="sm"
                 onClick={() => loadScenario("unsubmitted")}
-                className="text-xs h-8 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900"
+                className="text-xs h-8 bg-card"
               >
-                <FileText className="h-3.5 w-3.5 mr-1 text-slate-400" />
+                <FileText className="h-3.5 w-3.5 mr-1 text-muted-foreground" />
                 Case D: Unsubmitted Register (Pending)
               </Button>
               <Button
                 variant="outline"
                 size="sm"
                 onClick={() => loadScenario("invalid_phone")}
-                className="text-xs h-8 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900"
+                className="text-xs h-8 bg-card"
               >
-                <Smartphone className="h-3.5 w-3.5 mr-1 text-rose-500" />
+                <Smartphone className="h-3.5 w-3.5 mr-1 text-destructive" />
                 Case E: Invalid Phone (Requires Review)
               </Button>
               <Button
                 variant="outline"
                 size="sm"
                 onClick={() => loadScenario("duplicate")}
-                className="text-xs h-8 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900"
+                className="text-xs h-8 bg-card"
               >
-                <Copy className="h-3.5 w-3.5 mr-1 text-purple-500" />
+                <Copy className="h-3.5 w-3.5 mr-1 text-primary" />
                 Case F: Duplicate Alert (Suppressed)
               </Button>
             </div>
@@ -737,15 +737,15 @@ export function PoliciesManager() {
           {/* Simulator Inputs & Result Split */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
             {/* Input Form Column */}
-            <div className="lg:col-span-5 space-y-4 bg-white dark:bg-slate-900 p-5 rounded-lg border border-slate-200 dark:border-slate-800 shadow-sm">
-              <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100 flex items-center justify-between">
+            <div className="lg:col-span-5 space-y-4 bg-card p-5 rounded-lg border border-border shadow-xs">
+              <h3 className="text-sm font-semibold text-foreground flex items-center justify-between">
                 <span>Simulation Event Inputs</span>
-                <span className="text-xs font-normal text-slate-400">School: {simInput.schoolId}</span>
+                <span className="text-xs font-normal text-muted-foreground">School: {simInput.schoolId}</span>
               </h3>
 
               <div className="space-y-3 text-xs">
                 <div>
-                  <label className="text-slate-500 block mb-1">Evaluating Under Policy</label>
+                  <label className="text-muted-foreground block mb-1">Evaluating Under Policy</label>
                   <select
                     value={simPolicyId}
                     onChange={(e) => {
@@ -753,7 +753,7 @@ export function PoliciesManager() {
                       const pol = policies.find((p) => p.id === e.target.value) || activePolicy;
                       setSimResult(evaluatePolicy(simInput, pol));
                     }}
-                    className="w-full px-2.5 py-1.5 rounded border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs text-slate-900 dark:text-slate-100"
+                    className="w-full px-2.5 py-1.5 rounded border border-border bg-background text-xs text-foreground"
                   >
                     {policies.map((p) => (
                       <option key={p.id} value={p.id}>
@@ -765,32 +765,32 @@ export function PoliciesManager() {
 
                 <div className="grid grid-cols-2 gap-2">
                   <div>
-                    <label className="text-slate-500 block mb-1">Student Name</label>
+                    <label className="text-muted-foreground block mb-1">Student Name</label>
                     <Input
                       value={simInput.studentName}
                       onChange={(e) => setSimInput({ ...simInput, studentName: e.target.value })}
-                      className="h-8 text-xs"
+                      className="h-8 text-xs bg-background border-border"
                     />
                   </div>
                   <div>
-                    <label className="text-slate-500 block mb-1">Class / Section</label>
+                    <label className="text-muted-foreground block mb-1">Class / Section</label>
                     <Input
                       value={simInput.className}
                       onChange={(e) => setSimInput({ ...simInput, className: e.target.value })}
-                      className="h-8 text-xs"
+                      className="h-8 text-xs bg-background border-border"
                     />
                   </div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-2">
                   <div>
-                    <label className="text-slate-500 block mb-1">Attendance Status</label>
+                    <label className="text-muted-foreground block mb-1">Attendance Status</label>
                     <select
                       value={simInput.status}
                       onChange={(e) =>
                         setSimInput({ ...simInput, status: e.target.value as any })
                       }
-                      className="w-full px-2.5 py-1.5 rounded border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs text-slate-900 dark:text-slate-100"
+                      className="w-full px-2.5 py-1.5 rounded border border-border bg-background text-xs text-foreground"
                     >
                       <option value="ABSENT">ABSENT (ቀሪ)</option>
                       <option value="LEAVE">LEAVE (ፈቃድ)</option>
@@ -799,39 +799,39 @@ export function PoliciesManager() {
                     </select>
                   </div>
                   <div>
-                    <label className="text-slate-500 block mb-1">Minutes Since Submit</label>
+                    <label className="text-muted-foreground block mb-1">Minutes Since Submit</label>
                     <Input
                       type="number"
                       value={simInput.minutesSinceSubmission}
                       onChange={(e) =>
                         setSimInput({ ...simInput, minutesSinceSubmission: Number(e.target.value) })
                       }
-                      className="h-8 text-xs"
+                      className="h-8 text-xs bg-background border-border"
                     />
                   </div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-2">
                   <div>
-                    <label className="text-slate-500 block mb-1">Guardian Name</label>
+                    <label className="text-muted-foreground block mb-1">Guardian Name</label>
                     <Input
                       value={simInput.guardianName}
                       onChange={(e) => setSimInput({ ...simInput, guardianName: e.target.value })}
-                      className="h-8 text-xs"
+                      className="h-8 text-xs bg-background border-border"
                     />
                   </div>
                   <div>
-                    <label className="text-slate-500 block mb-1">Guardian Phone</label>
+                    <label className="text-muted-foreground block mb-1">Guardian Phone</label>
                     <Input
                       value={simInput.guardianPhone}
                       onChange={(e) => setSimInput({ ...simInput, guardianPhone: e.target.value })}
-                      className="h-8 text-xs"
+                      className="h-8 text-xs bg-background border-border"
                       placeholder="09... or 07..."
                     />
                   </div>
                 </div>
 
-                <div className="space-y-2 pt-2 border-t border-slate-100 dark:border-slate-800">
+                <div className="space-y-2 pt-2 border-t border-border">
                   <label className="flex items-center gap-2 cursor-pointer">
                     <input
                       type="checkbox"
@@ -839,9 +839,9 @@ export function PoliciesManager() {
                       onChange={(e) =>
                         setSimInput({ ...simInput, isRegisterSubmitted: e.target.checked })
                       }
-                      className="rounded text-indigo-600 focus:ring-indigo-500"
+                      className="rounded border-border text-primary"
                     />
-                    <span className="text-slate-700 dark:text-slate-300">Teacher submitted register</span>
+                    <span className="text-foreground">Teacher submitted register</span>
                   </label>
 
                   <label className="flex items-center gap-2 cursor-pointer">
@@ -851,9 +851,9 @@ export function PoliciesManager() {
                       onChange={(e) =>
                         setSimInput({ ...simInput, hasApprovedLeave: e.target.checked })
                       }
-                      className="rounded text-indigo-600 focus:ring-indigo-500"
+                      className="rounded border-border text-primary"
                     />
-                    <span className="text-slate-700 dark:text-slate-300">Approved medical/family leave</span>
+                    <span className="text-foreground">Approved medical/family leave</span>
                   </label>
 
                   <label className="flex items-center gap-2 cursor-pointer">
@@ -861,9 +861,9 @@ export function PoliciesManager() {
                       type="checkbox"
                       checked={simInput.isHoliday}
                       onChange={(e) => setSimInput({ ...simInput, isHoliday: e.target.checked })}
-                      className="rounded text-indigo-600 focus:ring-indigo-500"
+                      className="rounded border-border text-primary"
                     />
-                    <span className="text-slate-700 dark:text-slate-300">Calendar holiday / closure</span>
+                    <span className="text-foreground">Calendar holiday / closure</span>
                   </label>
 
                   <label className="flex items-center gap-2 cursor-pointer">
@@ -873,15 +873,15 @@ export function PoliciesManager() {
                       onChange={(e) =>
                         setSimInput({ ...simInput, priorAlertSentToday: e.target.checked })
                       }
-                      className="rounded text-indigo-600 focus:ring-indigo-500"
+                      className="rounded border-border text-primary"
                     />
-                    <span className="text-slate-700 dark:text-slate-300">Alert already sent today (Duplicate)</span>
+                    <span className="text-foreground">Alert already sent today (Duplicate)</span>
                   </label>
                 </div>
 
                 <Button
                   onClick={runSimulation}
-                  className="w-full h-8 text-xs bg-indigo-600 hover:bg-indigo-700 text-white mt-2"
+                  className="w-full h-8 text-xs mt-2"
                 >
                   <RefreshCw className="h-3.5 w-3.5 mr-1" />
                   Evaluate Policy Decision
@@ -892,31 +892,30 @@ export function PoliciesManager() {
             {/* Results Column */}
             <div className="lg:col-span-7 space-y-4">
               {simResult && (
-                <Card className="border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm overflow-hidden">
+                <Card className="border-border bg-card shadow-xs overflow-hidden">
                   {/* Decision Banner */}
                   <div
                     className={`px-5 py-3.5 border-b flex items-center justify-between ${
                       simResult.decision === "ELIGIBLE"
-                        ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-700 dark:text-emerald-300"
+                        ? "bg-primary/10 border-primary/20 text-primary"
                         : simResult.decision === "SUPPRESSED"
-                        ? "bg-amber-500/10 border-amber-500/20 text-amber-700 dark:text-amber-300"
+                        ? "bg-muted border-border text-muted-foreground"
                         : simResult.decision === "PENDING"
-                        ? "bg-blue-500/10 border-blue-500/20 text-blue-700 dark:text-blue-300"
-                        : "bg-rose-500/10 border-rose-500/20 text-rose-700 dark:text-rose-300"
+                        ? "bg-muted border-border text-foreground"
+                        : "bg-destructive/10 border-destructive/20 text-destructive"
                     }`}
                   >
                     <div className="flex items-center gap-2">
                       <span className="text-xs font-semibold uppercase tracking-wider">Evaluation Outcome:</span>
                       <Badge
-                        className={`text-xs font-bold ${
+                        variant={
                           simResult.decision === "ELIGIBLE"
-                            ? "bg-emerald-600 text-white"
-                            : simResult.decision === "SUPPRESSED"
-                            ? "bg-amber-600 text-white"
-                            : simResult.decision === "PENDING"
-                            ? "bg-blue-600 text-white"
-                            : "bg-rose-600 text-white"
-                        }`}
+                            ? "default"
+                            : simResult.decision === "REQUIRES_REVIEW"
+                            ? "destructive"
+                            : "secondary"
+                        }
+                        className="text-xs font-bold"
                       >
                         {simResult.decision}
                       </Badge>
@@ -929,17 +928,17 @@ export function PoliciesManager() {
 
                   <CardContent className="p-5 space-y-4">
                     <div>
-                      <span className="text-[11px] font-medium text-slate-400 uppercase tracking-wider block">
+                      <span className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider block">
                         Engine Decision Rationale
                       </span>
-                      <p className="text-sm font-medium text-slate-800 dark:text-slate-200 mt-1">
+                      <p className="text-sm font-medium text-foreground mt-1">
                         {locale === "am" ? simResult.reasonAm : simResult.reason}
                       </p>
                     </div>
 
                     {/* Step-by-Step Rule Checklist */}
-                    <div className="space-y-2 border-t border-slate-100 dark:border-slate-800 pt-3">
-                      <span className="text-[11px] font-medium text-slate-400 uppercase tracking-wider block">
+                    <div className="space-y-2 border-t border-border pt-3">
+                      <span className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider block">
                         Deterministic Policy Checklist
                       </span>
                       <div className="space-y-1.5">
@@ -948,20 +947,20 @@ export function PoliciesManager() {
                             key={idx}
                             className={`p-2 rounded text-xs flex items-start gap-2 border ${
                               c.passed
-                                ? "bg-slate-50 dark:bg-slate-800/40 border-slate-200/60 dark:border-slate-700/60"
-                                : "bg-rose-50/50 dark:bg-rose-950/20 border-rose-200/60 dark:border-rose-800/60"
+                                ? "bg-muted/40 border-border"
+                                : "bg-destructive/10 border-destructive/20"
                             }`}
                           >
                             {c.passed ? (
-                              <CheckCircle2 className="h-4 w-4 text-emerald-500 shrink-0 mt-0.5" />
+                              <CheckCircle2 className="h-4 w-4 text-primary shrink-0 mt-0.5" />
                             ) : (
-                              <AlertCircle className="h-4 w-4 text-rose-500 shrink-0 mt-0.5" />
+                              <AlertCircle className="h-4 w-4 text-destructive shrink-0 mt-0.5" />
                             )}
                             <div>
-                              <span className="font-semibold text-slate-800 dark:text-slate-200">
+                              <span className={`font-semibold ${c.passed ? "text-foreground" : "text-destructive"}`}>
                                 {locale === "am" ? c.ruleNameAm : c.ruleName}
                               </span>
-                              <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
+                              <p className={`text-[11px] mt-0.5 ${c.passed ? "text-muted-foreground" : "text-destructive/80"}`}>
                                 {locale === "am" ? c.detailsAm : c.details}
                               </p>
                             </div>
@@ -972,18 +971,18 @@ export function PoliciesManager() {
 
                     {/* Message Preview (If recipient resolved) */}
                     {simResult.renderedMessage && (
-                      <div className="border-t border-slate-100 dark:border-slate-800 pt-3 space-y-2">
+                      <div className="border-t border-border pt-3 space-y-2">
                         <div className="flex items-center justify-between text-xs">
-                          <span className="font-semibold text-slate-700 dark:text-slate-300">
+                          <span className="font-semibold text-foreground">
                             Rendered SMS Preview
                           </span>
-                          <span className="text-slate-400">
+                          <span className="text-muted-foreground">
                             Carrier: <strong>{simResult.recipient?.carrier}</strong> | Segments:{" "}
                             <strong>{simResult.estimatedSegments}</strong> | Est. Cost:{" "}
                             <strong>{simResult.estimatedCredits} credit(s)</strong>
                           </span>
                         </div>
-                        <div className="p-3 rounded bg-slate-50 dark:bg-slate-800/60 font-mono text-xs text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700">
+                        <div className="p-3 rounded bg-muted/60 font-mono text-xs text-foreground border border-border">
                           {simResult.renderedMessage}
                         </div>
                       </div>
@@ -998,15 +997,15 @@ export function PoliciesManager() {
 
       {/* 8-STEP GUIDED POLICY WIZARD MODAL */}
       {isWizardOpen && (
-        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] flex flex-col overflow-hidden">
+        <div className="fixed inset-0 z-50 bg-background/80 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-card text-card-foreground border border-border rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] flex flex-col overflow-hidden">
             {/* Modal Header */}
-            <div className="px-6 py-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between bg-slate-50 dark:bg-slate-800/40">
+            <div className="px-6 py-4 border-b border-border flex items-center justify-between bg-muted/40">
               <div>
-                <span className="text-xs font-semibold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider block">
+                <span className="text-xs font-semibold text-primary uppercase tracking-wider block">
                   Step {wizardStep} of 8
                 </span>
-                <h3 className="text-base font-bold text-slate-900 dark:text-slate-100">
+                <h3 className="text-base font-bold text-foreground">
                   {wizardStep === 1 && "Step 1: General Policy Settings"}
                   {wizardStep === 2 && "Step 2: Attendance Scope & States"}
                   {wizardStep === 3 && "Step 3: Trigger Strategy & Correction Window"}
@@ -1019,7 +1018,7 @@ export function PoliciesManager() {
               </div>
               <button
                 onClick={() => setIsWizardOpen(false)}
-                className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
+                className="text-muted-foreground hover:text-foreground"
               >
                 <X className="h-5 w-5" />
               </button>
@@ -1031,33 +1030,35 @@ export function PoliciesManager() {
               {wizardStep === 1 && (
                 <div className="space-y-3">
                   <div>
-                    <label className="text-slate-700 dark:text-slate-300 font-medium block mb-1">
+                    <label className="text-foreground font-medium block mb-1">
                       Policy Name (English)
                     </label>
                     <Input
                       value={newPolicy.name}
                       onChange={(e) => setNewPolicy({ ...newPolicy, name: e.target.value })}
                       placeholder="e.g. Standard High School Absence Alert Policy"
+                      className="bg-background border-border"
                     />
                   </div>
                   <div>
-                    <label className="text-slate-700 dark:text-slate-300 font-medium block mb-1">
+                    <label className="text-foreground font-medium block mb-1">
                       የፖሊሲ ስም (በአማርኛ)
                     </label>
                     <Input
                       value={newPolicy.nameAm}
                       onChange={(e) => setNewPolicy({ ...newPolicy, nameAm: e.target.value })}
                       placeholder="ምሳሌ፡ የሁለተኛ ደረጃ መደበኛ የመቅረት ማሳወቂያ ፖሊሲ"
+                      className="bg-background border-border"
                     />
                   </div>
                   <div>
-                    <label className="text-slate-700 dark:text-slate-300 font-medium block mb-1">
+                    <label className="text-foreground font-medium block mb-1">
                       Description & Operational Rationale
                     </label>
                     <textarea
                       value={newPolicy.description}
                       onChange={(e) => setNewPolicy({ ...newPolicy, description: e.target.value })}
-                      className="w-full px-3 py-2 rounded border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs"
+                      className="w-full px-3 py-2 rounded border border-border bg-background text-foreground text-xs"
                       rows={3}
                     />
                   </div>
@@ -1067,7 +1068,7 @@ export function PoliciesManager() {
               {/* Step 2: Scope */}
               {wizardStep === 2 && (
                 <div className="space-y-3">
-                  <label className="text-slate-700 dark:text-slate-300 font-medium block">
+                  <label className="text-foreground font-medium block">
                     Attendance Monitoring Scope
                   </label>
                   <div className="grid grid-cols-3 gap-2">
@@ -1078,12 +1079,12 @@ export function PoliciesManager() {
                         onClick={() => setNewPolicy({ ...newPolicy, scope })}
                         className={`p-3 rounded border text-left transition-colors ${
                           newPolicy.scope === scope
-                            ? "border-indigo-600 bg-indigo-50/50 dark:bg-indigo-950/20"
-                            : "border-slate-200 dark:border-slate-800"
+                            ? "border-primary bg-primary/10"
+                            : "border-border hover:bg-muted/50"
                         }`}
                       >
-                        <span className="font-semibold block text-slate-900 dark:text-slate-100">{scope}</span>
-                        <span className="text-[11px] text-slate-500">
+                        <span className="font-semibold block text-foreground">{scope}</span>
+                        <span className="text-[11px] text-muted-foreground">
                           {scope === "DAILY"
                             ? "Evaluate whole-day register"
                             : scope === "LESSON"
@@ -1094,7 +1095,7 @@ export function PoliciesManager() {
                     ))}
                   </div>
 
-                  <div className="pt-3 border-t border-slate-100 dark:border-slate-800 space-y-2">
+                  <div className="pt-3 border-t border-border space-y-2">
                     <label className="flex items-center gap-2">
                       <input
                         type="checkbox"
@@ -1102,9 +1103,9 @@ export function PoliciesManager() {
                         onChange={(e) =>
                           setNewPolicy({ ...newPolicy, suppressApprovedLeave: e.target.checked })
                         }
-                        className="rounded text-indigo-600"
+                        className="rounded border-border text-primary"
                       />
-                      <span>Suppress alerts when student has approved medical/family leave</span>
+                      <span className="text-foreground">Suppress alerts when student has approved medical/family leave</span>
                     </label>
                     <label className="flex items-center gap-2">
                       <input
@@ -1113,9 +1114,9 @@ export function PoliciesManager() {
                         onChange={(e) =>
                           setNewPolicy({ ...newPolicy, suppressHolidays: e.target.checked })
                         }
-                        className="rounded text-indigo-600"
+                        className="rounded border-border text-primary"
                       />
-                      <span>Suppress alerts on scheduled holidays and school closures</span>
+                      <span className="text-foreground">Suppress alerts on scheduled holidays and school closures</span>
                     </label>
                   </div>
                 </div>
@@ -1124,7 +1125,7 @@ export function PoliciesManager() {
               {/* Step 3: Trigger */}
               {wizardStep === 3 && (
                 <div className="space-y-3">
-                  <label className="text-slate-700 dark:text-slate-300 font-medium block">
+                  <label className="text-foreground font-medium block">
                     Trigger Strategy
                   </label>
                   <div className="grid grid-cols-2 gap-2">
@@ -1140,38 +1141,38 @@ export function PoliciesManager() {
                         onClick={() => setNewPolicy({ ...newPolicy, triggerType: item.type as TriggerType })}
                         className={`p-3 rounded border text-left transition-colors ${
                           newPolicy.triggerType === item.type
-                            ? "border-indigo-600 bg-indigo-50/50 dark:bg-indigo-950/20"
-                            : "border-slate-200 dark:border-slate-800"
+                            ? "border-primary bg-primary/10"
+                            : "border-border hover:bg-muted/50"
                         }`}
                       >
-                        <span className="font-semibold block text-slate-900 dark:text-slate-100">{item.title}</span>
-                        <span className="text-[11px] text-slate-500">{item.desc}</span>
+                        <span className="font-semibold block text-foreground">{item.title}</span>
+                        <span className="text-[11px] text-muted-foreground">{item.desc}</span>
                       </button>
                     ))}
                   </div>
 
                   {newPolicy.triggerType === "DELAYED" && (
                     <div className="pt-2">
-                      <label className="text-slate-500 block mb-1">Correction Delay (Minutes)</label>
+                      <label className="text-muted-foreground block mb-1">Correction Delay (Minutes)</label>
                       <Input
                         type="number"
                         value={newPolicy.triggerDelayMinutes}
                         onChange={(e) =>
                           setNewPolicy({ ...newPolicy, triggerDelayMinutes: Number(e.target.value) })
                         }
-                        className="w-32 h-8"
+                        className="w-32 h-8 bg-background border-border"
                       />
                     </div>
                   )}
 
                   {newPolicy.triggerType === "SCHEDULED_TIME" && (
                     <div className="pt-2">
-                      <label className="text-slate-500 block mb-1">Scheduled Time (Africa/Addis_Ababa)</label>
+                      <label className="text-muted-foreground block mb-1">Scheduled Time (Africa/Addis_Ababa)</label>
                       <Input
                         type="time"
                         value={newPolicy.scheduledTime}
                         onChange={(e) => setNewPolicy({ ...newPolicy, scheduledTime: e.target.value })}
-                        className="w-32 h-8"
+                        className="w-32 h-8 bg-background border-border"
                       />
                     </div>
                   )}
@@ -1181,7 +1182,7 @@ export function PoliciesManager() {
               {/* Step 4: Recipients */}
               {wizardStep === 4 && (
                 <div className="space-y-3">
-                  <label className="text-slate-700 dark:text-slate-300 font-medium block">
+                  <label className="text-foreground font-medium block">
                     Guardian Recipient Strategy
                   </label>
                   <div className="space-y-2">
@@ -1195,8 +1196,8 @@ export function PoliciesManager() {
                         key={s.strategy}
                         className={`p-3 rounded border flex items-center gap-3 cursor-pointer ${
                           newPolicy.recipientStrategy === s.strategy
-                            ? "border-indigo-600 bg-indigo-50/50 dark:bg-indigo-950/20"
-                            : "border-slate-200 dark:border-slate-800"
+                            ? "border-primary bg-primary/10"
+                            : "border-border hover:bg-muted/50"
                         }`}
                       >
                         <input
@@ -1206,11 +1207,11 @@ export function PoliciesManager() {
                           onChange={() =>
                             setNewPolicy({ ...newPolicy, recipientStrategy: s.strategy as RecipientStrategy })
                           }
-                          className="text-indigo-600"
+                          className="border-border text-primary"
                         />
                         <div>
-                          <span className="font-semibold block text-slate-900 dark:text-slate-100">{s.title}</span>
-                          <span className="text-[11px] text-slate-500">{s.desc}</span>
+                          <span className="font-semibold block text-foreground">{s.title}</span>
+                          <span className="text-[11px] text-muted-foreground">{s.desc}</span>
                         </div>
                       </label>
                     ))}
@@ -1223,30 +1224,30 @@ export function PoliciesManager() {
                 <div className="space-y-3">
                   <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <label className="text-slate-500 block mb-1">Max Alerts / Student / Day</label>
+                      <label className="text-muted-foreground block mb-1">Max Alerts / Student / Day</label>
                       <Input
                         type="number"
                         value={newPolicy.maxAlertsPerStudentPerDay}
                         onChange={(e) =>
                           setNewPolicy({ ...newPolicy, maxAlertsPerStudentPerDay: Number(e.target.value) })
                         }
-                        className="h-8"
+                        className="h-8 bg-background border-border"
                       />
                     </div>
                     <div>
-                      <label className="text-slate-500 block mb-1">Cooldown Window (Hours)</label>
+                      <label className="text-muted-foreground block mb-1">Cooldown Window (Hours)</label>
                       <Input
                         type="number"
                         value={newPolicy.cooldownHours}
                         onChange={(e) =>
                           setNewPolicy({ ...newPolicy, cooldownHours: Number(e.target.value) })
                         }
-                        className="h-8"
+                        className="h-8 bg-background border-border"
                       />
                     </div>
                   </div>
 
-                  <div className="pt-3 border-t border-slate-100 dark:border-slate-800 space-y-2">
+                  <div className="pt-3 border-t border-border space-y-2">
                     <label className="flex items-center gap-2">
                       <input
                         type="checkbox"
@@ -1254,9 +1255,9 @@ export function PoliciesManager() {
                         onChange={(e) =>
                           setNewPolicy({ ...newPolicy, notifyLateArrival: e.target.checked })
                         }
-                        className="rounded text-indigo-600"
+                        className="rounded border-border text-primary"
                       />
-                      <span>Send distinct alert for late arrivals (&gt; 15 mins)</span>
+                      <span className="text-foreground">Send distinct alert for late arrivals (&gt; 15 mins)</span>
                     </label>
                     <label className="flex items-center gap-2">
                       <input
@@ -1265,9 +1266,9 @@ export function PoliciesManager() {
                         onChange={(e) =>
                           setNewPolicy({ ...newPolicy, notifyCorrections: e.target.checked })
                         }
-                        className="rounded text-indigo-600"
+                        className="rounded border-border text-primary"
                       />
-                      <span>Send attendance correction update if status changed from Absent to Present</span>
+                      <span className="text-foreground">Send attendance correction update if status changed from Absent to Present</span>
                     </label>
                   </div>
                 </div>
@@ -1277,7 +1278,7 @@ export function PoliciesManager() {
               {wizardStep === 6 && (
                 <div className="space-y-3">
                   <div>
-                    <label className="text-slate-700 dark:text-slate-300 font-medium block mb-1">
+                    <label className="text-foreground font-medium block mb-1">
                       Language Selection Strategy
                     </label>
                     <select
@@ -1285,7 +1286,7 @@ export function PoliciesManager() {
                       onChange={(e) =>
                         setNewPolicy({ ...newPolicy, languageStrategy: e.target.value as any })
                       }
-                      className="w-full px-2.5 py-1.5 rounded border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs"
+                      className="w-full px-2.5 py-1.5 rounded border border-border bg-background text-foreground text-xs"
                     >
                       <option value="GUARDIAN_PREFERRED">Guardian's Preferred Language (Amharic or English)</option>
                       <option value="SCHOOL_DEFAULT">School Default Language Only</option>
@@ -1293,7 +1294,7 @@ export function PoliciesManager() {
                   </div>
 
                   <div>
-                    <label className="text-slate-700 dark:text-slate-300 font-medium block mb-1">
+                    <label className="text-foreground font-medium block mb-1">
                       Default Language
                     </label>
                     <div className="flex gap-4">
@@ -1304,7 +1305,7 @@ export function PoliciesManager() {
                           checked={newPolicy.defaultLanguage === "am"}
                           onChange={() => setNewPolicy({ ...newPolicy, defaultLanguage: "am" })}
                         />
-                        <span>Amharic (አማርኛ)</span>
+                        <span className="text-foreground">Amharic (አማርኛ)</span>
                       </label>
                       <label className="flex items-center gap-2">
                         <input
@@ -1313,7 +1314,7 @@ export function PoliciesManager() {
                           checked={newPolicy.defaultLanguage === "en"}
                           onChange={() => setNewPolicy({ ...newPolicy, defaultLanguage: "en" })}
                         />
-                        <span>English</span>
+                        <span className="text-foreground">English</span>
                       </label>
                     </div>
                   </div>
@@ -1324,21 +1325,21 @@ export function PoliciesManager() {
               {wizardStep === 7 && (
                 <div className="space-y-3">
                   <div>
-                    <label className="text-slate-500 block mb-1">Max Bounded Retries (Transient Errors)</label>
+                    <label className="text-muted-foreground block mb-1">Max Bounded Retries (Transient Errors)</label>
                     <Input
                       type="number"
                       max={5}
                       min={1}
                       value={newPolicy.maxRetries}
                       onChange={(e) => setNewPolicy({ ...newPolicy, maxRetries: Number(e.target.value) })}
-                      className="w-32 h-8"
+                      className="w-32 h-8 bg-background border-border"
                     />
-                    <span className="text-[11px] text-slate-400 block mt-1">
+                    <span className="text-[11px] text-muted-foreground block mt-1">
                       Applies bounded exponential backoff only to 429, 500, 502, 503.
                     </span>
                   </div>
 
-                  <div className="pt-2 border-t border-slate-100 dark:border-slate-800 space-y-2">
+                  <div className="pt-2 border-t border-border space-y-2">
                     <label className="flex items-center gap-2">
                       <input
                         type="checkbox"
@@ -1346,9 +1347,9 @@ export function PoliciesManager() {
                         onChange={(e) =>
                           setNewPolicy({ ...newPolicy, pauseOnLowCredit: e.target.checked })
                         }
-                        className="rounded text-indigo-600"
+                        className="rounded border-border text-primary"
                       />
-                      <span>Pause dispatch workflow & trigger admin banner when SMS balance is low</span>
+                      <span className="text-foreground">Pause dispatch workflow & trigger admin banner when SMS balance is low</span>
                     </label>
                   </div>
                 </div>
@@ -1357,25 +1358,25 @@ export function PoliciesManager() {
               {/* Step 8: Review & Activation */}
               {wizardStep === 8 && (
                 <div className="space-y-3">
-                  <div className="p-3.5 rounded bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
-                    <span className="font-semibold text-xs text-indigo-600 dark:text-indigo-400 block mb-1">
+                  <div className="p-3.5 rounded bg-muted/50 border border-border">
+                    <span className="font-semibold text-xs text-primary block mb-1">
                       Generated Auditable Policy Summary
                     </span>
-                    <p className="text-xs text-slate-700 dark:text-slate-300 leading-relaxed">
+                    <p className="text-xs text-foreground leading-relaxed">
                       {renderHumanSummary(newPolicy as AbsenceAlertPolicy, locale)}
                     </p>
                   </div>
 
-                  <div className="space-y-1.5 text-[11px] text-slate-500">
-                    <div className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400">
+                  <div className="space-y-1.5 text-[11px] text-muted-foreground">
+                    <div className="flex items-center gap-1.5 text-primary">
                       <CheckCircle2 className="h-3.5 w-3.5" />
                       <span>Single-tenant security isolation verified</span>
                     </div>
-                    <div className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400">
+                    <div className="flex items-center gap-1.5 text-primary">
                       <CheckCircle2 className="h-3.5 w-3.5" />
                       <span>Deduplication key constraint validated</span>
                     </div>
-                    <div className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400">
+                    <div className="flex items-center gap-1.5 text-primary">
                       <CheckCircle2 className="h-3.5 w-3.5" />
                       <span>Amharic & English variable interpolation active</span>
                     </div>
@@ -1385,7 +1386,7 @@ export function PoliciesManager() {
             </div>
 
             {/* Modal Footer */}
-            <div className="px-6 py-3.5 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between bg-slate-50 dark:bg-slate-800/40">
+            <div className="px-6 py-3.5 border-t border-border flex items-center justify-between bg-muted/40">
               <Button
                 variant="outline"
                 size="sm"
@@ -1402,7 +1403,7 @@ export function PoliciesManager() {
                   <Button
                     size="sm"
                     onClick={() => setWizardStep((s) => s + 1)}
-                    className="text-xs h-8 bg-indigo-600 hover:bg-indigo-700 text-white"
+                    className="text-xs h-8"
                   >
                     Next
                     <ChevronRight className="h-3.5 w-3.5 ml-1" />
@@ -1412,7 +1413,7 @@ export function PoliciesManager() {
                     size="sm"
                     disabled={isSubmitting}
                     onClick={handleCreatePolicy}
-                    className="text-xs h-8 bg-emerald-600 hover:bg-emerald-700 text-white"
+                    className="text-xs h-8"
                   >
                     <CheckCircle2 className="h-3.5 w-3.5 mr-1" />
                     Save & Publish Policy Draft

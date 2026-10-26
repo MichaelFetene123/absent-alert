@@ -281,20 +281,20 @@ export function ClassesManager({
   return (
     <div className="space-y-6 pb-12">
       {/* Page Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-slate-200 dark:border-slate-800 pb-4">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-border pb-4">
         <div className="flex items-center gap-2">
-          <School className="size-5 text-slate-700 dark:text-slate-300" />
-          <h1 className="text-xl font-bold tracking-tight text-slate-900 dark:text-white">
+          <School className="size-5 text-foreground" />
+          <h1 className="text-xl font-bold tracking-tight text-foreground">
             Classes
           </h1>
           {isAdmin ? (
-            <Badge variant="outline" className="text-xs font-medium text-slate-600 dark:text-slate-400 gap-1 py-0.5 px-2">
-              <Shield className="size-3 text-slate-500" />
+            <Badge variant="outline" className="text-xs font-medium text-muted-foreground gap-1 py-0.5 px-2">
+              <Shield className="size-3 text-muted-foreground" />
               <span>Admin</span>
             </Badge>
           ) : (
-            <Badge variant="outline" className="text-xs font-medium text-slate-600 dark:text-slate-400 gap-1 py-0.5 px-2">
-              <GraduationCap className="size-3 text-slate-500" />
+            <Badge variant="outline" className="text-xs font-medium text-muted-foreground gap-1 py-0.5 px-2">
+              <GraduationCap className="size-3 text-muted-foreground" />
               <span>Teacher View</span>
             </Badge>
           )}
@@ -305,7 +305,7 @@ export function ClassesManager({
             id="add-class-btn"
             onClick={() => setIsCreateOpen(true)}
             size="sm"
-            className="h-8 px-3 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-medium text-xs gap-1.5 shrink-0"
+            className="h-8 px-3 rounded-lg font-medium text-xs gap-1.5 shrink-0"
           >
             <Plus className="size-3.5" />
             <span>Add Class</span>
@@ -316,54 +316,54 @@ export function ClassesManager({
       {/* Metric Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         {/* Total Classes */}
-        <Card className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
+        <Card className="rounded-xl border border-border bg-card">
           <CardContent className="p-4">
-            <p className="text-xs font-medium text-slate-500 uppercase tracking-wider">Total Classes</p>
-            <h3 className="text-2xl font-bold text-slate-900 dark:text-white mt-1">
+            <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Total Classes</p>
+            <h3 className="text-2xl font-bold text-foreground mt-1">
               {stats.totalClasses}
             </h3>
-            <p className="text-[11px] text-slate-500 mt-0.5">Active rosters</p>
+            <p className="text-[11px] text-muted-foreground mt-0.5">Active rosters</p>
           </CardContent>
         </Card>
 
         {/* Total Enrolled */}
-        <Card className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
+        <Card className="rounded-xl border border-border bg-card">
           <CardContent className="p-4">
-            <p className="text-xs font-medium text-slate-500 uppercase tracking-wider">Total Students</p>
-            <h3 className="text-2xl font-bold text-slate-900 dark:text-white mt-1">
+            <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Total Students</p>
+            <h3 className="text-2xl font-bold text-foreground mt-1">
               {stats.totalStudents}
             </h3>
-            <p className="text-[11px] text-emerald-600 dark:text-emerald-400 mt-0.5">
+            <p className="text-[11px] text-muted-foreground mt-0.5">
               {stats.activeStudents} active enrolled
             </p>
           </CardContent>
         </Card>
 
         {/* Active Teachers */}
-        <Card className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
+        <Card className="rounded-xl border border-border bg-card">
           <CardContent className="p-4">
-            <p className="text-xs font-medium text-slate-500 uppercase tracking-wider">Faculty Assigned</p>
-            <h3 className="text-2xl font-bold text-slate-900 dark:text-white mt-1">
+            <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Faculty Assigned</p>
+            <h3 className="text-2xl font-bold text-foreground mt-1">
               {stats.assignedTeachersCount}
             </h3>
-            <p className="text-[11px] text-slate-500 mt-0.5">Assigned teachers</p>
+            <p className="text-[11px] text-muted-foreground mt-0.5">Assigned teachers</p>
           </CardContent>
         </Card>
 
         {/* Teacher Status */}
-        <Card className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
+        <Card className="rounded-xl border border-border bg-card">
           <CardContent className="p-4">
-            <p className="text-xs font-medium text-slate-500 uppercase tracking-wider">Staffing Status</p>
+            <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Staffing Status</p>
             <h3
               className={`text-2xl font-bold mt-1 ${
                 stats.unassignedClasses > 0
-                  ? "text-amber-600 dark:text-amber-400"
-                  : "text-emerald-600 dark:text-emerald-400"
+                  ? "text-destructive"
+                  : "text-foreground"
               }`}
             >
               {stats.unassignedClasses === 0 ? "100%" : `${stats.unassignedClasses} unassigned`}
             </h3>
-            <p className="text-[11px] text-slate-500 mt-0.5">
+            <p className="text-[11px] text-muted-foreground mt-0.5">
               {stats.unassignedClasses === 0 ? "All covered" : "Need teacher"}
             </p>
           </CardContent>
@@ -371,10 +371,10 @@ export function ClassesManager({
       </div>
 
       {/* Action Bar: Search, Filters */}
-      <div className="p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+      <div className="p-3.5 rounded-xl border border-border bg-card flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
         <div className="flex flex-1 flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
           <div className="relative flex-1 max-w-sm">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-3.5 text-slate-400" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-3.5 text-muted-foreground" />
             <Input
               id="class-search-input"
               placeholder="Search classes or teachers..."
@@ -389,7 +389,7 @@ export function ClassesManager({
             id="class-grade-filter"
             value={gradeFilter}
             onChange={(e) => setGradeFilter(e.target.value)}
-            className="h-8 px-2.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-xs text-slate-700 dark:text-slate-200 outline-none"
+            className="h-8 px-2.5 rounded-lg border border-border bg-background text-xs text-foreground outline-none"
           >
             <option value="ALL">All Grades</option>
             {uniqueGrades.map((g) => (
@@ -404,7 +404,7 @@ export function ClassesManager({
             id="class-teacher-filter"
             value={teacherFilter}
             onChange={(e) => setTeacherFilter(e.target.value)}
-            className="h-8 px-2.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-xs text-slate-700 dark:text-slate-200 outline-none"
+            className="h-8 px-2.5 rounded-lg border border-border bg-background text-xs text-foreground outline-none"
           >
             <option value="ALL">All Staffing</option>
             <option value="ASSIGNED">Assigned Faculty</option>
@@ -412,32 +412,32 @@ export function ClassesManager({
           </select>
         </div>
 
-        <p className="text-xs text-slate-500 self-end sm:self-auto font-medium">
-          Showing <span className="font-bold text-slate-900 dark:text-white">{filteredClasses.length}</span> of {classes.length}
+        <p className="text-xs text-muted-foreground self-end sm:self-auto font-medium">
+          Showing <span className="font-bold text-foreground">{filteredClasses.length}</span> of {classes.length}
         </p>
       </div>
 
       {/* Classes Table */}
-      <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 overflow-hidden">
+      <div className="rounded-xl border border-border bg-card overflow-hidden">
         <div className="overflow-x-auto">
           <Table>
-            <TableHeader className="bg-slate-50 dark:bg-slate-900/60">
-              <TableRow className="border-b border-slate-200 dark:border-slate-800 text-xs font-medium">
-                <TableHead className="py-2.5 px-4 font-semibold text-slate-700 dark:text-slate-300">Class Name</TableHead>
-                <TableHead className="py-2.5 px-4 font-semibold text-slate-700 dark:text-slate-300">Grade &amp; Section</TableHead>
-                <TableHead className="py-2.5 px-4 font-semibold text-slate-700 dark:text-slate-300">Enrolled Students</TableHead>
-                <TableHead className="py-2.5 px-4 font-semibold text-slate-700 dark:text-slate-300">Assigned Faculty</TableHead>
-                <TableHead className="py-2.5 px-4 text-right font-semibold text-slate-700 dark:text-slate-300">Actions</TableHead>
+            <TableHeader className="bg-muted/50">
+              <TableRow className="border-b border-border text-xs font-medium">
+                <TableHead className="py-2.5 px-4 font-semibold text-foreground">Class Name</TableHead>
+                <TableHead className="py-2.5 px-4 font-semibold text-foreground">Grade &amp; Section</TableHead>
+                <TableHead className="py-2.5 px-4 font-semibold text-foreground">Enrolled Students</TableHead>
+                <TableHead className="py-2.5 px-4 font-semibold text-foreground">Assigned Faculty</TableHead>
+                <TableHead className="py-2.5 px-4 text-right font-semibold text-foreground">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {filteredClasses.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={5} className="h-40 text-center text-slate-500">
+                  <TableCell colSpan={5} className="h-40 text-center text-muted-foreground">
                     <div className="flex flex-col items-center justify-center gap-2">
-                      <School className="size-9 text-slate-400" />
-                      <p className="font-semibold text-sm text-slate-800 dark:text-slate-200">No classes match your search</p>
-                      <p className="text-xs text-slate-400">
+                      <School className="size-9 text-muted-foreground" />
+                      <p className="font-semibold text-sm text-foreground">No classes match your search</p>
+                      <p className="text-xs text-muted-foreground">
                         {search || gradeFilter !== "ALL" || teacherFilter !== "ALL"
                           ? "Try clearing your filters or search terms."
                           : "Create your first class to begin managing students and attendance."}
@@ -447,9 +447,9 @@ export function ClassesManager({
                 </TableRow>
               ) : (
                 filteredClasses.map((cls) => (
-                  <TableRow key={cls.id} className="hover:bg-slate-50/70 dark:hover:bg-slate-800/40 transition-colors">
+                  <TableRow key={cls.id} className="hover:bg-muted/50 transition-colors">
                     {/* Class Name */}
-                    <TableCell className="py-2.5 px-4 font-semibold text-slate-900 dark:text-white">
+                    <TableCell className="py-2.5 px-4 font-semibold text-foreground">
                       <div className="flex items-center gap-2.5">
                         <span className="font-semibold text-sm">{cls.name}</span>
                       </div>
@@ -474,9 +474,9 @@ export function ClassesManager({
                     <TableCell className="py-2.5 px-4">
                       <Link
                         href={`/students?classId=${cls.id}`}
-                        className="inline-flex items-center gap-1 text-xs text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white font-medium"
+                        className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground font-medium"
                       >
-                        <Users className="size-3 text-slate-400" />
+                        <Users className="size-3 text-muted-foreground" />
                         <span>
                           {cls.totalStudentCount} {cls.totalStudentCount === 1 ? "student" : "students"}
                         </span>
@@ -490,15 +490,15 @@ export function ClassesManager({
                           {cls.teachers.map((t) => (
                             <span
                               key={t.id}
-                              className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-medium bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700"
+                              className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-medium bg-muted text-foreground border border-border"
                             >
-                              <GraduationCap className="size-3 text-slate-500" />
+                              <GraduationCap className="size-3 text-muted-foreground" />
                               <span>{t.name}</span>
                             </span>
                           ))}
                         </div>
                       ) : (
-                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800">
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] text-destructive bg-destructive/10 border border-destructive/20">
                           <AlertTriangle className="size-3" />
                           <span>Unassigned</span>
                         </span>
@@ -513,10 +513,10 @@ export function ClassesManager({
                           <Button
                             variant="ghost"
                             size="sm"
-                            className="h-7 px-2 text-xs text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white font-medium"
+                            className="h-7 px-2 text-xs text-muted-foreground hover:text-foreground font-medium"
                             title="Daily Attendance Roster"
                           >
-                            <CalendarCheck className="size-3.5 mr-1 text-emerald-600" />
+                            <CalendarCheck className="size-3.5 mr-1 text-primary" />
                             <span>Roster</span>
                           </Button>
                         </Link>
@@ -526,10 +526,10 @@ export function ClassesManager({
                           <Button
                             variant="ghost"
                             size="sm"
-                            className="h-7 px-2 text-xs text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white font-medium"
+                            className="h-7 px-2 text-xs text-muted-foreground hover:text-foreground font-medium"
                             title="Two-Week Attendance Overview"
                           >
-                            <CalendarDays className="size-3.5 mr-1 text-blue-600" />
+                            <CalendarDays className="size-3.5 mr-1 text-primary" />
                             <span>14-Day</span>
                           </Button>
                         </Link>
@@ -541,7 +541,7 @@ export function ClassesManager({
                             variant="ghost"
                             size="sm"
                             onClick={() => openEditModal(cls)}
-                            className="h-7 w-7 p-0 text-slate-500 hover:text-slate-900 dark:hover:text-white rounded"
+                            className="h-7 w-7 p-0 text-muted-foreground hover:text-foreground rounded"
                             title="Edit Class & Teachers"
                           >
                             <Edit2 className="size-3.5" />
@@ -555,7 +555,7 @@ export function ClassesManager({
                             variant="ghost"
                             size="sm"
                             onClick={() => setDeletingClass(cls)}
-                            className="h-8 w-8 p-0 text-rose-600 hover:text-rose-700 hover:bg-rose-500/10 dark:text-rose-400 rounded-lg cursor-pointer"
+                            className="h-8 w-8 p-0 text-destructive hover:bg-destructive/10 rounded-lg cursor-pointer"
                             title="Delete Class"
                           >
                             <Trash2 className="size-3.5" />
@@ -575,26 +575,25 @@ export function ClassesManager({
       {isCreateOpen && (
         <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
           <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <School className="size-5 text-blue-600" />
-              <span>Create New Class</span>
-            </DialogTitle>
-          </DialogHeader>
-
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2">
+                <School className="size-5 text-primary" />
+                <span>Create New Class</span>
+              </DialogTitle>
+            </DialogHeader>
 
             <form onSubmit={handleCreateClass} className="space-y-4 py-2">
               {!createUseCustom ? (
                 <div className="grid grid-cols-2 gap-3">
                   <div className="space-y-1.5">
-                    <Label htmlFor="create-grade" className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+                    <Label htmlFor="create-grade" className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                       Grade Level
                     </Label>
                     <select
                       id="create-grade"
                       value={createGrade}
                       onChange={(e) => setCreateGrade(e.target.value)}
-                      className="w-full h-10 px-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-sm font-semibold"
+                      className="w-full h-10 px-3 rounded-xl border border-border bg-background text-foreground text-sm font-semibold"
                       required
                     >
                       {COMMON_GRADES.map((g) => (
@@ -606,7 +605,7 @@ export function ClassesManager({
                   </div>
 
                   <div className="space-y-1.5">
-                    <Label htmlFor="create-section" className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+                    <Label htmlFor="create-section" className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                       Section
                     </Label>
                     <Input
@@ -622,7 +621,7 @@ export function ClassesManager({
                 </div>
               ) : (
                 <div className="space-y-1.5">
-                  <Label htmlFor="create-custom-name" className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+                  <Label htmlFor="create-custom-name" className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                     Custom Class Name
                   </Label>
                   <Input
@@ -642,36 +641,36 @@ export function ClassesManager({
                   id="custom-toggle"
                   checked={createUseCustom}
                   onChange={(e) => setCreateUseCustom(e.target.checked)}
-                  className="rounded border-slate-300 text-blue-600 focus:ring-blue-500"
+                  className="rounded border-border accent-primary"
                 />
-                <label htmlFor="custom-toggle" className="text-xs text-slate-600 dark:text-slate-400 cursor-pointer">
+                <label htmlFor="custom-toggle" className="text-xs text-muted-foreground cursor-pointer">
                   Use custom classroom name instead of Grade &amp; Section
                 </label>
               </div>
 
               {/* Teacher Multi-Select */}
               <div className="space-y-2 pt-2">
-                <Label className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+                <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                   Assign Teachers ({createTeacherIds.length} selected)
                 </Label>
-                <div className="max-h-36 overflow-y-auto divide-y divide-slate-100 dark:divide-slate-800/80 rounded-xl border border-slate-200 dark:border-slate-800 p-1">
+                <div className="max-h-36 overflow-y-auto divide-y divide-border rounded-xl border border-border p-1 bg-card">
                   {availableTeachers.map((t) => {
                     const isChecked = createTeacherIds.includes(t.id);
                     return (
                       <label
                         key={t.id}
-                        className="flex items-center justify-between p-2 hover:bg-slate-50 dark:hover:bg-slate-800/50 rounded-lg cursor-pointer text-xs"
+                        className="flex items-center justify-between p-2 hover:bg-muted/50 rounded-lg cursor-pointer text-xs"
                       >
                         <div className="flex items-center gap-2">
                           <input
                             type="checkbox"
                             checked={isChecked}
                             onChange={() => toggleTeacherSelection(t.id, createTeacherIds, setCreateTeacherIds)}
-                            className="rounded border-slate-300 text-blue-600 focus:ring-blue-500"
+                            className="rounded border-border accent-primary"
                           />
-                          <span className="font-semibold text-slate-800 dark:text-slate-200">{t.name}</span>
+                          <span className="font-semibold text-foreground">{t.name}</span>
                         </div>
-                        <span className="font-mono text-slate-400 text-[11px]">{t.email}</span>
+                        <span className="font-mono text-muted-foreground text-[11px]">{t.email}</span>
                       </label>
                     );
                   })}
@@ -690,7 +689,7 @@ export function ClassesManager({
                 <Button
                   type="submit"
                   disabled={isCreating}
-                  className="bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-semibold"
+                  className="rounded-xl text-xs font-semibold"
                 >
                   {isCreating ? <Loader2 className="size-4 animate-spin mr-1.5" /> : null}
                   Create Classroom
@@ -707,14 +706,14 @@ export function ClassesManager({
           <DialogContent className="sm:max-w-md rounded-2xl">
             <DialogHeader>
               <DialogTitle className="flex items-center gap-2 text-lg font-bold">
-                <Edit2 className="size-5 text-blue-600" />
+                <Edit2 className="size-5 text-primary" />
                 <span>Edit Class: {editingClass.name}</span>
               </DialogTitle>
             </DialogHeader>
 
             <form onSubmit={handleUpdateClass} className="space-y-4 py-2">
               <div className="space-y-1.5">
-                <Label htmlFor="edit-name" className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+                <Label htmlFor="edit-name" className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                   Class Name
                 </Label>
                 <Input
@@ -728,27 +727,27 @@ export function ClassesManager({
 
               {/* Teacher Assignment Multi-select */}
               <div className="space-y-2 pt-2">
-                <Label className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+                <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                   Assigned Faculty ({editTeacherIds.length} assigned)
                 </Label>
-                <div className="max-h-40 overflow-y-auto divide-y divide-slate-100 dark:divide-slate-800/80 rounded-xl border border-slate-200 dark:border-slate-800 p-1">
+                <div className="max-h-40 overflow-y-auto divide-y divide-border rounded-xl border border-border p-1 bg-card">
                   {availableTeachers.map((t) => {
                     const isChecked = editTeacherIds.includes(t.id);
                     return (
                       <label
                         key={t.id}
-                        className="flex items-center justify-between p-2 hover:bg-slate-50 dark:hover:bg-slate-800/50 rounded-lg cursor-pointer text-xs"
+                        className="flex items-center justify-between p-2 hover:bg-muted/50 rounded-lg cursor-pointer text-xs"
                       >
                         <div className="flex items-center gap-2">
                           <input
                             type="checkbox"
                             checked={isChecked}
                             onChange={() => toggleTeacherSelection(t.id, editTeacherIds, setEditTeacherIds)}
-                            className="rounded border-slate-300 text-blue-600 focus:ring-blue-500"
+                            className="rounded border-border accent-primary"
                           />
-                          <span className="font-semibold text-slate-800 dark:text-slate-200">{t.name}</span>
+                          <span className="font-semibold text-foreground">{t.name}</span>
                         </div>
-                        <span className="font-mono text-slate-400 text-[11px]">{t.email}</span>
+                        <span className="font-mono text-muted-foreground text-[11px]">{t.email}</span>
                       </label>
                     );
                   })}
@@ -767,7 +766,7 @@ export function ClassesManager({
                 <Button
                   type="submit"
                   disabled={isUpdating}
-                  className="bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-semibold"
+                  className="rounded-xl text-xs font-semibold"
                 >
                   {isUpdating ? <Loader2 className="size-4 animate-spin mr-1.5" /> : null}
                   Save Changes
@@ -783,7 +782,7 @@ export function ClassesManager({
         <Dialog open={!!deletingClass} onOpenChange={(open) => !open && setDeletingClass(null)}>
           <DialogContent className="sm:max-w-md rounded-2xl">
             <DialogHeader>
-              <DialogTitle className="flex items-center gap-2 text-red-600">
+              <DialogTitle className="flex items-center gap-2 text-destructive">
                 <AlertTriangle className="size-5" />
                 <span>Delete Class: {deletingClass.name}</span>
               </DialogTitle>
@@ -793,11 +792,11 @@ export function ClassesManager({
               {deletingClass.totalStudentCount > 0 ? (
                 // DEPENDENCY BLOCKED STATE
                 <div className="space-y-4">
-                  <p className="text-sm text-slate-600 dark:text-slate-300">
+                  <p className="text-sm text-muted-foreground">
                     This class has{" "}
-                    <strong>{deletingClass.totalStudentCount} enrolled student(s)</strong> (
+                    <strong className="text-foreground">{deletingClass.totalStudentCount} enrolled student(s)</strong> (
                     {deletingClass.activeStudentCount} active). Reassign or delete them in{" "}
-                    <strong>Student Management</strong> before deleting the class.
+                    <strong className="text-foreground">Student Management</strong> before deleting the class.
                   </p>
 
                   <div className="flex justify-end gap-2 pt-2">
@@ -811,7 +810,7 @@ export function ClassesManager({
                     <Link href={`/students?classId=${deletingClass.id}`}>
                       <Button
                         id="manage-students-link-btn"
-                        className="bg-blue-600 hover:bg-blue-700 text-white gap-1.5"
+                        className="gap-1.5"
                       >
                         <Users className="size-4" />
                         <span>Manage Enrolled Students</span>
@@ -822,8 +821,8 @@ export function ClassesManager({
               ) : (
                 // SAFE TO DELETE STATE
                 <div className="space-y-4">
-                  <p className="text-sm text-slate-600 dark:text-slate-300">
-                    Permanently delete <strong>{deletingClass.name}</strong>? This cannot be
+                  <p className="text-sm text-muted-foreground">
+                    Permanently delete <strong className="text-foreground">{deletingClass.name}</strong>? This cannot be
                     undone.
                   </p>
 
