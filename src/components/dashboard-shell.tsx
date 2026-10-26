@@ -364,20 +364,6 @@ function ShellInner({ user, children }: DashboardShellProps) {
             {/* Dark / Light Mode Toggle */}
             <ThemeToggle />
 
-            {/* Direct Sign Out Button in Header */}
-            <form action={logoutAction} className="inline-flex">
-              <Button
-                variant="ghost"
-                size="sm"
-                type="submit"
-                className="size-8 p-0 rounded-lg text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
-                title={locale === "am" ? "ውጣ" : "Sign out"}
-                aria-label="Sign out"
-              >
-                <LogOut className="size-4" />
-              </Button>
-            </form>
-
             {/* Header User Profile Dropdown Menu */}
             <div className="relative" ref={userMenuRef}>
               <button
