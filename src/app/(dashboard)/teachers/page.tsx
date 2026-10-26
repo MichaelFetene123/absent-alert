@@ -4,10 +4,7 @@ import {
   listAvailableClassesForTeachers,
 } from "@/actions/teacher.actions";
 import { TeachersManager } from "@/components/teachers-manager";
-import { Badge } from "@/components/ui/badge";
-import { GraduationCap, Shield } from "lucide-react";
 
-export const dynamic = "force-dynamic";
 
 export default async function TeachersPage() {
   const user = await requireUser();

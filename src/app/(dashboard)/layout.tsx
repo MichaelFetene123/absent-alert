@@ -15,6 +15,9 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { DashboardShell } from "@/components/dashboard-shell";
+
+export const instant = false;
 
 export default async function DashboardLayout({
   children,

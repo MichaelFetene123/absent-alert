@@ -12,7 +12,8 @@ import {
   queueAbsenceNotifications,
   dispatchNotifications,
 } from "@/lib/services/notification.service";
-import { revalidatePath } from "next/cache";
+import { updateTag, cacheTag } from "next/cache";
+import { CACHE_TAGS } from "@/components/cacheTag";
 
 export type ActionResult<T = unknown> = {
   ok: boolean;
@@ -98,9 +99,11 @@ export async function markAttendance(input: unknown): Promise<ActionResult<{
       // Attendance is already saved; SMS failure never undoes attendance.
     }
 
-    revalidatePath("/attendance");
-    revalidatePath("/dashboard");
-    revalidatePath("/notifications");
+    updateTag(CACHE_TAGS.ATTENDANCE);
+    updateTag(CACHE_TAGS.ATTENDANCE_DAILY(classId, date));
+    updateTag(CACHE_TAGS.ATTENDANCE_OVERVIEW(classId));
+    updateTag(CACHE_TAGS.DASHBOARD);
+    updateTag(CACHE_TAGS.NOTIFICATIONS);
 
     return {
       ok: true,
@@ -144,6 +147,10 @@ export async function getDailyAttendance(input: unknown): Promise<ActionResult> 
 
     const { classId, date } = parsed.data;
     await requireClassAccess(classId);
+
+    try {
+      cacheTag(CACHE_TAGS.ATTENDANCE, CACHE_TAGS.ATTENDANCE_DAILY(classId, date));
+    } catch {}
 
     const records = await getClassAttendance({ classId, date });
     return {

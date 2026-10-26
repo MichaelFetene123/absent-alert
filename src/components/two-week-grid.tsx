@@ -14,10 +14,14 @@ import {
   Users,
   RotateCcw,
   ExternalLink,
+  Download,
+  Flame,
+  Check,
 } from "lucide-react";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { toast } from "sonner";
 import type { TwoWeekOverviewResult } from "@/lib/services/attendance.service";
 
 type Props = {
@@ -56,6 +60,34 @@ export function TwoWeekGrid({ data, selectedClassId }: Props) {
 
   const highAbsenceStudents = data.students.filter((s) => s.isHighAbsence);
 
+  // Client-side CSV export
+  function exportToCSV() {
+    if (data.students.length === 0) {
+      toast.error("No student data available to export");
+      return;
+    }
+
+    const header = ["Admission No", "Student Name", "Total Absences", "Total Leaves", ...data.days.map((d) => d.date)];
+    const rows = data.students.map((s) => [
+      s.admissionNo,
+      `"${s.fullName.replace(/"/g, '""')}"`,
+      s.totalAbsent,
+      s.totalLeave,
+      ...data.days.map((d) => s.records[d.date] || (d.isWeekend ? "WEEKEND" : "UNMARKED")),
+    ]);
+
+    const csvContent = [header.join(","), ...rows.map((r) => r.join(","))].join("\n");
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.setAttribute("href", url);
+    link.setAttribute("download", `Attendance_${data.classInfo?.name || "Class"}_${data.startDate}_to_${data.endDate}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    toast.success("CSV export downloaded successfully");
+  }
+
   return (
     <div className="space-y-6">
       {/* Top Header & Navigation */}
@@ -72,235 +104,229 @@ export function TwoWeekGrid({ data, selectedClassId }: Props) {
           </div>
         </div>
 
-        {/* View Toggle (Daily vs Two-Week) */}
         <div className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={exportToCSV}
+            className="h-8 px-2.5 text-xs font-medium gap-1.5"
+          >
+            <Download className="size-3.5 text-slate-500" />
+            <span>Export CSV</span>
+          </Button>
+
           <Link href={`/attendance?classId=${selectedClassId}`}>
-            <Button variant="outline" size="sm" className="gap-1.5 text-xs">
-              <CalendarCheck className="size-4" />
-              Daily Roster
+            <Button variant="outline" size="sm" className="h-8 px-2.5 text-xs font-medium gap-1.5">
+              <CalendarCheck className="size-3.5 text-emerald-600" />
+              <span>Daily Roster</span>
             </Button>
           </Link>
-          <Button variant="default" size="sm" className="gap-1.5 text-xs bg-blue-600 text-white hover:bg-blue-700">
-            <CalendarDays className="size-4" />
-            Two-Week Grid
-          </Button>
         </div>
       </div>
 
       {/* Class & Date Selector Controls */}
-      <Card className="border-slate-200 dark:border-slate-800 shadow-xs">
-        <CardContent className="p-4">
-          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-            {/* Class Dropdown */}
-            <div className="flex items-center gap-3">
-              <div className="p-2 bg-blue-50 dark:bg-blue-950/40 rounded-lg text-blue-600 dark:text-blue-400 shrink-0">
-                <School className="size-5" />
-              </div>
-              <div>
-                <label htmlFor="class-select" className="text-xs font-medium text-slate-500 dark:text-slate-400 block mb-1">
-                  Select Class Roster
-                </label>
-                <select
-                  id="class-select"
-                  value={selectedClassId}
-                  onChange={(e) => handleClassChange(e.target.value)}
-                  className="h-9 min-w-56 rounded-md border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-3 py-1.5 text-sm font-semibold text-slate-900 dark:text-slate-100 focus:outline-hidden focus:ring-2 focus:ring-blue-500"
-                >
-                  {data.accessibleClasses.map((c) => (
-                    <option key={c.id} value={c.id}>
-                      {c.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </div>
+      <div className="p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+        {/* Class Dropdown */}
+        <div className="flex items-center gap-2">
+          <label htmlFor="class-select" className="text-xs font-medium text-slate-500 dark:text-slate-400 shrink-0">
+            Class:
+          </label>
+          <select
+            id="class-select"
+            value={selectedClassId}
+            onChange={(e) => handleClassChange(e.target.value)}
+            className="h-8 min-w-52 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-2.5 text-xs font-medium text-slate-900 dark:text-slate-100 outline-none focus:ring-1 focus:ring-slate-400"
+          >
+            {data.accessibleClasses.map((c) => (
+              <option key={c.id} value={c.id}>
+                {c.name}
+              </option>
+            ))}
+          </select>
+        </div>
 
-            {/* Date Navigation */}
-            <div className="flex items-center gap-2 self-start lg:self-auto">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => handleDateNav(data.prevStartDate)}
-                className="gap-1 h-9 text-xs"
-                title="Go to previous 2 weeks"
-              >
-                <ChevronLeft className="size-4" />
-                Previous 2 Weeks
-              </Button>
+        {/* Date Navigation */}
+        <div className="flex items-center gap-1.5 flex-wrap">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => handleDateNav(data.prevStartDate)}
+            className="h-8 px-2.5 text-xs font-medium gap-1"
+            title="Go to previous 2 weeks"
+          >
+            <ChevronLeft className="size-3.5" />
+            <span>Prev 2 Weeks</span>
+          </Button>
 
-              <div className="px-3 py-1.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 font-semibold text-xs tracking-tight text-center min-w-40">
-                {formatDateRange(data.startDate, data.endDate)}
-              </div>
+          <span className="px-3 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-medium text-xs border border-slate-200 dark:border-slate-700">
+            {formatDateRange(data.startDate, data.endDate)}
+          </span>
 
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => handleDateNav(data.nextStartDate)}
-                className="gap-1 h-9 text-xs"
-                title="Go to next 2 weeks"
-              >
-                Next 2 Weeks
-                <ChevronRight className="size-4" />
-              </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => handleDateNav(data.nextStartDate)}
+            className="h-8 px-2.5 text-xs font-medium gap-1"
+            title="Go to next 2 weeks"
+          >
+            <span>Next 2 Weeks</span>
+            <ChevronRight className="size-3.5" />
+          </Button>
 
-              {data.startDate !== data.currentStartDate && (
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => handleDateNav(data.currentStartDate)}
-                  className="text-xs h-9 text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-950/30 gap-1"
-                >
-                  <RotateCcw className="size-3.5" />
-                  Current
-                </Button>
-              )}
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+          {data.startDate !== data.currentStartDate && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => handleDateNav(data.currentStartDate)}
+              className="text-xs h-8 px-2 text-blue-600 dark:text-blue-400 gap-1 font-medium"
+            >
+              <RotateCcw className="size-3" />
+              <span>Current</span>
+            </Button>
+          )}
+        </div>
+      </div>
 
       {/* KPI Cards for the 2-Week Window */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <Card className="border-slate-200 dark:border-slate-800 shadow-xs">
-          <CardHeader className="pb-1 p-4">
-            <CardTitle className="text-xs font-medium text-slate-500 dark:text-slate-400">
-              Students Enrolled
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="p-4 pt-0">
-            <div className="text-2xl font-bold text-slate-900 dark:text-white">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        {/* Total Active Students */}
+        <Card className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
+          <CardContent className="p-4">
+            <p className="text-xs font-medium text-slate-500 uppercase tracking-wider">
+              Enrolled
+            </p>
+            <div className="text-2xl font-bold text-slate-900 dark:text-white mt-1">
               {data.totals.totalStudents}
             </div>
-            <p className="text-[11px] text-slate-400 mt-0.5">Active roster in {data.classInfo?.name}</p>
+            <p className="text-[11px] text-slate-500 mt-0.5">
+              {data.classInfo?.name}
+            </p>
           </CardContent>
         </Card>
 
-        <Card className="border-emerald-200 dark:border-emerald-900/50 bg-emerald-50/20 dark:bg-emerald-950/20 shadow-xs">
-          <CardHeader className="pb-1 p-4">
-            <CardTitle className="text-xs font-medium text-emerald-800 dark:text-emerald-400">
+        {/* Overall Attendance Rate */}
+        <Card className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
+          <CardContent className="p-4">
+            <p className="text-xs font-medium text-slate-500 uppercase tracking-wider">
               Attendance Rate
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="p-4 pt-0">
-            <div className="text-2xl font-bold text-emerald-900 dark:text-emerald-200">
+            </p>
+            <div className="text-2xl font-bold text-emerald-600 dark:text-emerald-400 mt-1">
               {data.totals.overallAttendanceRate !== null ? `${data.totals.overallAttendanceRate}%` : "—"}
             </div>
-            <p className="text-[11px] text-emerald-700 dark:text-emerald-400 mt-0.5">
-              {data.totals.totalPresent} present entries
+            <p className="text-[11px] text-slate-500 mt-0.5">
+              {data.totals.totalPresent} presence marks
             </p>
           </CardContent>
         </Card>
 
-        <Card className="border-rose-200 dark:border-rose-900/50 bg-rose-50/20 dark:bg-rose-950/20 shadow-xs">
-          <CardHeader className="pb-1 p-4">
-            <CardTitle className="text-xs font-medium text-rose-800 dark:text-rose-400">
+        {/* Total Absences */}
+        <Card className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
+          <CardContent className="p-4">
+            <p className="text-xs font-medium text-slate-500 uppercase tracking-wider">
               Total Absences
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="p-4 pt-0">
-            <div className="text-2xl font-bold text-rose-900 dark:text-rose-200">
+            </p>
+            <div className="text-2xl font-bold text-rose-600 dark:text-rose-400 mt-1">
               {data.totals.totalAbsent}
             </div>
-            <p className="text-[11px] text-rose-700 dark:text-rose-400 mt-0.5">
-              Logged in 2-week window
+            <p className="text-[11px] text-slate-500 mt-0.5">
+              14-day window
             </p>
           </CardContent>
         </Card>
 
-        <Card className="border-amber-200 dark:border-amber-900/50 bg-amber-50/20 dark:bg-amber-950/20 shadow-xs">
-          <CardHeader className="pb-1 p-4">
-            <CardTitle className="text-xs font-medium text-amber-800 dark:text-amber-400">
-              High Absence Alert
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="p-4 pt-0">
-            <div className="text-2xl font-bold text-amber-900 dark:text-amber-200">
+        {/* Chronic Absence Alert Count */}
+        <Card className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
+          <CardContent className="p-4">
+            <p className="text-xs font-medium text-slate-500 uppercase tracking-wider">
+              Chronic Absence
+            </p>
+            <div className={`text-2xl font-bold mt-1 ${highAbsenceStudents.length > 0 ? "text-amber-600 dark:text-amber-400" : "text-slate-900 dark:text-white"}`}>
               {highAbsenceStudents.length}
             </div>
-            <p className="text-[11px] text-amber-700 dark:text-amber-400 mt-0.5">
-              Students with &ge; 3 absences
+            <p className="text-[11px] text-slate-500 mt-0.5">
+              &ge; 3 absences
             </p>
           </CardContent>
         </Card>
       </div>
 
-      {/* High Absence Banner (if applicable) */}
+      {/* Chronic Absence Warning (if applicable) */}
       {highAbsenceStudents.length > 0 && (
-        <div className="p-4 rounded-xl border border-rose-200 dark:border-rose-900/60 bg-rose-50/50 dark:bg-rose-950/20 flex items-start gap-3">
-          <AlertTriangle className="size-5 text-rose-600 dark:text-rose-400 shrink-0 mt-0.5" />
-          <div className="space-y-1">
-            <h2 className="text-sm font-semibold text-rose-900 dark:text-rose-200">
-              Persistent Absence Warning
-            </h2>
-            <p className="text-xs text-rose-700 dark:text-rose-300">
-              {highAbsenceStudents.length} student(s) ({highAbsenceStudents.map((s) => s.fullName).join(", ")}) have 3 or more absences during this 14-day window. Please verify parent contact details and check SMS dispatch status.
+        <div className="p-3 rounded-xl border border-rose-200 dark:border-rose-900/60 bg-rose-50/40 dark:bg-rose-950/20 flex items-start gap-2.5 text-xs">
+          <AlertTriangle className="size-4 text-rose-600 shrink-0 mt-0.5" />
+          <div className="space-y-0.5">
+            <span className="font-semibold text-rose-900 dark:text-rose-200">
+              Chronic Absence Warning:
+            </span>
+            <p className="text-rose-800/90 dark:text-rose-300">
+              <strong>{highAbsenceStudents.length} student(s)</strong> ({highAbsenceStudents.map((s) => s.fullName).join(", ")}) have reached 3 or more absences during this window.
             </p>
           </div>
         </div>
       )}
 
-      {/* Legend & Instructions */}
-      <div className="flex flex-wrap items-center justify-between gap-3 text-xs text-slate-500 dark:text-slate-400 bg-white dark:bg-slate-900 p-3 rounded-lg border border-slate-200 dark:border-slate-800">
-        <div className="flex flex-wrap items-center gap-4">
-          <span className="font-semibold text-slate-700 dark:text-slate-300">Legend:</span>
-          <div className="flex items-center gap-1.5">
-            <span className="size-5 rounded flex items-center justify-center font-bold text-[11px] bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800">
+      {/* Legend */}
+      <div className="flex flex-wrap items-center justify-between gap-3 text-xs text-slate-500 dark:text-slate-400 bg-white dark:bg-slate-900 p-3 rounded-xl border border-slate-200 dark:border-slate-800">
+        <div className="flex flex-wrap items-center gap-3">
+          <span className="font-medium text-slate-700 dark:text-slate-300">Legend:</span>
+          <div className="flex items-center gap-1">
+            <span className="size-5 rounded flex items-center justify-center font-bold text-[10px] bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 border border-emerald-300 dark:border-emerald-800">
               P
             </span>
             <span>Present</span>
           </div>
-          <div className="flex items-center gap-1.5">
-            <span className="size-5 rounded flex items-center justify-center font-bold text-[11px] bg-rose-100 text-rose-800 dark:bg-rose-950 dark:text-rose-300 border border-rose-300 dark:border-rose-800">
+          <div className="flex items-center gap-1">
+            <span className="size-5 rounded flex items-center justify-center font-bold text-[10px] bg-rose-50 dark:bg-rose-950/40 text-rose-700 dark:text-rose-400 border border-rose-300 dark:border-rose-800">
               A
             </span>
             <span>Absent</span>
           </div>
-          <div className="flex items-center gap-1.5">
-            <span className="size-5 rounded flex items-center justify-center font-bold text-[11px] bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300 border border-amber-300 dark:border-amber-800">
+          <div className="flex items-center gap-1">
+            <span className="size-5 rounded flex items-center justify-center font-bold text-[10px] bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400 border border-amber-300 dark:border-amber-800">
               L
             </span>
-            <span>On Leave</span>
+            <span>Leave</span>
           </div>
-          <div className="flex items-center gap-1.5">
-            <span className="size-5 rounded flex items-center justify-center font-bold text-[11px] bg-blue-100 text-blue-800 dark:bg-blue-950 dark:text-blue-300 border border-blue-300 dark:border-blue-800">
+          <div className="flex items-center gap-1">
+            <span className="size-5 rounded flex items-center justify-center font-bold text-[10px] bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-400 border border-blue-300 dark:border-blue-800">
               T
             </span>
-            <span>Late Arrival</span>
+            <span>Late</span>
           </div>
-          <div className="flex items-center gap-1.5">
-            <span className="size-5 rounded flex items-center justify-center font-bold text-[11px] bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400 border border-slate-200 dark:border-slate-700">
+          <div className="flex items-center gap-1">
+            <span className="size-5 rounded flex items-center justify-center font-bold text-[10px] bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400 border border-slate-200 dark:border-slate-700">
               H
             </span>
-            <span>Weekend / Holiday</span>
+            <span>Weekend</span>
           </div>
-          <div className="flex items-center gap-1.5">
-            <span className="text-slate-300 dark:text-slate-600 font-bold">—</span>
-            <span>Unmarked</span>
+          <div className="flex items-center gap-1">
+            <span className="text-slate-400 font-bold px-1">—</span>
+            <span>Unrecorded</span>
           </div>
         </div>
       </div>
 
       {/* Two-Week Grid Table */}
-      <Card className="border-slate-200 dark:border-slate-800 shadow-xs overflow-hidden">
+      <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-xs text-left border-collapse">
             <thead>
               {/* Header Row: Column Titles & Dates */}
-              <tr className="bg-slate-100/80 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800">
-                <th className="p-2.5 font-semibold text-slate-700 dark:text-slate-300 sticky left-0 z-20 bg-slate-100 dark:bg-slate-900 min-w-24 border-r border-slate-200 dark:border-slate-800">
+              <tr className="bg-slate-100/90 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800">
+                <th className="p-3 font-bold text-slate-700 dark:text-slate-300 sticky left-0 z-20 bg-slate-100 dark:bg-slate-900 min-w-28 border-r border-slate-200 dark:border-slate-800 uppercase tracking-wider text-[11px]">
                   Adm No
                 </th>
-                <th className="p-2.5 font-semibold text-slate-700 dark:text-slate-300 sticky left-24 z-20 bg-slate-100 dark:bg-slate-900 min-w-44 border-r border-slate-200 dark:border-slate-800">
+                <th className="p-3 font-bold text-slate-700 dark:text-slate-300 sticky left-28 z-20 bg-slate-100 dark:bg-slate-900 min-w-48 border-r border-slate-200 dark:border-slate-800 uppercase tracking-wider text-[11px]">
                   Student Name
                 </th>
                 <th
-                  className="p-2 text-center font-bold text-rose-700 dark:text-rose-400 bg-rose-50/60 dark:bg-rose-950/30 w-12 border-r border-slate-200 dark:border-slate-800"
+                  className="p-2 text-center font-bold text-rose-700 dark:text-rose-400 bg-rose-50/70 dark:bg-rose-950/40 w-12 border-r border-slate-200 dark:border-slate-800"
                   title="Total Absences in 2 weeks"
                 >
                   Abs
                 </th>
                 <th
-                  className="p-2 text-center font-bold text-amber-700 dark:text-amber-400 bg-amber-50/60 dark:bg-amber-950/30 w-12 border-r border-slate-200 dark:border-slate-800"
+                  className="p-2 text-center font-bold text-amber-700 dark:text-amber-400 bg-amber-50/70 dark:bg-amber-950/40 w-12 border-r border-slate-200 dark:border-slate-800"
                   title="Total Leaves in 2 weeks"
                 >
                   Lve
@@ -310,9 +336,9 @@ export function TwoWeekGrid({ data, selectedClassId }: Props) {
                 {data.days.map((d) => (
                   <th
                     key={d.date}
-                    className={`p-1.5 text-center min-w-11 border-r border-slate-200 dark:border-slate-800 transition-colors ${
+                    className={`p-2 text-center min-w-12 border-r border-slate-200 dark:border-slate-800 transition-colors ${
                       d.isWeekend
-                        ? "bg-slate-200/50 dark:bg-slate-800/40 text-slate-400"
+                        ? "bg-slate-200/40 dark:bg-slate-800/30 text-slate-400"
                         : "hover:bg-blue-50 dark:hover:bg-blue-950/40 cursor-pointer"
                     }`}
                   >
@@ -324,7 +350,7 @@ export function TwoWeekGrid({ data, selectedClassId }: Props) {
                       <div className="text-[10px] uppercase font-bold text-slate-500 dark:text-slate-400 group-hover:text-blue-600">
                         {d.dayOfWeek}
                       </div>
-                      <div className="text-xs font-semibold text-slate-900 dark:text-slate-100 group-hover:text-blue-600">
+                      <div className="text-xs font-extrabold text-slate-900 dark:text-slate-100 group-hover:text-blue-600">
                         {d.dayOfMonth}
                       </div>
                     </Link>
@@ -334,14 +360,14 @@ export function TwoWeekGrid({ data, selectedClassId }: Props) {
 
               {/* Summary Rows Directly Below Headers */}
               {/* Row 1: Total Present */}
-              <tr className="bg-emerald-50/40 dark:bg-emerald-950/20 border-b border-emerald-100 dark:border-emerald-900/30 font-semibold text-[11px]">
+              <tr className="bg-emerald-500/10 border-b border-emerald-500/20 font-semibold text-[11px]">
                 <td
                   colSpan={2}
-                  className="p-2 text-emerald-900 dark:text-emerald-300 sticky left-0 z-20 bg-emerald-50 dark:bg-emerald-950/90 border-r border-slate-200 dark:border-slate-800 font-bold"
+                  className="p-2.5 text-emerald-950 dark:text-emerald-200 sticky left-0 z-20 bg-emerald-500/15 dark:bg-emerald-950/90 border-r border-slate-200 dark:border-slate-800 font-bold"
                 >
                   Total Present
                 </td>
-                <td className="p-1 text-center font-bold text-emerald-800 dark:text-emerald-300 border-r border-slate-200 dark:border-slate-800">
+                <td className="p-1 text-center font-extrabold text-emerald-800 dark:text-emerald-300 border-r border-slate-200 dark:border-slate-800">
                   {data.totals.totalPresent}
                 </td>
                 <td className="p-1 text-center text-slate-400 border-r border-slate-200 dark:border-slate-800">
@@ -360,14 +386,14 @@ export function TwoWeekGrid({ data, selectedClassId }: Props) {
               </tr>
 
               {/* Row 2: Total Absent */}
-              <tr className="bg-rose-50/40 dark:bg-rose-950/20 border-b border-rose-100 dark:border-rose-900/30 font-semibold text-[11px]">
+              <tr className="bg-rose-500/10 border-b border-rose-500/20 font-semibold text-[11px]">
                 <td
                   colSpan={2}
-                  className="p-2 text-rose-900 dark:text-rose-300 sticky left-0 z-20 bg-rose-50 dark:bg-rose-950/90 border-r border-slate-200 dark:border-slate-800 font-bold"
+                  className="p-2.5 text-rose-950 dark:text-rose-200 sticky left-0 z-20 bg-rose-500/15 dark:bg-rose-950/90 border-r border-slate-200 dark:border-slate-800 font-bold"
                 >
                   Total Absent
                 </td>
-                <td className="p-1 text-center font-bold text-rose-800 dark:text-rose-300 border-r border-slate-200 dark:border-slate-800">
+                <td className="p-1 text-center font-extrabold text-rose-800 dark:text-rose-300 border-r border-slate-200 dark:border-slate-800">
                   {data.totals.totalAbsent}
                 </td>
                 <td className="p-1 text-center text-slate-400 border-r border-slate-200 dark:border-slate-800">
@@ -389,11 +415,11 @@ export function TwoWeekGrid({ data, selectedClassId }: Props) {
               <tr className="bg-slate-50 dark:bg-slate-900/60 border-b border-slate-200 dark:border-slate-800 text-[11px] font-semibold">
                 <td
                   colSpan={2}
-                  className="p-2 text-slate-700 dark:text-slate-300 sticky left-0 z-20 bg-slate-50 dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 font-bold"
+                  className="p-2.5 text-slate-700 dark:text-slate-300 sticky left-0 z-20 bg-slate-50 dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 font-bold"
                 >
-                  Daily Attendance %
+                  Daily Attendance Rate
                 </td>
-                <td className="p-1 text-center font-bold text-blue-700 dark:text-blue-300 border-r border-slate-200 dark:border-slate-800">
+                <td className="p-1 text-center font-extrabold text-blue-700 dark:text-blue-300 border-r border-slate-200 dark:border-slate-800">
                   {data.totals.overallAttendanceRate !== null ? `${data.totals.overallAttendanceRate}%` : "—"}
                 </td>
                 <td className="p-1 text-center text-slate-400 border-r border-slate-200 dark:border-slate-800">
@@ -406,7 +432,7 @@ export function TwoWeekGrid({ data, selectedClassId }: Props) {
                       s.isWeekend
                         ? "bg-slate-200/30 dark:bg-slate-800/20 text-slate-400"
                         : s.attendanceRate !== null
-                        ? "text-slate-800 dark:text-slate-200 font-semibold"
+                        ? "text-slate-800 dark:text-slate-200 font-bold"
                         : "text-slate-400"
                     }`}
                   >
@@ -420,7 +446,7 @@ export function TwoWeekGrid({ data, selectedClassId }: Props) {
             <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60 bg-white dark:bg-slate-950">
               {data.students.length === 0 ? (
                 <tr>
-                  <td colSpan={18} className="text-center py-12 text-slate-500">
+                  <td colSpan={18} className="text-center py-16 text-slate-500">
                     No active students enrolled in this class.
                   </td>
                 </tr>
@@ -431,18 +457,20 @@ export function TwoWeekGrid({ data, selectedClassId }: Props) {
                     className="hover:bg-slate-50/80 dark:hover:bg-slate-900/40 transition-colors"
                   >
                     {/* Admission No */}
-                    <td className="p-2 font-mono text-slate-600 dark:text-slate-400 sticky left-0 z-10 bg-white dark:bg-slate-950 border-r border-slate-200 dark:border-slate-800">
-                      {student.admissionNo}
+                    <td className="p-2.5 font-mono text-slate-600 dark:text-slate-400 sticky left-0 z-10 bg-white dark:bg-slate-950 border-r border-slate-200 dark:border-slate-800">
+                      <span className="px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-[11px] font-semibold">
+                        {student.admissionNo}
+                      </span>
                     </td>
 
                     {/* Student Name */}
-                    <td className="p-2 font-medium text-slate-900 dark:text-slate-100 sticky left-24 z-10 bg-white dark:bg-slate-950 border-r border-slate-200 dark:border-slate-800">
-                      <div className="flex items-center justify-between gap-1">
+                    <td className="p-2.5 font-semibold text-slate-900 dark:text-slate-100 sticky left-28 z-10 bg-white dark:bg-slate-950 border-r border-slate-200 dark:border-slate-800">
+                      <div className="flex items-center justify-between gap-2">
                         <span className="truncate">{student.fullName}</span>
                         {student.isHighAbsence && (
                           <Badge
                             variant="destructive"
-                            className="text-[9px] px-1 py-0 h-4 font-normal shrink-0"
+                            className="text-[9px] px-1.5 py-0 h-4 font-semibold shrink-0"
                             title="Persistent Absence Alert (&ge; 3 days)"
                           >
                             &ge;3 Abs
@@ -455,7 +483,7 @@ export function TwoWeekGrid({ data, selectedClassId }: Props) {
                     <td
                       className={`p-1.5 text-center font-bold border-r border-slate-200 dark:border-slate-800 ${
                         student.totalAbsent > 0
-                          ? "text-rose-600 dark:text-rose-400 bg-rose-50/40 dark:bg-rose-950/20"
+                          ? "text-rose-600 dark:text-rose-400 bg-rose-500/10"
                           : "text-slate-400"
                       }`}
                     >
@@ -466,7 +494,7 @@ export function TwoWeekGrid({ data, selectedClassId }: Props) {
                     <td
                       className={`p-1.5 text-center font-semibold border-r border-slate-200 dark:border-slate-800 ${
                         student.totalLeave > 0
-                          ? "text-amber-600 dark:text-amber-400 bg-amber-50/40 dark:bg-amber-950/20"
+                          ? "text-amber-600 dark:text-amber-400 bg-amber-500/10"
                           : "text-slate-400"
                       }`}
                     >
@@ -486,29 +514,29 @@ export function TwoWeekGrid({ data, selectedClassId }: Props) {
                         >
                           <Link
                             href={`/attendance?classId=${selectedClassId}&date=${d.date}`}
-                            className="inline-flex items-center justify-center size-7 rounded hover:ring-2 hover:ring-blue-400 transition-all"
+                            className="inline-flex items-center justify-center size-7 rounded-lg hover:ring-2 hover:ring-blue-400 transition-all hover-lift"
                             title={`${student.fullName} on ${d.date}: ${status || "No record"} (Click to edit roster)`}
                           >
                             {status === "PRESENT" && (
-                              <span className="size-6 rounded flex items-center justify-center font-bold text-[11px] bg-emerald-100 text-emerald-800 dark:bg-emerald-950/70 dark:text-emerald-300 border border-emerald-300/80 dark:border-emerald-800">
+                              <span className="size-6 rounded-md flex items-center justify-center font-bold text-[11px] bg-emerald-500/15 text-emerald-800 dark:text-emerald-300 border border-emerald-500/30">
                                 P
                               </span>
                             )}
 
                             {status === "ABSENT" && (
-                              <span className="size-6 rounded flex items-center justify-center font-bold text-[11px] bg-rose-100 text-rose-800 dark:bg-rose-950/70 dark:text-rose-300 border border-rose-300/80 dark:border-rose-800">
+                              <span className="size-6 rounded-md flex items-center justify-center font-bold text-[11px] bg-rose-500/15 text-rose-800 dark:text-rose-300 border border-rose-500/30">
                                 A
                               </span>
                             )}
 
                             {status === "LEAVE" && (
-                              <span className="size-6 rounded flex items-center justify-center font-bold text-[11px] bg-amber-100 text-amber-800 dark:bg-amber-950/70 dark:text-amber-300 border border-amber-300/80 dark:border-amber-800">
+                              <span className="size-6 rounded-md flex items-center justify-center font-bold text-[11px] bg-amber-500/15 text-amber-800 dark:text-amber-300 border border-amber-500/30">
                                 L
                               </span>
                             )}
 
                             {status === "LATE" && (
-                              <span className="size-6 rounded flex items-center justify-center font-bold text-[11px] bg-blue-100 text-blue-800 dark:bg-blue-950/70 dark:text-blue-300 border border-blue-300/80 dark:border-blue-800">
+                              <span className="size-6 rounded-md flex items-center justify-center font-bold text-[11px] bg-blue-500/15 text-blue-800 dark:text-blue-300 border border-blue-500/30">
                                 T
                               </span>
                             )}
@@ -534,7 +562,7 @@ export function TwoWeekGrid({ data, selectedClassId }: Props) {
             </tbody>
           </table>
         </div>
-      </Card>
+      </div>
     </div>
   );
 }

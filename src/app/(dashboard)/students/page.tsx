@@ -1,14 +1,9 @@
 import { requireUser } from "@/lib/guards";
 import { listStudents, listClasses } from "@/actions/student.actions";
 import { StudentsManager } from "@/components/students-manager";
-import { Users, Shield, GraduationCap } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
 
-export const dynamic = "force-dynamic";
 
 export default async function StudentsPage() {
-  // Both Admin and Teachers can access students page per FR-1 and Step 6.2
-  // Admin has full CRUD rights; Teacher has read-only access with masked guardian phone numbers.
   const user = await requireUser();
   const isAdmin = user.role === "ADMIN";
 
