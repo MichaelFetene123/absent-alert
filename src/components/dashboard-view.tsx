@@ -302,9 +302,7 @@ export function DashboardView({ data, reports, user }: Props) {
                 {locale === "am" ? "አቴንዳንስ መዝግብ" : "Take Attendance"}
               </Button>
             </Link>
-          </div>
-        </div>
-      </div>
+          )}
 
           <Link href="/notifications/test">
             <Button variant="outline" size="sm" className="h-8.5 px-2.5 rounded-lg text-xs font-medium gap-1.5">
@@ -318,9 +316,9 @@ export function DashboardView({ data, reports, user }: Props) {
               <History className="size-3.5 text-muted-foreground" />
               <span>SMS Logs</span>
             </Button>
-          </div>
+          </Link>
         </div>
-      )}
+      </div>
 
       {/* KPI Cards Grid */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3.5">
@@ -590,8 +588,8 @@ export function DashboardView({ data, reports, user }: Props) {
                               Take Attendance
                             </Button>
                           </Link>
-                        </div>
-                      </div>
+                        </TableCell>
+                      </TableRow>
                     ))}
                   </TableBody>
                 </Table>
@@ -722,7 +720,7 @@ export function DashboardView({ data, reports, user }: Props) {
                     <span>Full Risk Report</span>
                     <ArrowRight className="size-3" />
                   </Button>
-                )}
+                </Link>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -734,14 +732,6 @@ export function DashboardView({ data, reports, user }: Props) {
                   <p className="text-[11px] text-muted-foreground">Class 7 B · Guardian: Kebede Tessema (0911223344)</p>
                   <p className="text-[11px] text-primary font-medium">Flagged for homeroom teacher phone call</p>
                 </div>
-                <button
-                  type="button"
-                  onClick={() => setActiveQuestionTab("recurring")}
-                  className="text-[11px] font-bold text-amber-800 dark:text-amber-300 hover:underline shrink-0 self-center"
-                >
-                  View
-                </button>
-              </div>
 
                 <div className="p-3 rounded-lg border border-border bg-card text-card-foreground text-xs space-y-1">
                   <div className="flex items-center justify-between font-bold text-foreground">
@@ -751,59 +741,50 @@ export function DashboardView({ data, reports, user }: Props) {
                   <p className="text-[11px] text-muted-foreground">Class 7 B · Guardian: Bekele Megersa (0944556677)</p>
                   <p className="text-[11px] text-primary font-medium">Flagged for parent attendance meeting</p>
                 </div>
-                {data.unmarkedClasses.length > 0 && (
-                  <Link href={`/attendance?classId=${data.unmarkedClasses[0].id}&date=${data.todayDate}`}>
-                    <Button size="sm" className="h-6.5 text-[11px] px-2 bg-indigo-600 text-white shrink-0">
-                      Submit
-                    </Button>
-                  </Link>
-                )}
               </div>
-            </CardContent>
-          </Card>
-
-          {/* Quick Operations & Export Card */}
-          <Card className="rounded-2xl border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs p-4 space-y-3">
-            <span className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
-              Quick Administrative Tools
-            </span>
-            <div className="space-y-1.5">
-              <Link href="/attendance/overview" className="flex items-center justify-between p-2 rounded-xl text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
-                <span className="flex items-center gap-2">
-                  <Layers className="size-3.5 text-indigo-500" />
-                  <span>2-Week Attendance Matrix</span>
-                </span>
-                <ChevronRight className="size-3.5 text-slate-400" />
-              </Link>
-              <Link href="/reports" className="flex items-center justify-between p-2 rounded-xl text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
-                <span className="flex items-center gap-2">
-                  <TrendingUp className="size-3.5 text-emerald-500" />
-                  <span>Executive Attendance Analytics</span>
-                </span>
-                <ChevronRight className="size-3.5 text-slate-400" />
-              </Link>
-              <Link href="/settings/policy" className="flex items-center justify-between p-2 rounded-xl text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
-                <span className="flex items-center gap-2">
-                  <ShieldCheck className="size-3.5 text-blue-500" />
-                  <span>Absence Alert Policy Rules</span>
-                </span>
-                <ChevronRight className="size-3.5 text-slate-400" />
-              </Link>
-              <Link href="/settings/smshub" className="flex items-center justify-between p-2 rounded-xl text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
-                <span className="flex items-center gap-2">
-                  <Coins className="size-3.5 text-amber-500" />
-                  <span>SMSHub Token Configuration</span>
-                </span>
-                <ChevronRight className="size-3.5 text-slate-400" />
-              </Link>
             </div>
-          </Card>
-        </div>
-      </div>
+          )}
+        </CardContent>
+      </Card>
 
-      {/* =========================================================================
-          BULK IMPORT MODAL MOUNT
-          ========================================================================= */}
+      {/* Quick Administrative Tools */}
+      <Card className="rounded-xl border border-border bg-card text-card-foreground shadow-xs p-4 space-y-3">
+        <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+          Quick Administrative Tools
+        </span>
+        <div className="space-y-1.5">
+          <Link href="/attendance/overview" className="flex items-center justify-between p-2 rounded-lg text-xs font-medium text-foreground hover:bg-muted transition-colors">
+            <span className="flex items-center gap-2">
+              <Layers className="size-3.5 text-primary" />
+              <span>2-Week Attendance Matrix</span>
+            </span>
+            <ChevronRight className="size-3.5 text-muted-foreground" />
+          </Link>
+          <Link href="/reports" className="flex items-center justify-between p-2 rounded-lg text-xs font-medium text-foreground hover:bg-muted transition-colors">
+            <span className="flex items-center gap-2">
+              <TrendingUp className="size-3.5 text-primary" />
+              <span>Executive Attendance Analytics</span>
+            </span>
+            <ChevronRight className="size-3.5 text-muted-foreground" />
+          </Link>
+          <Link href="/settings/policy" className="flex items-center justify-between p-2 rounded-lg text-xs font-medium text-foreground hover:bg-muted transition-colors">
+            <span className="flex items-center gap-2">
+              <ShieldCheck className="size-3.5 text-primary" />
+              <span>Absence Alert Policy Rules</span>
+            </span>
+            <ChevronRight className="size-3.5 text-muted-foreground" />
+          </Link>
+          <Link href="/settings/smshub" className="flex items-center justify-between p-2 rounded-lg text-xs font-medium text-foreground hover:bg-muted transition-colors">
+            <span className="flex items-center gap-2">
+              <Coins className="size-3.5 text-primary" />
+              <span>SMSHub Token Configuration</span>
+            </span>
+            <ChevronRight className="size-3.5 text-muted-foreground" />
+          </Link>
+        </div>
+      </Card>
+
+      {/* Bulk Import Modal */}
       {data.isAdmin && (
         <BulkImportModal
           open={isBulkImportOpen}
