@@ -189,19 +189,19 @@ export function NotificationsManager({
     setTimeout(() => setCopiedJson(false), 2000);
   }
 
-  // Client mount time for pure relative timestamps
-  const mountedTime = React.useSyncExternalStore(
-    React.useCallback(() => () => {}, []),
-    () => Date.now(),
-    () => null
+  // Client mount tracking for pure relative timestamps (stable snapshot to prevent re-render loops)
+  const mounted = React.useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false
   );
 
   // Relative time helper
   function formatRelativeTime(isoString: string): string {
-    if (!mountedTime) return "";
+    if (!mounted) return "";
     const ms = Date.parse(isoString);
     if (!ms) return "";
-    const sec = Math.floor((mountedTime - ms) / 1000);
+    const sec = Math.floor((Date.now() - ms) / 1000);
     if (sec < 60) return "Just now";
     const min = Math.floor(sec / 60);
     if (min < 60) return `${min}m ago`;

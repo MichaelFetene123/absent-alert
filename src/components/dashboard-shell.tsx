@@ -377,7 +377,7 @@ function ShellInner({ user, children }: DashboardShellProps) {
                   {user.name ? user.name.slice(0, 2).toUpperCase() : user.role === "ADMIN" ? "AD" : "TC"}
                 </div>
                 <div className="hidden md:flex flex-col text-left leading-tight">
-                  <span className="font-semibold text-foreground max-w-[100px] truncate text-xs">
+                  <span className="font-semibold text-foreground max-w-25 truncate text-xs">
                     {user.name || (user.role === "ADMIN" ? "Administrator" : "Teacher")}
                   </span>
                   <span className="text-[10px] text-muted-foreground capitalize">
