@@ -16,7 +16,6 @@ import {
   Trash2,
   AlertTriangle,
   CheckCircle2,
-  AlertCircle,
   Loader2,
   Lock,
   Mail,
@@ -40,7 +39,6 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogDescription,
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
@@ -553,9 +551,6 @@ export function TeachersManager({
                 <GraduationCap className="size-5 text-blue-600" />
                 <span>Add New Teacher</span>
               </DialogTitle>
-              <DialogDescription>
-                Create a login account for school faculty and assign classrooms.
-              </DialogDescription>
             </DialogHeader>
 
             <form onSubmit={handleCreateTeacher} className="space-y-4 py-2">
@@ -679,9 +674,6 @@ export function TeachersManager({
                 <Edit2 className="size-5 text-blue-600" />
                 <span>Edit Teacher: {editingTeacher.name}</span>
               </DialogTitle>
-              <DialogDescription>
-                Update faculty details, reset credentials, or manage classroom assignments.
-              </DialogDescription>
             </DialogHeader>
 
             <form onSubmit={handleUpdateTeacher} className="space-y-4 py-2">
@@ -724,11 +716,7 @@ export function TeachersManager({
                   type="password"
                   value={editPassword}
                   onChange={(e) => setEditPassword(e.target.value)}
-                  placeholder="Leave empty to keep existing password"
                 />
-                <p className="text-[11px] text-slate-400">
-                  Only fill this out if you wish to reset the teacher&apos;s password.
-                </p>
               </div>
 
               {/* Assigned Classes */}
@@ -807,30 +795,18 @@ export function TeachersManager({
                 <AlertTriangle className="size-5" />
                 <span>Delete Teacher: {deletingTeacher.name}</span>
               </DialogTitle>
-              <DialogDescription>
-                Review referential integrity requirements before deleting this faculty account.
-              </DialogDescription>
             </DialogHeader>
 
             <div className="space-y-4 py-2">
               {deletingTeacher.assignedClasses.length > 0 ? (
                 // DEPENDENCY BLOCKED 1: Active Class Assignments
-                <div className="space-y-3">
-                  <div className="p-3.5 rounded-lg bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-900 text-red-800 dark:text-red-300 space-y-2 text-xs">
-                    <div className="flex items-center gap-2 font-semibold text-sm">
-                      <AlertCircle className="size-4 text-red-600 shrink-0" />
-                      <span>Active Class Assignments Prevent Deletion</span>
-                    </div>
-                    <p>
-                      This teacher is currently assigned to{" "}
-                      <strong>{deletingTeacher.assignedClasses.length} classroom(s)</strong>:{" "}
-                      {deletingTeacher.assignedClasses.map((c) => c.name).join(", ")}.
-                    </p>
-                    <p className="text-slate-600 dark:text-slate-400">
-                      To preserve teaching assignments and prevent unmanaged classrooms, you must
-                      unassign this teacher from all classes before deleting their account.
-                    </p>
-                  </div>
+                <div className="space-y-4">
+                  <p className="text-sm text-slate-600 dark:text-slate-300">
+                    This teacher is assigned to{" "}
+                    <strong>{deletingTeacher.assignedClasses.length} classroom(s)</strong>:{" "}
+                    {deletingTeacher.assignedClasses.map((c) => c.name).join(", ")}. Unassign them
+                    from all classes before deleting the account.
+                  </p>
 
                   <div className="flex justify-end gap-2 pt-2">
                     <Button
@@ -856,23 +832,12 @@ export function TeachersManager({
                 </div>
               ) : deletingTeacher.markedAttendanceCount > 0 ? (
                 // DEPENDENCY BLOCKED 2: Marked Attendance Records (Audit Trail)
-                <div className="space-y-3">
-                  <div className="p-3.5 rounded-lg bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-900 text-red-800 dark:text-red-300 space-y-2 text-xs">
-                    <div className="flex items-center gap-2 font-semibold text-sm">
-                      <AlertCircle className="size-4 text-red-600 shrink-0" />
-                      <span>Historical Attendance Records Prevent Deletion</span>
-                    </div>
-                    <p>
-                      This teacher account has marked{" "}
-                      <strong>{deletingTeacher.markedAttendanceCount} attendance record(s)</strong> in
-                      the system.
-                    </p>
-                    <p className="text-slate-600 dark:text-slate-400">
-                      To maintain academic audit records, government attendance compliance, and
-                      database referential integrity, accounts with recorded historical attendance
-                      cannot be deleted.
-                    </p>
-                  </div>
+                <div className="space-y-4">
+                  <p className="text-sm text-slate-600 dark:text-slate-300">
+                    This teacher has marked{" "}
+                    <strong>{deletingTeacher.markedAttendanceCount} attendance record(s)</strong>,
+                    so the account cannot be deleted. Historical attendance is kept for audit.
+                  </p>
 
                   <div className="flex justify-end pt-2">
                     <Button
@@ -886,14 +851,11 @@ export function TeachersManager({
                 </div>
               ) : (
                 // SAFE TO DELETE STATE
-                <div className="space-y-3">
+                <div className="space-y-4">
                   <p className="text-sm text-slate-600 dark:text-slate-300">
-                    Are you sure you want to permanently delete teacher account{" "}
-                    <strong>{deletingTeacher.name}</strong> ({deletingTeacher.email})?
-                  </p>
-                  <p className="text-xs text-slate-500">
-                    This teacher has 0 assigned classrooms and 0 marked attendance records. This
-                    action cannot be undone.
+                    Permanently delete teacher account{" "}
+                    <strong>{deletingTeacher.name}</strong> ({deletingTeacher.email})? This cannot
+                    be undone.
                   </p>
 
                   <DialogFooter className="pt-2">

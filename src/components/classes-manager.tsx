@@ -17,7 +17,6 @@ import {
   Trash2,
   AlertTriangle,
   CheckCircle2,
-  AlertCircle,
   Loader2,
   X,
   ExternalLink,
@@ -39,7 +38,6 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogDescription,
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
@@ -612,9 +610,6 @@ export function ClassesManager({
               <School className="size-5 text-blue-600" />
               <span>Create New Class</span>
             </DialogTitle>
-            <DialogDescription>
-              Specify the grade level, section identifier, and assign designated teachers.
-            </DialogDescription>
           </DialogHeader>
 
           <form onSubmit={handleCreateClass} className="space-y-4 py-2">
@@ -762,9 +757,6 @@ export function ClassesManager({
                 <Edit2 className="size-5 text-blue-600" />
                 <span>Edit Class: {editingClass.name}</span>
               </DialogTitle>
-              <DialogDescription>
-                Update the official class name or sync teacher assignments.
-              </DialogDescription>
             </DialogHeader>
 
             <form onSubmit={handleUpdateClass} className="space-y-4 py-2">
@@ -859,31 +851,18 @@ export function ClassesManager({
                 <AlertTriangle className="size-5" />
                 <span>Delete Class: {deletingClass.name}</span>
               </DialogTitle>
-              <DialogDescription>
-                Review database dependency requirements before proceeding.
-              </DialogDescription>
             </DialogHeader>
 
             <div className="space-y-4 py-2">
               {deletingClass.totalStudentCount > 0 ? (
                 // DEPENDENCY BLOCKED STATE
-                <div className="space-y-3">
-                  <div className="p-3.5 rounded-lg bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-900 text-red-800 dark:text-red-300 space-y-2 text-xs">
-                    <div className="flex items-center gap-2 font-semibold text-sm">
-                      <AlertCircle className="size-4 text-red-600 shrink-0" />
-                      <span>Class Cannot Be Deleted</span>
-                    </div>
-                    <p>
-                      This class currently has{" "}
-                      <strong>{deletingClass.totalStudentCount} enrolled student(s)</strong> (
-                      {deletingClass.activeStudentCount} active).
-                    </p>
-                    <p className="text-slate-600 dark:text-slate-400">
-                      To preserve student records and attendance integrity, you must reassign or
-                      delete these students in the <strong>Student Management</strong> directory
-                      first.
-                    </p>
-                  </div>
+                <div className="space-y-4">
+                  <p className="text-sm text-slate-600 dark:text-slate-300">
+                    This class has{" "}
+                    <strong>{deletingClass.totalStudentCount} enrolled student(s)</strong> (
+                    {deletingClass.activeStudentCount} active). Reassign or delete them in{" "}
+                    <strong>Student Management</strong> before deleting the class.
+                  </p>
 
                   <div className="flex justify-end gap-2 pt-2">
                     <Button
@@ -906,13 +885,10 @@ export function ClassesManager({
                 </div>
               ) : (
                 // SAFE TO DELETE STATE
-                <div className="space-y-3">
+                <div className="space-y-4">
                   <p className="text-sm text-slate-600 dark:text-slate-300">
-                    Are you sure you want to permanently delete <strong>{deletingClass.name}</strong>?
-                  </p>
-                  <p className="text-xs text-slate-500">
-                    This class has 0 enrolled students. Any assigned teacher links will be
-                    automatically unlinked. This action cannot be undone.
+                    Permanently delete <strong>{deletingClass.name}</strong>? This cannot be
+                    undone.
                   </p>
 
                   <DialogFooter className="pt-2">

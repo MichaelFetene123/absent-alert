@@ -1,6 +1,5 @@
 import { requireUser } from "@/lib/guards";
 import { logoutAction } from "@/actions/auth.actions";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
 import {
@@ -12,7 +11,6 @@ import {
   CalendarDays,
   History,
   LogOut,
-  Shield,
   GraduationCap,
 } from "lucide-react";
 import Link from "next/link";
@@ -104,24 +102,6 @@ export default async function DashboardLayout({
               <span className="font-semibold text-sm text-slate-800 dark:text-slate-200 truncate max-w-32.5">
                 {user.name || user.email}
               </span>
-              <Badge
-                variant={user.role === "ADMIN" ? "default" : "secondary"}
-                className={
-                  user.role === "ADMIN"
-                    ? "bg-purple-600 hover:bg-purple-700 text-white text-[10px]"
-                    : "bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300 text-[10px]"
-                }
-              >
-                {user.role === "ADMIN" ? (
-                  <span className="flex items-center gap-1">
-                    <Shield className="size-3" /> Admin
-                  </span>
-                ) : (
-                  <span className="flex items-center gap-1">
-                    <GraduationCap className="size-3" /> Teacher
-                  </span>
-                )}
-              </Badge>
             </div>
             <p className="text-xs text-slate-500 truncate">{user.email}</p>
           </div>

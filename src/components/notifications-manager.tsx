@@ -21,7 +21,7 @@ import {
   Loader2,
 } from "lucide-react";
 import { toast } from "sonner";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -30,7 +30,6 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogDescription,
 } from "@/components/ui/dialog";
 import {
   Table,
@@ -224,9 +223,6 @@ export function NotificationsManager({
             <History className="size-6 text-purple-600 dark:text-purple-400" />
             SMS Notification History
           </h1>
-          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-            Real-time delivery tracking, provider attempt logs, and automated retry system.
-          </p>
         </div>
 
         <div className="flex items-center gap-2">
@@ -275,9 +271,6 @@ export function NotificationsManager({
             <div className="text-2xl font-bold text-slate-900 dark:text-white">
               {initialData.summary.total}
             </div>
-            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-              Logged across accessible classes
-            </p>
           </CardContent>
         </Card>
 
@@ -771,9 +764,6 @@ export function NotificationsManager({
                     SMS Dispatch Log &amp; Attempts
                   </DialogTitle>
                 </div>
-                <DialogDescription>
-                  Audit record for notification #{selectedNotif.id}
-                </DialogDescription>
               </DialogHeader>
 
               {/* Student and recipient summary */}

@@ -27,9 +27,6 @@ export default async function ClassesPage() {
             <School className="size-6 text-blue-600" />
             Class Management
           </h1>
-          <p className="text-sm text-slate-500 mt-1">
-            Configure classrooms, grade levels, sections, teacher assignments, and roster access.
-          </p>
         </div>
 
         <div className="flex items-center gap-2">

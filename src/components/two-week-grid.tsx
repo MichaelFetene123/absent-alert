@@ -70,9 +70,6 @@ export function TwoWeekGrid({ data, selectedClassId }: Props) {
               14-Day View
             </Badge>
           </div>
-          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-            Comprehensive bi-weekly grid, student trend analysis, and direct roster access.
-          </p>
         </div>
 
         {/* View Toggle (Daily vs Two-Week) */}
@@ -280,10 +277,6 @@ export function TwoWeekGrid({ data, selectedClassId }: Props) {
             <span className="text-slate-300 dark:text-slate-600 font-bold">—</span>
             <span>Unmarked</span>
           </div>
-        </div>
-
-        <div className="text-[11px] italic text-slate-400">
-          * Click on any cell or date header to open the daily attendance roster.
         </div>
       </div>
 

@@ -10,7 +10,6 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogDescription,
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -142,11 +141,6 @@ export function StudentForm({
             )}
             <span>{isEdit ? "Edit Student" : "Register New Student"}</span>
           </DialogTitle>
-          <DialogDescription className="text-xs text-slate-500">
-            {isEdit
-              ? "Update student information and primary guardian contact details."
-              : "Enter student details, class assignment, and primary guardian for SMS notifications."}
-          </DialogDescription>
         </DialogHeader>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 py-1">
@@ -245,9 +239,6 @@ export function StudentForm({
                 {...register("guardianPhone")}
                 className={errors.guardianPhone ? "border-red-500" : ""}
               />
-              <p className="text-[11px] text-slate-400">
-                Ethiopian phone number. Will be normalized to +251 format automatically.
-              </p>
               {errors.guardianPhone && (
                 <p className="text-xs text-red-600">{errors.guardianPhone.message}</p>
               )}

@@ -530,10 +530,6 @@ export function AttendanceForm({
             </DialogDescription>
           </DialogHeader>
 
-          <div className="bg-amber-50 dark:bg-amber-950/40 p-3 rounded-lg border border-amber-200 dark:border-amber-800 text-xs text-amber-900 dark:text-amber-300">
-            Please verify the roster carefully before saving. Once attendance is submitted, absent alerts will be queued for parent notification.
-          </div>
-
           <DialogFooter className="flex gap-2 sm:justify-end pt-2">
             <Button
               type="button"

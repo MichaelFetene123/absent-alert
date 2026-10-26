@@ -5,8 +5,8 @@ import { loginAction, type AuthActionResult } from "@/actions/auth.actions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
-import { Bell, Lock, Mail, ShieldAlert, CheckCircle2 } from "lucide-react";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Bell, Lock, Mail, ShieldAlert } from "lucide-react";
 
 export default function LoginPage() {
   const [state, formAction, isPending] = useActionState<AuthActionResult | null, FormData>(
@@ -38,18 +38,12 @@ export default function LoginPage() {
           <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
             AbsentAlert
           </h1>
-          <p className="text-sm text-slate-600 dark:text-slate-400">
-            Attendance monitoring & instant parent notification
-          </p>
         </div>
 
         {/* Login Card */}
         <Card className="border border-slate-200 dark:border-slate-800 shadow-md">
           <CardHeader className="space-y-1 pb-4">
             <CardTitle className="text-xl">Sign in</CardTitle>
-            <CardDescription>
-              Enter your staff credentials to access your dashboard
-            </CardDescription>
           </CardHeader>
 
           <CardContent className="space-y-4 pt-0">
@@ -138,12 +132,6 @@ export default function LoginPage() {
             </div>
           </CardContent>
         </Card>
-
-        {/* Security Footer */}
-        <p className="text-center text-xs text-slate-500 dark:text-slate-500 flex items-center justify-center gap-1.5">
-          <CheckCircle2 className="size-3.5 text-emerald-600" />
-          Protected with bcrypt hashing & server-side role validation
-        </p>
       </div>
     </div>
   );

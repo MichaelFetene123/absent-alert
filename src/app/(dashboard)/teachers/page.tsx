@@ -27,9 +27,6 @@ export default async function TeachersPage() {
             <GraduationCap className="size-6 text-blue-600" />
             Teacher Management
           </h1>
-          <p className="text-sm text-slate-500 mt-1">
-            Manage faculty accounts, assign classroom instructors, and monitor attendance responsibilities.
-          </p>
         </div>
 
         <div className="flex items-center gap-2">

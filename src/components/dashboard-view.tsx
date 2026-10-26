@@ -19,7 +19,7 @@ import {
   Loader2,
   CheckCheck,
 } from "lucide-react";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
@@ -84,18 +84,9 @@ export function DashboardView({ data, user }: Props) {
             <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
               Welcome, {user.name || (data.isAdmin ? "Administrator" : "Teacher")}!
             </h1>
-            <Badge
-              className={
-                data.isAdmin
-                  ? "bg-purple-600 text-white font-medium text-xs px-2.5 py-0.5"
-                  : "bg-blue-600 text-white font-medium text-xs px-2.5 py-0.5"
-              }
-            >
-              {data.isAdmin ? "Admin Portal" : "Teacher Access"}
-            </Badge>
           </div>
           <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-            {todayFormatted} · Daily Attendance &amp; Instant SMS Alert Management
+            {todayFormatted}
           </p>
         </div>
 
@@ -191,9 +182,6 @@ export function DashboardView({ data, user }: Props) {
             <div className="text-2xl font-bold text-rose-900 dark:text-rose-200">
               {data.todayStats.absent}
             </div>
-            <p className="text-xs text-rose-700 dark:text-rose-400 mt-1">
-              Instant SMS alert pipeline active
-            </p>
           </CardContent>
         </Card>
 
@@ -231,9 +219,6 @@ export function DashboardView({ data, user }: Props) {
                     <School className="size-5 text-emerald-600" />
                     Today&apos;s Class Attendance Status
                   </CardTitle>
-                  <CardDescription>
-                    Tracking completed rosters and pending classes for {data.todayDate}
-                  </CardDescription>
                 </div>
 
                 <Badge
@@ -253,9 +238,6 @@ export function DashboardView({ data, user }: Props) {
             <CardContent>
               {data.unmarkedClasses.length > 0 ? (
                 <div className="space-y-3">
-                  <p className="text-xs text-slate-500">
-                    The following accessible classes do not have attendance recorded for today yet:
-                  </p>
                   <div className="divide-y divide-slate-100 dark:divide-slate-800 rounded-lg border border-slate-200 dark:border-slate-800 overflow-hidden">
                     {data.unmarkedClasses.map((cls) => (
                       <div
@@ -306,9 +288,6 @@ export function DashboardView({ data, user }: Props) {
                     <AlertCircle className="size-5 text-rose-600" />
                     Today&apos;s Absent Students ({data.todayAbsentStudents.length})
                   </CardTitle>
-                  <CardDescription>
-                    Students marked absent today and their automated SMS delivery status
-                  </CardDescription>
                 </div>
 
                 <Link href="/notifications">
@@ -325,9 +304,6 @@ export function DashboardView({ data, user }: Props) {
                   <CheckCircle2 className="size-8 text-emerald-500 mx-auto mb-2 opacity-80" />
                   <p className="text-sm font-medium text-slate-700 dark:text-slate-300">
                     No students marked absent today
-                  </p>
-                  <p className="text-xs text-slate-400 mt-0.5">
-                    100% attendance recorded across marked classes.
                   </p>
                 </div>
               ) : (
@@ -411,7 +387,6 @@ export function DashboardView({ data, user }: Props) {
                 <History className="size-5 text-purple-600" />
                 SMSHub Dispatch Health
               </CardTitle>
-              <CardDescription>Overall notification metrics</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-2 gap-3 text-xs">
@@ -455,11 +430,6 @@ export function DashboardView({ data, user }: Props) {
                   </Link>
                 )}
               </div>
-              <CardDescription>
-                {data.isAdmin
-                  ? "Admins can retry failed deliveries directly"
-                  : "Notifications awaiting review"}
-              </CardDescription>
             </CardHeader>
             <CardContent>
               {data.recentFailedNotifications.length === 0 ? (
@@ -467,9 +437,6 @@ export function DashboardView({ data, user }: Props) {
                   <CheckCircle2 className="size-6 text-emerald-500 mx-auto mb-1.5 opacity-80" />
                   <p className="text-xs font-semibold text-slate-700 dark:text-slate-300">
                     Zero failed notifications
-                  </p>
-                  <p className="text-[11px] text-slate-400 mt-0.5">
-                    All processed SMS notifications were accepted by SMSHub.
                   </p>
                 </div>
               ) : (

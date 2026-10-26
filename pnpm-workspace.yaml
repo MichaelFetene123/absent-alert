@@ -4,3 +4,11 @@ allowBuilds:
   sharp: true
   unrs-resolver: true
   msw: false
+  esbuild: true
+  workerd: false
+
+permissions:
+  '@prisma/orm-postgres':
+    skills: false
+  prisma:
+    skills: false
