@@ -99,7 +99,16 @@ export async function getReportsData(): Promise<{
   for (const a of allAttendance) {
     if (a.status === "ABSENT") {
       const prev = studentAbsenceCount.get(a.studentId) || { count: 0, lastDate: "" };
-      const d = typeof a.date === "string" ? a.date : (a.date as any).toISOString().slice(0, 10);
+      const d =
+        a.date instanceof Date
+          ? a.date.toISOString().slice(0, 10)
+          : typeof a.date === "string"
+          ? a.date.slice(0, 10)
+          : a.date && typeof (a.date as any).toISOString === "function"
+          ? (a.date as any).toISOString().slice(0, 10)
+          : a.date
+          ? String(a.date).slice(0, 10)
+          : "";
       studentAbsenceCount.set(a.studentId, {
         count: prev.count + 1,
         lastDate: d > prev.lastDate ? d : prev.lastDate,

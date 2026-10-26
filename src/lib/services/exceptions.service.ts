@@ -50,7 +50,16 @@ export async function getAttendanceExceptions(): Promise<{
       if (type === "LATE") lateCount++;
       if (type === "LEAVE") leaveCount++;
 
-      const dateStr = typeof att.date === "string" ? att.date : (att.date as any).toISOString().slice(0, 10);
+      const dateStr =
+        att.date instanceof Date
+          ? att.date.toISOString().slice(0, 10)
+          : typeof att.date === "string"
+          ? att.date.slice(0, 10)
+          : att.date && typeof (att.date as any).toISOString === "function"
+          ? (att.date as any).toISOString().slice(0, 10)
+          : att.date
+          ? String(att.date).slice(0, 10)
+          : "";
 
       exceptions.push({
         id: att.id,
