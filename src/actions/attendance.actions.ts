@@ -12,7 +12,7 @@ import {
   queueAbsenceNotifications,
   dispatchNotifications,
 } from "@/lib/services/notification.service";
-import { updateTag, cacheTag } from "next/cache";
+import { updateTag } from "next/cache";
 import { CACHE_TAGS } from "@/components/cacheTag";
 
 export type ActionResult<T = unknown> = {
@@ -151,10 +151,6 @@ export async function getDailyAttendance(input: unknown): Promise<ActionResult> 
 
     const { classId, date } = parsed.data;
     await requireClassAccess(classId);
-
-    try {
-      cacheTag(CACHE_TAGS.ATTENDANCE, CACHE_TAGS.ATTENDANCE_DAILY(classId, date));
-    } catch {}
 
     const records = await getClassAttendance({ classId, date });
     return {

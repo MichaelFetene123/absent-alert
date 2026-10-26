@@ -28,9 +28,8 @@ export async function getGuardiansList(): Promise<{
   safaricomCount: number;
   unverifiedCount: number;
 }> {
-  try {
-    cacheTag(CACHE_TAGS.GUARDIANS, CACHE_TAGS.STUDENTS);
-  } catch {}
+  "use cache";
+  cacheTag(CACHE_TAGS.GUARDIANS, CACHE_TAGS.STUDENTS);
 
   const [allGuardians, allStudents, allClasses, allNotifs] = await Promise.all([
     db.orm.public.Guardian.all(),

@@ -23,9 +23,8 @@ export async function getAttendanceExceptions(): Promise<{
   unexplainedCount: number;
   correctionsCount: number;
 }> {
-  try {
-    cacheTag(CACHE_TAGS.EXCEPTIONS, CACHE_TAGS.ATTENDANCE);
-  } catch {}
+  "use cache";
+  cacheTag(CACHE_TAGS.EXCEPTIONS, CACHE_TAGS.ATTENDANCE);
 
   // Query attendance records marked as LATE or LEAVE
   const [allAttendance, allStudents, allClasses, allUsers] = await Promise.all([

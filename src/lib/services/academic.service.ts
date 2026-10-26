@@ -20,9 +20,8 @@ export {
 };
 
 export async function getAcademicConfig(): Promise<AcademicYearConfig> {
-  try {
-    cacheTag(CACHE_TAGS.ACADEMIC);
-  } catch {}
+  "use cache";
+  cacheTag(CACHE_TAGS.ACADEMIC);
 
   return {
     id: "ay-2017",
@@ -52,9 +51,8 @@ export async function getAcademicConfig(): Promise<AcademicYearConfig> {
 }
 
 export async function getTimetableSchedule() {
-  try {
-    cacheTag(CACHE_TAGS.ACADEMIC, CACHE_TAGS.CLASSES);
-  } catch {}
+  "use cache";
+  cacheTag(CACHE_TAGS.ACADEMIC, CACHE_TAGS.CLASSES);
 
   const classes = await db.orm.public.Class.all();
   return {

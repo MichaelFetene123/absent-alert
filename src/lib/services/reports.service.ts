@@ -55,9 +55,8 @@ export async function getReportsData(): Promise<{
   smsAnalytics: SmsAnalyticsData;
   overallAttendanceRate: number;
 }> {
-  try {
-    cacheTag(CACHE_TAGS.REPORTS, CACHE_TAGS.ATTENDANCE, CACHE_TAGS.NOTIFICATIONS);
-  } catch {}
+  "use cache";
+  cacheTag(CACHE_TAGS.REPORTS, CACHE_TAGS.ATTENDANCE, CACHE_TAGS.NOTIFICATIONS);
 
   const [allAttendance, allStudents, allClasses, allGuardians, allNotifs] = await Promise.all([
     db.orm.public.AttendanceRecord.all(),

@@ -281,9 +281,8 @@ export type NotificationHistoryResult = {
 export async function getNotificationHistory(
   params: NotificationHistoryParams
 ): Promise<NotificationHistoryResult> {
-  try {
-    cacheTag(CACHE_TAGS.NOTIFICATIONS);
-  } catch {}
+  "use cache";
+  cacheTag(CACHE_TAGS.NOTIFICATIONS);
 
   // 1. Determine accessible classes
   let accessibleClasses: Array<{ id: string; name: string }> = [];

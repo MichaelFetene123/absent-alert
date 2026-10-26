@@ -149,10 +149,11 @@ export async function getClassAttendance(params: {
   classId: string;
   date: string;
 }) {
-  try {
-    cacheTag(CACHE_TAGS.ATTENDANCE);
-    cacheTag(CACHE_TAGS.ATTENDANCE_DAILY(params.classId, params.date));
-  } catch {}
+  "use cache";
+  cacheTag(
+    CACHE_TAGS.ATTENDANCE,
+    CACHE_TAGS.ATTENDANCE_DAILY(params.classId, params.date)
+  );
 
   const plainDate = Temporal.PlainDate.from(params.date);
 
@@ -189,10 +190,10 @@ export async function getClassAttendance(params: {
  * - TEACHER: Returns only classes linked to the teacher in TeacherClass
  */
 export async function getAccessibleClasses(userId: string, role: "ADMIN" | "TEACHER") {
+  "use cache";
+  cacheTag(CACHE_TAGS.CLASSES);
+
   return withDbRetry(async () => {
-    try {
-      cacheTag(CACHE_TAGS.CLASSES);
-    } catch {}
 
     if (role === "ADMIN") {
       return db.orm.public.Class.all();
@@ -292,11 +293,13 @@ export async function getTwoWeekOverview(params: {
   userId: string;
   role: "ADMIN" | "TEACHER";
 }): Promise<TwoWeekOverviewResult> {
+  "use cache";
+  cacheTag(
+    CACHE_TAGS.ATTENDANCE,
+    CACHE_TAGS.ATTENDANCE_OVERVIEW(params.classId)
+  );
+
   return withDbRetry(async () => {
-    try {
-      cacheTag(CACHE_TAGS.ATTENDANCE);
-      cacheTag(CACHE_TAGS.ATTENDANCE_OVERVIEW(params.classId));
-    } catch {}
 
     const accessibleClasses = await getAccessibleClasses(params.userId, params.role);
     const classList = accessibleClasses.map((c) => ({ id: c.id, name: c.name }));
@@ -564,12 +567,14 @@ export async function getDashboardOverview(params: {
   userId: string;
   role: "ADMIN" | "TEACHER";
 }): Promise<DashboardOverviewResult> {
+  "use cache";
+  cacheTag(
+    CACHE_TAGS.DASHBOARD,
+    CACHE_TAGS.ATTENDANCE,
+    CACHE_TAGS.NOTIFICATIONS
+  );
+
   return withDbRetry(async () => {
-    try {
-      cacheTag(CACHE_TAGS.DASHBOARD);
-      cacheTag(CACHE_TAGS.ATTENDANCE);
-      cacheTag(CACHE_TAGS.NOTIFICATIONS);
-    } catch {}
 
     const accessibleClasses = await getAccessibleClasses(params.userId, params.role);
     const classList = accessibleClasses.map((c) => ({ id: c.id, name: c.name }));

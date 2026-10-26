@@ -1,32 +1,31 @@
 "use server";
 
 import { requireUser } from "@/lib/guards";
-import { updateTag, cacheTag, CACHE_TAGS } from "@/components/cacheTag";
+import { updateTag, CACHE_TAGS } from "@/components/cacheTag";
 import {
   DEFAULT_ACTIVE_POLICY,
   SAMPLE_POLICIES,
   evaluatePolicy,
 } from "@/lib/services/policy-engine.service";
+import {
+  fetchActivePolicyData,
+  fetchAllPoliciesData,
+  getPoliciesList,
+  savePoliciesList,
+} from "@/lib/services/policies.service";
 import type {
   AbsenceAlertPolicy,
   PolicySimulationInput,
   PolicySimulationResult,
 } from "@/lib/types/policy";
 
-// In-memory policy state for runtime management
-let policiesStore: AbsenceAlertPolicy[] = [...SAMPLE_POLICIES];
-
 export async function getActivePolicyAction(): Promise<{
   success: boolean;
   policy: AbsenceAlertPolicy;
 }> {
   await requireUser();
-  try {
-    cacheTag(CACHE_TAGS.POLICIES);
-  } catch {}
-  const active =
-    policiesStore.find((p) => p.status === "ACTIVE") || DEFAULT_ACTIVE_POLICY;
-  return { success: true, policy: active };
+  const policy = await fetchActivePolicyData();
+  return { success: true, policy };
 }
 
 export async function getAllPoliciesAction(): Promise<{
@@ -34,30 +33,29 @@ export async function getAllPoliciesAction(): Promise<{
   policies: AbsenceAlertPolicy[];
 }> {
   await requireUser();
-  try {
-    cacheTag(CACHE_TAGS.POLICIES);
-  } catch {}
-  return { success: true, policies: policiesStore };
+  const policies = await fetchAllPoliciesData();
+  return { success: true, policies };
 }
 
 export async function createDraftPolicyAction(
   data: Partial<AbsenceAlertPolicy>
 ): Promise<{ success: boolean; policy: AbsenceAlertPolicy; error?: string }> {
   const user = await requireUser();
+  const list = getPoliciesList();
 
   const newPolicy: AbsenceAlertPolicy = {
     ...DEFAULT_ACTIVE_POLICY,
     ...data,
     id: `policy-${Date.now()}`,
     status: "DRAFT",
-    version: data.version || `v${policiesStore.length + 1}.0.0-draft`,
+    version: data.version || `v${list.length + 1}.0.0-draft`,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
     updatedBy: user.name || "Administrator",
     isLiveEnabled: false,
   };
 
-  policiesStore = [newPolicy, ...policiesStore];
+  savePoliciesList([newPolicy, ...list]);
 
   try {
     updateTag(CACHE_TAGS.POLICIES);
@@ -72,14 +70,15 @@ export async function updatePolicyAction(
   updates: Partial<AbsenceAlertPolicy>
 ): Promise<{ success: boolean; policy?: AbsenceAlertPolicy; error?: string }> {
   const user = await requireUser();
+  const list = [...getPoliciesList()];
 
-  const idx = policiesStore.findIndex((p) => p.id === id);
+  const idx = list.findIndex((p) => p.id === id);
   if (idx === -1) {
     return { success: false, error: "Policy not found." };
   }
 
   // Prevent editing active policy directly if live notifications depend on it; require new version
-  const current = policiesStore[idx];
+  const current = list[idx]!;
   const updated: AbsenceAlertPolicy = {
     ...current,
     ...updates,
@@ -88,7 +87,8 @@ export async function updatePolicyAction(
     updatedBy: user.name || "Administrator",
   };
 
-  policiesStore[idx] = updated;
+  list[idx] = updated;
+  savePoliciesList(list);
 
   try {
     updateTag(CACHE_TAGS.POLICIES);
@@ -103,18 +103,19 @@ export async function activatePolicyAction(
   id: string
 ): Promise<{ success: boolean; policy?: AbsenceAlertPolicy; error?: string }> {
   const user = await requireUser();
+  const list = getPoliciesList();
 
-  const target = policiesStore.find((p) => p.id === id);
+  const target = list.find((p) => p.id === id);
   if (!target) {
     return { success: false, error: "Policy not found." };
   }
 
   // Demote previous active policies to archived
-  policiesStore = policiesStore.map((p) => {
+  const updatedList = list.map((p) => {
     if (p.id === id) {
       return {
         ...p,
-        status: "ACTIVE",
+        status: "ACTIVE" as const,
         isLiveEnabled: true,
         updatedAt: new Date().toISOString(),
         updatedBy: user.name || "Administrator",
@@ -123,7 +124,7 @@ export async function activatePolicyAction(
     if (p.status === "ACTIVE") {
       return {
         ...p,
-        status: "ARCHIVED",
+        status: "ARCHIVED" as const,
         isLiveEnabled: false,
         updatedAt: new Date().toISOString(),
       };
@@ -131,7 +132,8 @@ export async function activatePolicyAction(
     return p;
   });
 
-  const activated = policiesStore.find((p) => p.id === id);
+  savePoliciesList(updatedList);
+  const activated = updatedList.find((p) => p.id === id);
 
   try {
     updateTag(CACHE_TAGS.POLICIES);
@@ -146,8 +148,9 @@ export async function duplicatePolicyAction(
   id: string
 ): Promise<{ success: boolean; policy?: AbsenceAlertPolicy; error?: string }> {
   const user = await requireUser();
+  const list = getPoliciesList();
 
-  const source = policiesStore.find((p) => p.id === id);
+  const source = list.find((p) => p.id === id);
   if (!source) {
     return { success: false, error: "Source policy not found." };
   }
@@ -165,7 +168,7 @@ export async function duplicatePolicyAction(
     isLiveEnabled: false,
   };
 
-  policiesStore = [copy, ...policiesStore];
+  savePoliciesList([copy, ...list]);
 
   try {
     updateTag(CACHE_TAGS.POLICIES);
@@ -179,8 +182,9 @@ export async function archivePolicyAction(
   id: string
 ): Promise<{ success: boolean; error?: string }> {
   await requireUser();
+  const list = getPoliciesList();
 
-  const target = policiesStore.find((p) => p.id === id);
+  const target = list.find((p) => p.id === id);
   if (!target) {
     return { success: false, error: "Policy not found." };
   }
@@ -192,8 +196,10 @@ export async function archivePolicyAction(
     };
   }
 
-  policiesStore = policiesStore.map((p) =>
-    p.id === id ? { ...p, status: "ARCHIVED", isLiveEnabled: false } : p
+  savePoliciesList(
+    list.map((p) =>
+      p.id === id ? { ...p, status: "ARCHIVED" as const, isLiveEnabled: false } : p
+    )
   );
 
   try {
@@ -210,9 +216,10 @@ export async function simulatePolicyAction(
   input: PolicySimulationInput
 ): Promise<{ success: boolean; result: PolicySimulationResult; error?: string }> {
   await requireUser();
+  const list = getPoliciesList();
 
   const policy =
-    policiesStore.find((p) => p.id === policyId) || DEFAULT_ACTIVE_POLICY;
+    list.find((p) => p.id === policyId) || DEFAULT_ACTIVE_POLICY;
 
   const result = evaluatePolicy(input, policy);
   return { success: true, result };

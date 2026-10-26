@@ -4,7 +4,7 @@ import "server-only";
 import { requireUser } from "@/lib/guards";
 import { SmsHub } from "@/lib/sms/smshub";
 import { detectCarrier } from "@/lib/services/guardians.service";
-import { cacheTag, CACHE_TAGS } from "@/components/cacheTag";
+import { fetchSmsHubBalanceData } from "@/lib/services/smshub.service";
 
 export type SmsTestResult = {
   ok: boolean;
@@ -114,44 +114,5 @@ export async function testSmsHubAction(msisdn: string, text: string): Promise<Sm
 
 export async function getSmsHubBalanceAction(): Promise<SmsHubBalanceResult> {
   await requireUser();
-  try {
-    cacheTag(CACHE_TAGS.SMSHUB, CACHE_TAGS.SETTINGS);
-  } catch {}
-
-  const apiKey = process.env.SMSHUB_API_KEY;
-  const baseUrl = process.env.SMSHUB_BASE_URL || "https://smshub.et";
-
-  if (apiKey) {
-    try {
-      const client = new SmsHub(apiKey, baseUrl);
-      const res = await client.balance();
-      return {
-        ok: true,
-        credits: res.credits,
-        creditRule: res.credit_rule,
-        lowCreditThreshold: res.low_credit_threshold,
-        isLow: res.credits <= res.low_credit_threshold,
-        isSimulated: false,
-      };
-    } catch (err: any) {
-      return {
-        ok: false,
-        credits: 0,
-        creditRule: { ethio: 1, safaricom: 2 },
-        lowCreditThreshold: 20,
-        isLow: true,
-        error: err.message || "Failed to reach SMSHub balance endpoint",
-      };
-    }
-  }
-
-  // Realistic verified snapshot for testing and development
-  return {
-    ok: true,
-    credits: 42,
-    creditRule: { ethio: 1, safaricom: 2 },
-    lowCreditThreshold: 20,
-    isLow: false,
-    isSimulated: true,
-  };
+  return fetchSmsHubBalanceData();
 }

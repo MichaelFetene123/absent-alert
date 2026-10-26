@@ -2,7 +2,8 @@
 
 import { requireUser } from "@/lib/guards";
 import { db } from "@/lib/db";
-import { updateTag, cacheTag, CACHE_TAGS } from "@/components/cacheTag";
+import { updateTag, CACHE_TAGS } from "@/components/cacheTag";
+import { fetchUserProfileData } from "@/lib/services/profile.service";
 import bcrypt from "bcryptjs";
 import { z } from "zod";
 
@@ -32,43 +33,15 @@ export async function getUserProfileAction(): Promise<{
 }> {
   try {
     const sessionUser = await requireUser();
-    try {
-      cacheTag(CACHE_TAGS.PROFILE(sessionUser.id));
-    } catch {}
+    const profile = await fetchUserProfileData(sessionUser.id);
 
-    const user = await db.orm.public.User.where({ id: sessionUser.id }).first();
-
-    if (!user) {
+    if (!profile) {
       return { ok: false, error: "User not found." };
     }
 
-    // Get assigned classes
-    const teacherClasses = await db.orm.public.TeacherClass.where({
-      userId: user.id,
-    }).all();
-
-    const classNames: string[] = [];
-    for (const tc of teacherClasses) {
-      const c = await db.orm.public.Class.where({ id: tc.classId }).first();
-      if (c) classNames.push(c.name);
-    }
-
-    // Get attendance records marked
-    const markedRecords = await db.orm.public.AttendanceRecord.where({
-      markedById: user.id,
-    }).all();
-    const markedCount = markedRecords.length;
-
     return {
       ok: true,
-      profile: {
-        id: user.id,
-        name: user.name,
-        email: user.email,
-        role: user.role as "ADMIN" | "TEACHER",
-        assignedClasses: classNames,
-        totalMarkedCount: markedCount,
-      },
+      profile,
     };
   } catch (err: any) {
     return { ok: false, error: err.message || "Failed to load profile." };

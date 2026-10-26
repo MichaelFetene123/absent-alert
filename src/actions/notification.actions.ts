@@ -1,6 +1,6 @@
 "use server";
 
-import { updateTag, cacheTag } from "next/cache";
+import { updateTag } from "next/cache";
 import { CACHE_TAGS } from "@/components/cacheTag";
 import { z } from "zod";
 import { db } from "@/lib/db";
@@ -33,9 +33,6 @@ export async function listNotifications(
   input?: unknown
 ): Promise<NotificationHistoryResult> {
   const user = await requireUser();
-  try {
-    cacheTag(CACHE_TAGS.NOTIFICATIONS);
-  } catch {}
   const parsed = listNotificationsSchema.parse(input || {});
 
   return getNotificationHistory({

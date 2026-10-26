@@ -8,8 +8,12 @@ import {
   type StudentInput,
   type UpdateStudentInput,
 } from "@/lib/validations/student";
-import { updateTag, cacheTag, revalidatePath } from "next/cache";
+import { updateTag, revalidatePath } from "next/cache";
 import { CACHE_TAGS } from "@/components/cacheTag";
+import {
+  fetchStudentsData,
+  fetchClassesListData,
+} from "@/lib/services/students.service";
 
 export type ActionResult<T = unknown> = {
   ok: boolean;
@@ -412,62 +416,10 @@ export async function listStudents(params?: {
   showInactive?: boolean;
 }) {
   const user = await requireUser();
-  try {
-    if (params?.classId) {
-      cacheTag(CACHE_TAGS.STUDENTS, CACHE_TAGS.STUDENTS_BY_CLASS(params.classId));
-    } else {
-      cacheTag(CACHE_TAGS.STUDENTS);
-    }
-  } catch {}
-
-  // Build filter
-  const filter: Record<string, unknown> = {};
-  if (params?.classId) filter.classId = params.classId;
-  if (!params?.showInactive) filter.active = true;
-
-  let students = await db.orm.public.Student.where(filter).all();
-
-  // Search by name or admission number
-  if (params?.search) {
-    const q = params.search.toLowerCase();
-    students = students.filter(
-      (s) =>
-        s.fullName.toLowerCase().includes(q) ||
-        s.admissionNo.toLowerCase().includes(q)
-    );
-  }
-
-  // Fetch class names and guardians for each student
-  const enriched = await Promise.all(
-    students.map(async (s) => {
-      const cls = await db.orm.public.Class.where({ id: s.classId }).first();
-      const guardians = await db.orm.public.Guardian.where({
-        studentId: s.id,
-        isPrimary: true,
-      }).all();
-      const guardian = guardians[0];
-
-      // Mask phone for non-admin users
-      let guardianPhone = guardian?.phone || "";
-      if (user.role !== "ADMIN" && guardianPhone.length > 4) {
-        guardianPhone =
-          guardianPhone.slice(0, 4) + "****" + guardianPhone.slice(-2);
-      }
-
-      return {
-        id: s.id,
-        admissionNo: s.admissionNo,
-        fullName: s.fullName,
-        classId: s.classId,
-        className: cls?.name || "—",
-        active: s.active,
-        guardianName: guardian?.name || "—",
-        guardianPhone,
-      };
-    })
-  );
-
-  return enriched;
+  return fetchStudentsData({
+    ...params,
+    isTeacherRole: user.role === "TEACHER",
+  });
 }
 
 // ---------------------------------------------------------------------------
@@ -475,8 +427,5 @@ export async function listStudents(params?: {
 // ---------------------------------------------------------------------------
 export async function listClasses() {
   await requireUser();
-  try {
-    cacheTag(CACHE_TAGS.CLASSES);
-  } catch {}
-  return db.orm.public.Class.all();
+  return fetchClassesListData();
 }
