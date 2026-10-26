@@ -18,6 +18,7 @@ export type GuardianDetail = {
 };
 
 import { detectCarrier } from "@/lib/carrier";
+import { cacheTag, CACHE_TAGS } from "@/components/cacheTag";
 export { detectCarrier };
 
 export async function getGuardiansList(): Promise<{
@@ -27,6 +28,10 @@ export async function getGuardiansList(): Promise<{
   safaricomCount: number;
   unverifiedCount: number;
 }> {
+  try {
+    cacheTag(CACHE_TAGS.GUARDIANS, CACHE_TAGS.STUDENTS);
+  } catch {}
+
   const [allGuardians, allStudents, allClasses, allNotifs] = await Promise.all([
     db.orm.public.Guardian.all(),
     db.orm.public.Student.all(),

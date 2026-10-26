@@ -2,6 +2,7 @@
 
 import { requireUser } from "@/lib/guards";
 import { db } from "@/lib/db";
+import { updateTag, cacheTag, CACHE_TAGS } from "@/components/cacheTag";
 import bcrypt from "bcryptjs";
 import { z } from "zod";
 
@@ -31,6 +32,10 @@ export async function getUserProfileAction(): Promise<{
 }> {
   try {
     const sessionUser = await requireUser();
+    try {
+      cacheTag(CACHE_TAGS.PROFILE(sessionUser.id));
+    } catch {}
+
     const user = await db.orm.public.User.where({ id: sessionUser.id }).first();
 
     if (!user) {
@@ -94,6 +99,12 @@ export async function updateProfileDetailsAction(data: {
       email,
     });
 
+    try {
+      updateTag(CACHE_TAGS.PROFILE(sessionUser.id));
+      updateTag(CACHE_TAGS.TEACHERS);
+      updateTag(CACHE_TAGS.DASHBOARD);
+    } catch {}
+
     return { ok: true };
   } catch (err: any) {
     return { ok: false, error: err.message || "Failed to update profile." };
@@ -127,6 +138,10 @@ export async function changePasswordAction(data: {
     await db.orm.public.User.where({ id: sessionUser.id }).update({
       passwordHash: newHash,
     });
+
+    try {
+      updateTag(CACHE_TAGS.PROFILE(sessionUser.id));
+    } catch {}
 
     return { ok: true };
   } catch (err: any) {

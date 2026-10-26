@@ -56,11 +56,14 @@ export async function createStudent(input: unknown): Promise<ActionResult> {
       isPrimary: true,
     });
 
-    updateTag(CACHE_TAGS.STUDENTS);
-    updateTag(CACHE_TAGS.STUDENTS_BY_CLASS(classId));
-    updateTag(CACHE_TAGS.CLASSES);
-    updateTag(CACHE_TAGS.ATTENDANCE);
-    updateTag(CACHE_TAGS.DASHBOARD);
+    try {
+      updateTag(CACHE_TAGS.STUDENTS);
+      updateTag(CACHE_TAGS.STUDENTS_BY_CLASS(classId));
+      updateTag(CACHE_TAGS.CLASSES);
+      updateTag(CACHE_TAGS.ATTENDANCE);
+      updateTag(CACHE_TAGS.DASHBOARD);
+      updateTag(CACHE_TAGS.GUARDIANS);
+    } catch {}
     return { ok: true, data: { id: student.id, admissionNo, fullName } };
   } catch (error: any) {
     return { ok: false, error: error.message || "Failed to create student" };
@@ -132,12 +135,15 @@ export async function updateStudent(input: unknown): Promise<ActionResult> {
       }
     }
 
-    updateTag(CACHE_TAGS.STUDENTS);
-    updateTag(CACHE_TAGS.STUDENT(id));
-    if (classId) updateTag(CACHE_TAGS.STUDENTS_BY_CLASS(classId));
-    updateTag(CACHE_TAGS.CLASSES);
-    updateTag(CACHE_TAGS.ATTENDANCE);
-    updateTag(CACHE_TAGS.DASHBOARD);
+    try {
+      updateTag(CACHE_TAGS.STUDENTS);
+      updateTag(CACHE_TAGS.STUDENT(id));
+      if (classId) updateTag(CACHE_TAGS.STUDENTS_BY_CLASS(classId));
+      updateTag(CACHE_TAGS.CLASSES);
+      updateTag(CACHE_TAGS.ATTENDANCE);
+      updateTag(CACHE_TAGS.DASHBOARD);
+      updateTag(CACHE_TAGS.GUARDIANS);
+    } catch {}
     return { ok: true };
   } catch (error: any) {
     return { ok: false, error: error.message || "Failed to update student" };
@@ -183,8 +189,11 @@ export async function updateGuardian(input: {
       });
     }
 
-    updateTag(CACHE_TAGS.STUDENTS);
-    updateTag(CACHE_TAGS.STUDENT(studentId));
+    try {
+      updateTag(CACHE_TAGS.STUDENTS);
+      updateTag(CACHE_TAGS.STUDENT(studentId));
+      updateTag(CACHE_TAGS.GUARDIANS);
+    } catch {}
     return { ok: true };
   } catch (error: any) {
     return { ok: false, error: error.message || "Failed to update guardian" };
@@ -207,11 +216,14 @@ export async function toggleStudentActive(
     }
 
     await db.orm.public.Student.where({ id: studentId }).update({ active });
-    updateTag(CACHE_TAGS.STUDENTS);
-    updateTag(CACHE_TAGS.STUDENT(studentId));
-    updateTag(CACHE_TAGS.CLASSES);
-    updateTag(CACHE_TAGS.ATTENDANCE);
-    updateTag(CACHE_TAGS.DASHBOARD);
+    try {
+      updateTag(CACHE_TAGS.STUDENTS);
+      updateTag(CACHE_TAGS.STUDENT(studentId));
+      updateTag(CACHE_TAGS.CLASSES);
+      updateTag(CACHE_TAGS.ATTENDANCE);
+      updateTag(CACHE_TAGS.DASHBOARD);
+      updateTag(CACHE_TAGS.GUARDIANS);
+    } catch {}
     return { ok: true };
   } catch (error: any) {
     return { ok: false, error: error.message || "Failed to update student status" };

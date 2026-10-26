@@ -2,6 +2,7 @@ import "server-only";
 import { Temporal } from "temporal-polyfill";
 import { db, withDbRetry } from "@/lib/db";
 import type { AttendanceStatus } from "@/lib/validations/attendance";
+import { updateTag, cacheTag, CACHE_TAGS } from "@/components/cacheTag";
 
 export type AttendanceEntry = {
   studentId: string;
@@ -122,6 +123,16 @@ export async function saveAttendance(params: {
     }
   }
 
+  try {
+    updateTag(CACHE_TAGS.ATTENDANCE);
+    updateTag(CACHE_TAGS.ATTENDANCE_DAILY(params.classId, params.date));
+    updateTag(CACHE_TAGS.ATTENDANCE_OVERVIEW(params.classId));
+    updateTag(CACHE_TAGS.DASHBOARD);
+    updateTag(CACHE_TAGS.NOTIFICATIONS);
+    updateTag(CACHE_TAGS.EXCEPTIONS);
+    updateTag(CACHE_TAGS.REPORTS);
+  } catch {}
+
   return {
     records,
     newlyAbsent,
@@ -138,6 +149,11 @@ export async function getClassAttendance(params: {
   classId: string;
   date: string;
 }) {
+  try {
+    cacheTag(CACHE_TAGS.ATTENDANCE);
+    cacheTag(CACHE_TAGS.ATTENDANCE_DAILY(params.classId, params.date));
+  } catch {}
+
   const plainDate = Temporal.PlainDate.from(params.date);
 
   const students = await db.orm.public.Student.where({
@@ -174,6 +190,10 @@ export async function getClassAttendance(params: {
  */
 export async function getAccessibleClasses(userId: string, role: "ADMIN" | "TEACHER") {
   return withDbRetry(async () => {
+    try {
+      cacheTag(CACHE_TAGS.CLASSES);
+    } catch {}
+
     if (role === "ADMIN") {
       return db.orm.public.Class.all();
     }
@@ -273,6 +293,11 @@ export async function getTwoWeekOverview(params: {
   role: "ADMIN" | "TEACHER";
 }): Promise<TwoWeekOverviewResult> {
   return withDbRetry(async () => {
+    try {
+      cacheTag(CACHE_TAGS.ATTENDANCE);
+      cacheTag(CACHE_TAGS.ATTENDANCE_OVERVIEW(params.classId));
+    } catch {}
+
     const accessibleClasses = await getAccessibleClasses(params.userId, params.role);
     const classList = accessibleClasses.map((c) => ({ id: c.id, name: c.name }));
 
@@ -535,6 +560,12 @@ export async function getDashboardOverview(params: {
   role: "ADMIN" | "TEACHER";
 }): Promise<DashboardOverviewResult> {
   return withDbRetry(async () => {
+    try {
+      cacheTag(CACHE_TAGS.DASHBOARD);
+      cacheTag(CACHE_TAGS.ATTENDANCE);
+      cacheTag(CACHE_TAGS.NOTIFICATIONS);
+    } catch {}
+
     const accessibleClasses = await getAccessibleClasses(params.userId, params.role);
     const classList = accessibleClasses.map((c) => ({ id: c.id, name: c.name }));
   const classIdSet = new Set(classList.map((c) => c.id));

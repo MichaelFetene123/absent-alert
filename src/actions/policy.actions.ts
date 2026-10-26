@@ -1,6 +1,7 @@
 "use server";
 
 import { requireUser } from "@/lib/guards";
+import { updateTag, cacheTag, CACHE_TAGS } from "@/components/cacheTag";
 import {
   DEFAULT_ACTIVE_POLICY,
   SAMPLE_POLICIES,
@@ -20,6 +21,9 @@ export async function getActivePolicyAction(): Promise<{
   policy: AbsenceAlertPolicy;
 }> {
   await requireUser();
+  try {
+    cacheTag(CACHE_TAGS.POLICIES);
+  } catch {}
   const active =
     policiesStore.find((p) => p.status === "ACTIVE") || DEFAULT_ACTIVE_POLICY;
   return { success: true, policy: active };
@@ -30,6 +34,9 @@ export async function getAllPoliciesAction(): Promise<{
   policies: AbsenceAlertPolicy[];
 }> {
   await requireUser();
+  try {
+    cacheTag(CACHE_TAGS.POLICIES);
+  } catch {}
   return { success: true, policies: policiesStore };
 }
 
@@ -51,6 +58,12 @@ export async function createDraftPolicyAction(
   };
 
   policiesStore = [newPolicy, ...policiesStore];
+
+  try {
+    updateTag(CACHE_TAGS.POLICIES);
+    updateTag(CACHE_TAGS.DASHBOARD);
+  } catch {}
+
   return { success: true, policy: newPolicy };
 }
 
@@ -76,6 +89,13 @@ export async function updatePolicyAction(
   };
 
   policiesStore[idx] = updated;
+
+  try {
+    updateTag(CACHE_TAGS.POLICIES);
+    updateTag(CACHE_TAGS.POLICY(id));
+    updateTag(CACHE_TAGS.DASHBOARD);
+  } catch {}
+
   return { success: true, policy: updated };
 }
 
@@ -112,6 +132,13 @@ export async function activatePolicyAction(
   });
 
   const activated = policiesStore.find((p) => p.id === id);
+
+  try {
+    updateTag(CACHE_TAGS.POLICIES);
+    updateTag(CACHE_TAGS.POLICY(id));
+    updateTag(CACHE_TAGS.DASHBOARD);
+  } catch {}
+
   return { success: true, policy: activated };
 }
 
@@ -139,6 +166,12 @@ export async function duplicatePolicyAction(
   };
 
   policiesStore = [copy, ...policiesStore];
+
+  try {
+    updateTag(CACHE_TAGS.POLICIES);
+    updateTag(CACHE_TAGS.DASHBOARD);
+  } catch {}
+
   return { success: true, policy: copy };
 }
 
@@ -162,6 +195,12 @@ export async function archivePolicyAction(
   policiesStore = policiesStore.map((p) =>
     p.id === id ? { ...p, status: "ARCHIVED", isLiveEnabled: false } : p
   );
+
+  try {
+    updateTag(CACHE_TAGS.POLICIES);
+    updateTag(CACHE_TAGS.POLICY(id));
+    updateTag(CACHE_TAGS.DASHBOARD);
+  } catch {}
 
   return { success: true };
 }

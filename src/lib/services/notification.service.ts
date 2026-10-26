@@ -1,6 +1,7 @@
 import "server-only";
 import { db } from "@/lib/db";
 import { sendSms, type SendSmsResult } from "@/lib/sms/smshub";
+import { updateTag, cacheTag, CACHE_TAGS } from "@/components/cacheTag";
 
 export type QueueNotificationInput = {
   attendanceId: string;
@@ -79,6 +80,11 @@ export async function queueAbsenceNotifications(
       continue;
     }
   }
+
+  try {
+    updateTag(CACHE_TAGS.NOTIFICATIONS);
+    updateTag(CACHE_TAGS.DASHBOARD);
+  } catch {}
 
   return notificationIds;
 }
@@ -173,6 +179,11 @@ export async function dispatchNotifications(ids: string[]): Promise<Notification
     }
   }
 
+  try {
+    updateTag(CACHE_TAGS.NOTIFICATIONS);
+    updateTag(CACHE_TAGS.DASHBOARD);
+  } catch {}
+
   return {
     total: ids.length,
     sent,
@@ -185,7 +196,13 @@ export async function dispatchNotifications(ids: string[]): Promise<Notification
  * Retries a specific notification.
  */
 export async function retryNotification(notificationId: string) {
-  return sendOne(notificationId);
+  const result = await sendOne(notificationId);
+  try {
+    updateTag(CACHE_TAGS.NOTIFICATIONS);
+    updateTag(CACHE_TAGS.NOTIFICATION(notificationId));
+    updateTag(CACHE_TAGS.DASHBOARD);
+  } catch {}
+  return result;
 }
 
 export type NotificationHistoryAttempt = {
@@ -264,6 +281,10 @@ export type NotificationHistoryResult = {
 export async function getNotificationHistory(
   params: NotificationHistoryParams
 ): Promise<NotificationHistoryResult> {
+  try {
+    cacheTag(CACHE_TAGS.NOTIFICATIONS);
+  } catch {}
+
   // 1. Determine accessible classes
   let accessibleClasses: Array<{ id: string; name: string }> = [];
   let allowedClassIds: Set<string> | null = null;

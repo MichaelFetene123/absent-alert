@@ -18,14 +18,43 @@ export const CACHE_TAGS = {
   STUDENT: (id: string) => `student-${id}`,
   STUDENTS_BY_CLASS: (classId: string) => `students-class-${classId}`,
 
+  // Guardians domain
+  GUARDIANS: "guardians",
+  GUARDIAN: (id: string) => `guardian-${id}`,
+
   // Attendance domain
   ATTENDANCE: "attendance",
   ATTENDANCE_DAILY: (classId: string, date: string) => `attendance-${classId}-${date}`,
   ATTENDANCE_OVERVIEW: (classId: string) => `attendance-overview-${classId}`,
 
+  // Exceptions domain
+  EXCEPTIONS: "exceptions",
+  EXCEPTION: (id: string) => `exception-${id}`,
+
   // Notifications domain
   NOTIFICATIONS: "notifications",
   NOTIFICATION: (id: string) => `notification-${id}`,
+
+  // Templates domain
+  TEMPLATES: "templates",
+  TEMPLATE: (id: string) => `template-${id}`,
+
+  // Policies domain
+  POLICIES: "policies",
+  POLICY: (id: string) => `policy-${id}`,
+
+  // Settings domain
+  SETTINGS: "settings",
+  SMSHUB: "smshub",
+
+  // Academic domain
+  ACADEMIC: "academic",
+
+  // Reports domain
+  REPORTS: "reports",
+
+  // Profile domain
+  PROFILE: (userId: string) => `profile-${userId}`,
 
   // Dashboard domain
   DASHBOARD: "dashboard",

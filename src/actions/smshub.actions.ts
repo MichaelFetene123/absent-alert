@@ -4,6 +4,7 @@ import "server-only";
 import { requireUser } from "@/lib/guards";
 import { SmsHub } from "@/lib/sms/smshub";
 import { detectCarrier } from "@/lib/services/guardians.service";
+import { cacheTag, CACHE_TAGS } from "@/components/cacheTag";
 
 export type SmsTestResult = {
   ok: boolean;
@@ -113,6 +114,9 @@ export async function testSmsHubAction(msisdn: string, text: string): Promise<Sm
 
 export async function getSmsHubBalanceAction(): Promise<SmsHubBalanceResult> {
   await requireUser();
+  try {
+    cacheTag(CACHE_TAGS.SMSHUB, CACHE_TAGS.SETTINGS);
+  } catch {}
 
   const apiKey = process.env.SMSHUB_API_KEY;
   const baseUrl = process.env.SMSHUB_BASE_URL || "https://smshub.et";

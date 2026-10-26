@@ -99,11 +99,15 @@ export async function markAttendance(input: unknown): Promise<ActionResult<{
       // Attendance is already saved; SMS failure never undoes attendance.
     }
 
-    updateTag(CACHE_TAGS.ATTENDANCE);
-    updateTag(CACHE_TAGS.ATTENDANCE_DAILY(classId, date));
-    updateTag(CACHE_TAGS.ATTENDANCE_OVERVIEW(classId));
-    updateTag(CACHE_TAGS.DASHBOARD);
-    updateTag(CACHE_TAGS.NOTIFICATIONS);
+    try {
+      updateTag(CACHE_TAGS.ATTENDANCE);
+      updateTag(CACHE_TAGS.ATTENDANCE_DAILY(classId, date));
+      updateTag(CACHE_TAGS.ATTENDANCE_OVERVIEW(classId));
+      updateTag(CACHE_TAGS.DASHBOARD);
+      updateTag(CACHE_TAGS.NOTIFICATIONS);
+      updateTag(CACHE_TAGS.EXCEPTIONS);
+      updateTag(CACHE_TAGS.REPORTS);
+    } catch {}
 
     return {
       ok: true,

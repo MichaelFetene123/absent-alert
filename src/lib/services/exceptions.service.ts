@@ -1,5 +1,6 @@
 import "server-only";
 import { db } from "@/lib/db";
+import { cacheTag, CACHE_TAGS } from "@/components/cacheTag";
 
 export type AttendanceExceptionItem = {
   id: string;
@@ -22,6 +23,10 @@ export async function getAttendanceExceptions(): Promise<{
   unexplainedCount: number;
   correctionsCount: number;
 }> {
+  try {
+    cacheTag(CACHE_TAGS.EXCEPTIONS, CACHE_TAGS.ATTENDANCE);
+  } catch {}
+
   // Query attendance records marked as LATE or LEAVE
   const [allAttendance, allStudents, allClasses, allUsers] = await Promise.all([
     db.orm.public.AttendanceRecord.all(),
