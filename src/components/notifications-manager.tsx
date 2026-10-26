@@ -42,16 +42,18 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { useQueryClient } from "@tanstack/react-query";
+import { queryKeys } from "@/hooks/query-keys";
 import {
-  retryNotification,
-  batchRetryFailedNotificationsAction,
-} from "@/actions/notification.actions";
+  useNotificationsQuery,
+  useRetryNotificationMutation,
+  useBatchRetryNotificationsMutation,
+} from "@/hooks/use-notifications";
 import type {
   NotificationHistoryItem,
   NotificationHistoryResult,
   NotificationHistoryAttempt,
 } from "@/lib/services/notification.service";
-import { useRouter } from "next/navigation";
 
 type Props = {
   initialData: NotificationHistoryResult;
@@ -64,7 +66,10 @@ export function NotificationsManager({
   selectedStatus,
   selectedClassId,
 }: Props) {
-  const router = useRouter();
+  const queryClient = useQueryClient();
+  const { data = initialData } = useNotificationsQuery(undefined, initialData);
+  const retryMutation = useRetryNotificationMutation();
+  const batchRetryMutation = useBatchRetryNotificationsMutation();
 
   // Filter state
   const [search, setSearch] = React.useState("");
@@ -78,14 +83,14 @@ export function NotificationsManager({
   const [dialogOpen, setDialogOpen] = React.useState(false);
 
   // Loading states
-  const [retryingId, setRetryingId] = React.useState<string | null>(null);
-  const [isBatchRetrying, setIsBatchRetrying] = React.useState(false);
+  const retryingId = retryMutation.isPending ? retryMutation.variables : null;
+  const isBatchRetrying = batchRetryMutation.isPending;
   const [copiedRefId, setCopiedRefId] = React.useState<string | null>(null);
   const [copiedJson, setCopiedJson] = React.useState(false);
 
   // Client-side filtering & search
   const filteredItems = React.useMemo(() => {
-    return initialData.items.filter((item) => {
+    return data.items.filter((item) => {
       // Status filter
       if (statusFilter !== "ALL") {
         if (statusFilter === "NEEDS_REVIEW") {
@@ -116,7 +121,7 @@ export function NotificationsManager({
 
       return true;
     });
-  }, [initialData.items, statusFilter, classFilter, search]);
+  }, [data.items, statusFilter, classFilter, search]);
 
   // Paginated items
   const totalItems = filteredItems.length;
@@ -127,53 +132,49 @@ export function NotificationsManager({
   }, [filteredItems, page, pageSize]);
 
   // Handle single notification retry
-  async function handleRetry(notif: NotificationHistoryItem) {
-    if (!initialData.isAdmin) {
+  function handleRetry(notif: NotificationHistoryItem) {
+    if (!data.isAdmin) {
       toast.error("Unauthorized: Only administrators can retry SMS dispatch.");
       return;
     }
 
-    setRetryingId(notif.id);
-    try {
-      const res = await retryNotification(notif.id);
-      if (res.ok) {
-        toast.success(`SMS retry accepted for ${notif.student.fullName}`, {
-          description: res.providerRef ? `Provider ID: ${res.providerRef}` : undefined,
-        });
-        router.refresh();
-      } else {
-        toast.error(`Retry failed: ${res.error || "SMSHub rejected dispatch"}`);
-      }
-    } catch (err: any) {
-      toast.error(err.message || "Failed to retry SMS");
-    } finally {
-      setRetryingId(null);
-    }
+    retryMutation.mutate(notif.id, {
+      onSuccess: (res) => {
+        if (res.ok) {
+          toast.success(`SMS retry accepted for ${notif.student.fullName}`, {
+            description: res.providerRef ? `Provider ID: ${res.providerRef}` : undefined,
+          });
+        } else {
+          toast.error(`Retry failed: ${res.error || "SMSHub rejected dispatch"}`);
+        }
+      },
+      onError: (err: any) => {
+        toast.error(err.message || "Failed to retry SMS");
+      },
+    });
   }
 
   // Handle batch retry of all failed notifications
-  async function handleBatchRetry() {
-    if (!initialData.isAdmin) {
+  function handleBatchRetry() {
+    if (!data.isAdmin) {
       toast.error("Unauthorized: Only administrators can retry SMS dispatch.");
       return;
     }
 
-    setIsBatchRetrying(true);
-    try {
-      const res = await batchRetryFailedNotificationsAction();
-      if (res.ok) {
-        toast.success(`Batch retry completed: ${res.sent} sent, ${res.failed} failed`, {
-          description: `Processed ${res.total} notifications`,
-        });
-        router.refresh();
-      } else {
-        toast.error(`Batch retry partially failed: ${res.error || `${res.failed} errors`}`);
-      }
-    } catch (err: any) {
-      toast.error(err.message || "Failed to execute batch retry");
-    } finally {
-      setIsBatchRetrying(false);
-    }
+    batchRetryMutation.mutate(undefined, {
+      onSuccess: (res) => {
+        if (res.ok) {
+          toast.success(`Batch retry completed: ${res.sent} sent, ${res.failed} failed`, {
+            description: `Processed ${res.total} notifications`,
+          });
+        } else {
+          toast.error(`Batch retry partially failed: ${res.error || `${res.failed} errors`}`);
+        }
+      },
+      onError: (err: any) => {
+        toast.error(err.message || "Failed to execute batch retry");
+      },
+    });
   }
 
   // Copy helper
@@ -237,7 +238,7 @@ export function NotificationsManager({
         </div>
 
         <div className="flex items-center gap-2">
-          {initialData.isAdmin && initialData.summary.failed > 0 && (
+          {data.isAdmin && data.summary.failed > 0 && (
             <Button
               variant="destructive"
               size="sm"
@@ -250,14 +251,14 @@ export function NotificationsManager({
               ) : (
                 <RotateCcw className="size-3.5" />
               )}
-              Retry Failed ({initialData.summary.failed})
+              Retry Failed ({data.summary.failed})
             </Button>
           )}
 
           <Button
             variant="outline"
             size="sm"
-            onClick={() => router.refresh()}
+            onClick={() => queryClient.invalidateQueries({ queryKey: queryKeys.notifications.all })}
             className="gap-1.5 h-8 px-2.5 rounded-lg text-xs font-medium"
           >
             <RefreshCw className="size-3.5 text-muted-foreground" />
@@ -275,7 +276,7 @@ export function NotificationsManager({
               Total Notifications
             </p>
             <div className="text-2xl font-bold text-foreground mt-1">
-              {initialData.summary.total}
+              {data.summary.total}
             </div>
           </CardContent>
         </Card>
@@ -287,11 +288,11 @@ export function NotificationsManager({
               Accepted by Provider
             </p>
             <div className="text-2xl font-bold text-primary mt-1">
-              {initialData.summary.accepted}
+              {data.summary.accepted}
             </div>
             <p className="text-[11px] text-muted-foreground mt-0.5">
-              {initialData.summary.total > 0
-                ? `${Math.round((initialData.summary.accepted / initialData.summary.total) * 100)}% accepted`
+              {data.summary.total > 0
+                ? `${Math.round((data.summary.accepted / data.summary.total) * 100)}% accepted`
                 : "No logs yet"}
             </p>
           </CardContent>
@@ -304,7 +305,7 @@ export function NotificationsManager({
               Failed Delivery
             </p>
             <div className="text-2xl font-bold text-destructive mt-1">
-              {initialData.summary.failed}
+              {data.summary.failed}
             </div>
             <p className="text-[11px] text-muted-foreground mt-0.5">
               Eligible for retry
@@ -320,16 +321,16 @@ export function NotificationsManager({
             </p>
             <div className="flex items-baseline gap-2 mt-1">
               <span className="text-2xl font-bold text-foreground">
-                {initialData.summary.pending + initialData.summary.sending}
+                {data.summary.pending + data.summary.sending}
               </span>
-              {initialData.summary.needsReview > 0 && (
+              {data.summary.needsReview > 0 && (
                 <span className="text-[10px] px-1.5 py-0.5 rounded font-medium bg-muted text-foreground border border-border">
-                  {initialData.summary.needsReview} Stalled
+                  {data.summary.needsReview} Stalled
                 </span>
               )}
             </div>
             <p className="text-[11px] text-muted-foreground mt-0.5">
-              {initialData.summary.pending} queued · {initialData.summary.sending} sending
+              {data.summary.pending} queued · {data.summary.sending} sending
             </p>
           </CardContent>
         </Card>
@@ -363,7 +364,7 @@ export function NotificationsManager({
               className="w-full h-9 rounded-lg border border-border bg-background px-3 py-1.5 text-xs font-medium text-foreground outline-none shadow-xs"
             >
               <option value="ALL">All Classrooms</option>
-              {initialData.accessibleClasses.map((c) => (
+              {data.accessibleClasses.map((c) => (
                 <option key={c.id} value={c.id}>
                   {c.name}
                 </option>
@@ -405,7 +406,7 @@ export function NotificationsManager({
             }}
             className="h-7 text-xs px-2.5 rounded-lg font-medium"
           >
-            All Logs ({initialData.summary.total})
+            All Logs ({data.summary.total})
           </Button>
 
           <Button
@@ -418,7 +419,7 @@ export function NotificationsManager({
             className="h-7 text-xs px-2.5 rounded-lg font-medium"
           >
             <CheckCircle2 className="size-3 mr-1 text-primary" />
-            Accepted ({initialData.summary.accepted})
+            Accepted ({data.summary.accepted})
           </Button>
 
           <Button
@@ -431,7 +432,7 @@ export function NotificationsManager({
             className="h-7 text-xs px-2.5 rounded-lg font-medium"
           >
             <AlertCircle className="size-3 mr-1 text-destructive" />
-            Failed ({initialData.summary.failed})
+            Failed ({data.summary.failed})
           </Button>
 
           <Button
@@ -444,7 +445,7 @@ export function NotificationsManager({
             className="h-7 text-xs px-2.5 rounded-lg font-medium"
           >
             <Clock className="size-3 text-muted-foreground mr-1" />
-            Queued ({initialData.summary.pending})
+            Queued ({data.summary.pending})
           </Button>
 
           <Button
@@ -457,10 +458,10 @@ export function NotificationsManager({
             className="h-7 text-xs px-2.5 rounded-lg font-medium"
           >
             <Loader2 className="size-3 mr-1 animate-spin" />
-            Sending ({initialData.summary.sending})
+            Sending ({data.summary.sending})
           </Button>
 
-          {initialData.summary.needsReview > 0 && (
+          {data.summary.needsReview > 0 && (
             <Button
               variant={statusFilter === "NEEDS_REVIEW" ? "default" : "outline"}
               size="sm"
@@ -471,7 +472,7 @@ export function NotificationsManager({
               className="h-7 text-xs px-2.5 rounded-lg font-medium"
             >
               <AlertTriangle className="size-3 mr-1 text-destructive" />
-              Needs Review ({initialData.summary.needsReview})
+              Needs Review ({data.summary.needsReview})
             </Button>
           )}
         </div>
@@ -685,9 +686,9 @@ export function NotificationsManager({
                               variant="outline"
                               size="sm"
                               onClick={() => handleRetry(notif)}
-                              disabled={isRetrying || !initialData.isAdmin}
+                              disabled={isRetrying || !data.isAdmin}
                               title={
-                                initialData.isAdmin
+                                data.isAdmin
                                   ? "Retry SMS Dispatch"
                                   : "Admin privilege required to retry SMS"
                               }
@@ -805,7 +806,7 @@ export function NotificationsManager({
                     Dispatch Attempts ({selectedNotif.attempts.length})
                   </span>
 
-                  {selectedNotif.status === "FAILED" && initialData.isAdmin && (
+                  {selectedNotif.status === "FAILED" && data.isAdmin && (
                     <Button
                       variant="outline"
                       size="sm"

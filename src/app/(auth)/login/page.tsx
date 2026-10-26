@@ -1,7 +1,7 @@
 "use client";
 
-import { useActionState, useState } from "react";
-import { loginAction, type AuthActionResult } from "@/actions/auth.actions";
+import { useState } from "react";
+import { useLoginMutation } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -24,10 +24,9 @@ import { ThemeToggle } from "@/components/theme-toggle";
 import { cn } from "@/lib/utils";
 
 export default function LoginPage() {
-  const [state, formAction, isPending] = useActionState<AuthActionResult | null, FormData>(
-    loginAction,
-    null
-  );
+  const loginMutation = useLoginMutation();
+  const isPending = loginMutation.isPending;
+  const state = loginMutation.data;
 
   const [email, setEmail] = useState("admin@gmail.com");
   const [password, setPassword] = useState("admin@123");
@@ -126,7 +125,14 @@ export default function LoginPage() {
               </div>
             )}
 
-            <form action={formAction} className="space-y-4">
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                const formData = new FormData(e.currentTarget);
+                loginMutation.mutate(formData);
+              }}
+              className="space-y-4"
+            >
               <div className="space-y-1.5">
                 <Label htmlFor="email" className="text-xs font-medium text-foreground">
                   Email Address

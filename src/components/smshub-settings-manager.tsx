@@ -23,7 +23,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { useI18n } from "@/lib/i18n/context";
-import { getSmsHubBalanceAction, type SmsHubBalanceResult } from "@/actions/smshub.actions";
+import { useSmsHubBalanceQuery } from "@/hooks/use-smshub";
+import type { SmsHubBalanceResult } from "@/actions/smshub.actions";
 import Link from "next/link";
 
 interface SmsHubSettingsManagerProps {
@@ -37,24 +38,19 @@ export function SmsHubSettingsManager({
 }: SmsHubSettingsManagerProps) {
   const { t, locale } = useI18n();
 
-  const [balance, setBalance] = React.useState<SmsHubBalanceResult>(initialBalance);
-  const [isRefreshing, setIsRefreshing] = React.useState(false);
+  const { data: balance = initialBalance, refetch, isFetching: isRefreshing } = useSmsHubBalanceQuery(initialBalance);
   const [apiKeyInput, setApiKeyInput] = React.useState("");
 
   const refreshBalance = async () => {
-    setIsRefreshing(true);
     try {
-      const res = await getSmsHubBalanceAction();
-      setBalance(res);
-      if (res.ok) {
-        toast.success(`Balance refreshed: ${res.credits} credits available`);
+      const res = await refetch();
+      if (res.data?.ok) {
+        toast.success(`Balance refreshed: ${res.data.credits} credits available`);
       } else {
-        toast.error(res.error || "Failed to query balance");
+        toast.error(res.data?.error || "Failed to query balance");
       }
     } catch (err: any) {
       toast.error(err.message || "Failed to check balance");
-    } finally {
-      setIsRefreshing(false);
     }
   };
 

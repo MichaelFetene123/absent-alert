@@ -4,7 +4,7 @@ import * as React from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { studentSchema, type StudentInput } from "@/lib/validations/student";
-import { createStudent, updateStudent } from "@/actions/student.actions";
+import { useCreateStudentMutation, useUpdateStudentMutation } from "@/hooks/use-students";
 import {
   Dialog,
   DialogContent,
@@ -17,7 +17,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-import { useRouter } from "next/navigation";
 import { Loader2, UserPlus, Save, Phone, School, User, Hash, Smartphone, Sparkles } from "lucide-react";
 
 export type StudentItem = {
@@ -46,14 +45,16 @@ export function StudentForm({
   student,
   onSuccess,
 }: StudentFormProps) {
-  const router = useRouter();
   const isEdit = !!student;
+  const createStudentMutation = useCreateStudentMutation();
+  const updateStudentMutation = useUpdateStudentMutation();
+  const isPending = createStudentMutation.isPending || updateStudentMutation.isPending;
 
   const {
     register,
     handleSubmit,
     reset,
-    formState: { errors, isSubmitting },
+    formState: { errors },
   } = useForm<StudentInput>({
     resolver: zodResolver(studentSchema),
     defaultValues: {
@@ -92,39 +93,48 @@ export function StudentForm({
   }, [open, student, classes, reset]);
 
   async function onSubmit(data: StudentInput) {
-    try {
-      if (isEdit && student) {
-        const res = await updateStudent({
+    if (isEdit && student) {
+      updateStudentMutation.mutate(
+        {
           id: student.id,
           admissionNo: data.admissionNo,
           fullName: data.fullName,
           classId: data.classId,
           guardianName: data.guardianName,
           guardianPhone: data.guardianPhone,
-        });
-
-        if (!res.ok) {
-          toast.error(res.error || "Failed to update student");
-          return;
+        },
+        {
+          onSuccess: (res) => {
+            if (!res.ok) {
+              toast.error(res.error || "Failed to update student");
+              return;
+            }
+            toast.success(`Student ${data.fullName} updated successfully`);
+            onOpenChange(false);
+            reset();
+            onSuccess?.();
+          },
+          onError: (err: any) => {
+            toast.error(err.message || "An unexpected error occurred");
+          },
         }
-
-        toast.success(`Student ${data.fullName} updated successfully`);
-      } else {
-        const res = await createStudent(data);
-        if (!res.ok) {
-          toast.error(res.error || "Failed to create student");
-          return;
-        }
-
-        toast.success(`Student ${data.fullName} registered successfully`);
-      }
-
-      onOpenChange(false);
-      reset();
-      router.refresh();
-      onSuccess?.();
-    } catch (err: any) {
-      toast.error(err.message || "An unexpected error occurred");
+      );
+    } else {
+      createStudentMutation.mutate(data, {
+        onSuccess: (res) => {
+          if (!res.ok) {
+            toast.error(res.error || "Failed to create student");
+            return;
+          }
+          toast.success(`Student ${data.fullName} registered successfully`);
+          onOpenChange(false);
+          reset();
+          onSuccess?.();
+        },
+        onError: (err: any) => {
+          toast.error(err.message || "An unexpected error occurred");
+        },
+      });
     }
   }
 
@@ -264,7 +274,7 @@ export function StudentForm({
               id="student-form-cancel-btn"
               variant="outline"
               size="sm"
-              disabled={isSubmitting}
+              disabled={isPending}
               onClick={() => onOpenChange(false)}
               className="rounded-xl"
             >
@@ -274,10 +284,10 @@ export function StudentForm({
               type="submit"
               id="student-form-submit-btn"
               size="sm"
-              disabled={isSubmitting}
+              disabled={isPending}
               className="rounded-xl min-w-32 font-semibold"
             >
-              {isSubmitting ? (
+              {isPending ? (
                 <>
                   <Loader2 className="size-3.5 animate-spin mr-1.5" />
                   Saving...

@@ -15,9 +15,8 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { StudentForm, type StudentItem } from "@/components/student-form";
 import { BulkImportModal } from "@/components/bulk-import-modal";
-import { toggleStudentActive } from "@/actions/student.actions";
+import { useStudentsQuery, useToggleStudentActiveMutation } from "@/hooks/use-students";
 import { toast } from "sonner";
-import { useRouter } from "next/navigation";
 import {
   Search,
   UserPlus,
@@ -49,23 +48,23 @@ export function StudentsManager({
   classes,
   isAdmin,
 }: StudentsManagerProps) {
-  const router = useRouter();
-  const [students, setStudents] = React.useState<StudentItem[]>(initialStudents);
+  const { data: students = initialStudents } = useStudentsQuery(
+    { showInactive: true },
+    initialStudents
+  );
+  const toggleActiveMutation = useToggleStudentActiveMutation();
+
   const [search, setSearch] = React.useState("");
   const [selectedClassId, setSelectedClassId] = React.useState<string>("ALL");
   const [showInactive, setShowInactive] = React.useState(false);
   const [isFormOpen, setIsFormOpen] = React.useState(false);
   const [isBulkImportOpen, setIsBulkImportOpen] = React.useState(false);
   const [editingStudent, setEditingStudent] = React.useState<StudentItem | null>(null);
-  const [isTogglingId, setIsTogglingId] = React.useState<string | null>(null);
   const [copiedPhoneId, setCopiedPhoneId] = React.useState<string | null>(null);
 
-  // Sync state if props change from server revalidation
-  const [prevInitialStudents, setPrevInitialStudents] = React.useState(initialStudents);
-  if (initialStudents !== prevInitialStudents) {
-    setPrevInitialStudents(initialStudents);
-    setStudents(initialStudents);
-  }
+  const isTogglingId = toggleActiveMutation.isPending
+    ? toggleActiveMutation.variables?.studentId
+    : null;
 
   // Filter students based on search, class, and active status
   const filteredStudents = React.useMemo(() => {
@@ -98,32 +97,26 @@ export function StudentsManager({
     return { total, active, inactive, activeRate };
   }, [students]);
 
-  async function handleToggleActive(student: StudentItem) {
+  function handleToggleActive(student: StudentItem) {
     if (!isAdmin) return;
-    try {
-      setIsTogglingId(student.id);
-      const newActive = !student.active;
-      const res = await toggleStudentActive(student.id, newActive);
-
-      if (!res.ok) {
-        toast.error(res.error || "Failed to update status");
-        return;
+    const newActive = !student.active;
+    toggleActiveMutation.mutate(
+      { studentId: student.id, active: newActive },
+      {
+        onSuccess: (res) => {
+          if (!res.ok) {
+            toast.error(res.error || "Failed to update status");
+            return;
+          }
+          toast.success(
+            `Student ${student.fullName} ${newActive ? "reactivated" : "deactivated"}`
+          );
+        },
+        onError: (err: any) => {
+          toast.error(err.message || "Failed to change status");
+        },
       }
-
-      // Optimistic update
-      setStudents((prev) =>
-        prev.map((s) => (s.id === student.id ? { ...s, active: newActive } : s))
-      );
-
-      toast.success(
-        `Student ${student.fullName} ${newActive ? "reactivated" : "deactivated"}`
-      );
-      router.refresh();
-    } catch (err: any) {
-      toast.error(err.message || "Failed to change status");
-    } finally {
-      setIsTogglingId(null);
-    }
+    );
   }
 
   function handleCreate() {

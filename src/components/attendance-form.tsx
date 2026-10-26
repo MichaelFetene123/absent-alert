@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { useRouter } from "next/navigation";
-import { markAttendance } from "@/actions/attendance.actions";
+import { useMarkAttendanceMutation } from "@/hooks/use-attendance";
 import type { AttendanceStatus } from "@/lib/validations/attendance";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -85,7 +85,8 @@ export function AttendanceForm({
 
   const [search, setSearch] = React.useState("");
   const [statusFilter, setStatusFilter] = React.useState<"ALL" | AttendanceStatus>("ALL");
-  const [isPending, setIsPending] = React.useState(false);
+  const markAttendanceMutation = useMarkAttendanceMutation();
+  const isPending = markAttendanceMutation.isPending;
   const [isConfirmOpen, setIsConfirmOpen] = React.useState(false);
   const [activeRowIndex, setActiveRowIndex] = React.useState<number>(0);
 
@@ -177,40 +178,41 @@ export function AttendanceForm({
     executeSave();
   };
 
-  const executeSave = async () => {
+  const executeSave = () => {
     setIsConfirmOpen(false);
-    setIsPending(true);
 
-    try {
-      const entries = initialStudents.map((s) => ({
-        studentId: s.studentId,
-        status: statuses[s.studentId] || "PRESENT",
-      }));
+    const entries = initialStudents.map((s) => ({
+      studentId: s.studentId,
+      status: statuses[s.studentId] || "PRESENT",
+    }));
 
-      const res = await markAttendance({
+    markAttendanceMutation.mutate(
+      {
         classId: selectedClassId,
         date: selectedDate,
         entries,
-      });
+      },
+      {
+        onSuccess: (res: any) => {
+          if (!res.ok) {
+            toast.error(res.error || "Failed to save attendance");
+            return;
+          }
 
-      if (!res.ok) {
-        toast.error(res.error || "Failed to save attendance");
-        return;
+          const savedCount = res.data?.saved ?? entries.length;
+          toast.success(
+            hasExistingRecords
+              ? `Updated ${savedCount} attendance records`
+              : `Saved ${savedCount} attendance records for ${selectedDate}`
+          );
+
+          router.refresh();
+        },
+        onError: (err: any) => {
+          toast.error(err.message || "An unexpected error occurred");
+        },
       }
-
-      const savedCount = res.data?.saved ?? entries.length;
-      toast.success(
-        hasExistingRecords
-          ? `Updated ${savedCount} attendance records`
-          : `Saved ${savedCount} attendance records for ${selectedDate}`
-      );
-
-      router.refresh();
-    } catch (err: any) {
-      toast.error(err.message || "An unexpected error occurred");
-    } finally {
-      setIsPending(false);
-    }
+    );
   };
 
   // Keyboard shortcuts: Rapid marking (P, A, L, E), navigation (Up, Down), and save (Ctrl+S, Ctrl+Enter)

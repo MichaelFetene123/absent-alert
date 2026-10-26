@@ -44,12 +44,14 @@ import {
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { formatClassName } from "@/lib/validations/class";
+import type { ClassItemWithDetails } from "@/actions/class.actions";
 import {
-  createClassAction,
-  updateClassAction,
-  deleteClassAction,
-  type ClassItemWithDetails,
-} from "@/actions/class.actions";
+  useClassesDetailsQuery,
+  useAvailableTeachersQuery,
+  useCreateClassMutation,
+  useUpdateClassMutation,
+  useDeleteClassMutation,
+} from "@/hooks/use-classes";
 
 interface ClassesManagerProps {
   initialClasses: ClassItemWithDetails[];
@@ -81,14 +83,15 @@ export function ClassesManager({
   isAdmin,
 }: ClassesManagerProps) {
   const router = useRouter();
-  const [classes, setClasses] = React.useState<ClassItemWithDetails[]>(initialClasses);
 
-  // Sync state if revalidated from server
-  const [prevInitialClasses, setPrevInitialClasses] = React.useState(initialClasses);
-  if (initialClasses !== prevInitialClasses) {
-    setPrevInitialClasses(initialClasses);
-    setClasses(initialClasses);
-  }
+  // TanStack Query for classes and available teachers with initial data
+  const { data: classes = initialClasses } = useClassesDetailsQuery(initialClasses);
+  const { data: teachersList = availableTeachers } = useAvailableTeachersQuery(availableTeachers);
+
+  // TanStack Mutations
+  const createClassMutation = useCreateClassMutation();
+  const updateClassMutation = useUpdateClassMutation();
+  const deleteClassMutation = useDeleteClassMutation();
 
   // Filtering & Search
   const [search, setSearch] = React.useState("");
@@ -102,17 +105,18 @@ export function ClassesManager({
   const [createCustomName, setCreateCustomName] = React.useState("");
   const [createUseCustom, setCreateUseCustom] = React.useState(false);
   const [createTeacherIds, setCreateTeacherIds] = React.useState<string[]>([]);
-  const [isCreating, setIsCreating] = React.useState(false);
 
   // Edit Modal State
   const [editingClass, setEditingClass] = React.useState<ClassItemWithDetails | null>(null);
   const [editName, setEditName] = React.useState("");
   const [editTeacherIds, setEditTeacherIds] = React.useState<string[]>([]);
-  const [isUpdating, setIsUpdating] = React.useState(false);
 
   // Delete Modal State
   const [deletingClass, setDeletingClass] = React.useState<ClassItemWithDetails | null>(null);
-  const [isDeleting, setIsDeleting] = React.useState(false);
+
+  const isCreating = createClassMutation.isPending;
+  const isUpdating = updateClassMutation.isPending;
+  const isDeleting = deleteClassMutation.isPending;
 
   // Unique grades for filter dropdown
   const uniqueGrades = React.useMemo(() => {
@@ -179,8 +183,7 @@ export function ClassesManager({
     if (!isAdmin) return;
 
     try {
-      setIsCreating(true);
-      const res = await createClassAction({
+      const res = await createClassMutation.mutateAsync({
         grade: createGrade,
         section: createSection,
         customName: createUseCustom ? createCustomName : undefined,
@@ -199,11 +202,8 @@ export function ClassesManager({
       setCreateCustomName("");
       setCreateUseCustom(false);
       setCreateTeacherIds([]);
-      router.refresh();
     } catch (err: any) {
       toast.error(err.message || "An error occurred");
-    } finally {
-      setIsCreating(false);
     }
   }
 
@@ -218,8 +218,7 @@ export function ClassesManager({
     if (!isAdmin || !editingClass) return;
 
     try {
-      setIsUpdating(true);
-      const res = await updateClassAction({
+      const res = await updateClassMutation.mutateAsync({
         id: editingClass.id,
         name: editName,
         teacherIds: editTeacherIds,
@@ -232,11 +231,8 @@ export function ClassesManager({
 
       toast.success("Class updated successfully");
       setEditingClass(null);
-      router.refresh();
     } catch (err: any) {
       toast.error(err.message || "An error occurred");
-    } finally {
-      setIsUpdating(false);
     }
   }
 
@@ -252,8 +248,7 @@ export function ClassesManager({
     }
 
     try {
-      setIsDeleting(true);
-      const res = await deleteClassAction(deletingClass.id);
+      const res = await deleteClassMutation.mutateAsync(deletingClass.id);
 
       if (!res.ok) {
         toast.error(res.error || "Failed to delete class");
@@ -262,11 +257,8 @@ export function ClassesManager({
 
       toast.success(`Class "${deletingClass.name}" deleted successfully`);
       setDeletingClass(null);
-      router.refresh();
     } catch (err: any) {
       toast.error(err.message || "An error occurred");
-    } finally {
-      setIsDeleting(false);
     }
   }
 
@@ -654,7 +646,7 @@ export function ClassesManager({
                   Assign Teachers ({createTeacherIds.length} selected)
                 </Label>
                 <div className="max-h-36 overflow-y-auto divide-y divide-border rounded-xl border border-border p-1 bg-card">
-                  {availableTeachers.map((t) => {
+                  {teachersList.map((t) => {
                     const isChecked = createTeacherIds.includes(t.id);
                     return (
                       <label
@@ -731,7 +723,7 @@ export function ClassesManager({
                   Assigned Faculty ({editTeacherIds.length} assigned)
                 </Label>
                 <div className="max-h-40 overflow-y-auto divide-y divide-border rounded-xl border border-border p-1 bg-card">
-                  {availableTeachers.map((t) => {
+                  {teachersList.map((t) => {
                     const isChecked = editTeacherIds.includes(t.id);
                     return (
                       <label

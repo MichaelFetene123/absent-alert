@@ -39,7 +39,7 @@ import { ThemeToggle } from "@/components/theme-toggle";
 import { LanguageToggle } from "@/components/language-toggle";
 import { RoleSwitcher } from "@/components/role-switcher";
 import { I18nProvider, useI18n } from "@/lib/i18n/context";
-import { logoutAction } from "@/actions/auth.actions";
+import { useLogoutMutation } from "@/hooks/use-auth";
 import { cn } from "@/lib/utils";
 
 export type DashboardUser = {
@@ -88,6 +88,7 @@ function ShellInner({ user, children }: DashboardShellProps) {
   const pathname = usePathname();
   const router = useRouter();
   const { t, locale } = useI18n();
+  const logoutMutation = useLogoutMutation();
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
   const [commandOpen, setCommandOpen] = React.useState(false);
   const [searchQuery, setSearchQuery] = React.useState("");
@@ -420,15 +421,15 @@ function ShellInner({ user, children }: DashboardShellProps) {
                   </div>
 
                   <div className="border-t border-border pt-1">
-                    <form action={logoutAction}>
-                      <button
-                        type="submit"
-                        className="w-full flex items-center gap-2.5 px-3 py-2 text-destructive hover:bg-destructive/10 font-medium transition-colors text-left"
-                      >
-                        <LogOut className="size-4 shrink-0" />
-                        <span>{locale === "am" ? "መውጣት (Sign out)" : "Sign out"}</span>
-                      </button>
-                    </form>
+                    <button
+                      type="button"
+                      onClick={() => logoutMutation.mutate()}
+                      disabled={logoutMutation.isPending}
+                      className="w-full flex items-center gap-2.5 px-3 py-2 text-destructive hover:bg-destructive/10 font-medium transition-colors text-left disabled:opacity-50"
+                    >
+                      <LogOut className="size-4 shrink-0" />
+                      <span>{locale === "am" ? "መውጣት (Sign out)" : "Sign out"}</span>
+                    </button>
                   </div>
                 </div>
               )}
@@ -580,17 +581,17 @@ function ShellInner({ user, children }: DashboardShellProps) {
               </div>
 
               <div className="pt-3 border-t border-border">
-                <form action={logoutAction}>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    type="submit"
-                    className="w-full justify-start gap-2 text-destructive hover:bg-destructive/10 text-xs px-3"
-                  >
-                    <LogOut className="size-4" />
-                    <span>{locale === "am" ? "ውጣ" : "Sign out"}</span>
-                  </Button>
-                </form>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  type="button"
+                  onClick={() => logoutMutation.mutate()}
+                  disabled={logoutMutation.isPending}
+                  className="w-full justify-start gap-2 text-destructive hover:bg-destructive/10 text-xs px-3"
+                >
+                  <LogOut className="size-4" />
+                  <span>{locale === "am" ? "ውጣ" : "Sign out"}</span>
+                </Button>
               </div>
             </div>
           </div>

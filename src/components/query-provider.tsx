@@ -8,8 +8,8 @@ function makeQueryClient() {
   return new QueryClient({
     defaultOptions: {
       queries: {
-        // With SSR, set a sensible default staleTime to prevent immediate refetches on the client
-        staleTime: 60 * 1000,
+        // staleTime set to 0 globally so queries always reflect latest state after mutations
+        staleTime: 0,
         refetchOnWindowFocus: false,
       },
     },

@@ -24,13 +24,13 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { useI18n } from "@/lib/i18n/context";
-import { logoutAction } from "@/actions/auth.actions";
+import { useLogoutMutation } from "@/hooks/use-auth";
 import {
-  getUserProfileAction,
-  updateProfileDetailsAction,
-  changePasswordAction,
-  type UserProfileData,
-} from "@/actions/profile.actions";
+  useUserProfileQuery,
+  useUpdateProfileMutation,
+  useChangePasswordMutation,
+} from "@/hooks/use-profile";
+import type { UserProfileData } from "@/actions/profile.actions";
 
 type Props = {
   initialProfile: UserProfileData;
@@ -39,11 +39,15 @@ type Props = {
 export function ProfileView({ initialProfile }: Props) {
   const { t, locale, setLocale } = useI18n();
 
+  const { data: profile = initialProfile } = useUserProfileQuery(initialProfile);
+  const updateProfileMutation = useUpdateProfileMutation();
+  const changePasswordMutation = useChangePasswordMutation();
+  const logoutMutation = useLogoutMutation();
+
   // Profile Form State
-  const [profile, setProfile] = React.useState<UserProfileData>(initialProfile);
   const [name, setName] = React.useState(initialProfile.name);
   const [email, setEmail] = React.useState(initialProfile.email);
-  const [isSavingProfile, setIsSavingProfile] = React.useState(false);
+  const isSavingProfile = updateProfileMutation.isPending;
 
   // Password Form State
   const [currentPassword, setCurrentPassword] = React.useState("");
@@ -51,12 +55,12 @@ export function ProfileView({ initialProfile }: Props) {
   const [confirmPassword, setConfirmPassword] = React.useState("");
   const [showCurrentPassword, setShowCurrentPassword] = React.useState(false);
   const [showNewPassword, setShowNewPassword] = React.useState(false);
-  const [isChangingPassword, setIsChangingPassword] = React.useState(false);
+  const isChangingPassword = changePasswordMutation.isPending;
 
   // Active Tab
   const [activeTab, setActiveTab] = React.useState<"general" | "security" | "preferences">("general");
 
-  const handleUpdateProfile = async (e: React.FormEvent) => {
+  const handleUpdateProfile = (e: React.FormEvent) => {
     e.preventDefault();
     if (name.trim().length < 2) {
       toast.error("Name must be at least 2 characters.");
@@ -67,23 +71,24 @@ export function ProfileView({ initialProfile }: Props) {
       return;
     }
 
-    setIsSavingProfile(true);
-    try {
-      const res = await updateProfileDetailsAction({ name, email });
-      if (res.ok) {
-        setProfile((prev) => ({ ...prev, name, email }));
-        toast.success("Profile details updated successfully.");
-      } else {
-        toast.error(res.error || "Failed to update profile.");
+    updateProfileMutation.mutate(
+      { name, email },
+      {
+        onSuccess: (res) => {
+          if (res.ok) {
+            toast.success("Profile details updated successfully.");
+          } else {
+            toast.error(res.error || "Failed to update profile.");
+          }
+        },
+        onError: () => {
+          toast.error("An unexpected error occurred while saving profile.");
+        },
       }
-    } catch {
-      toast.error("An unexpected error occurred while saving profile.");
-    } finally {
-      setIsSavingProfile(false);
-    }
+    );
   };
 
-  const handleChangePassword = async (e: React.FormEvent) => {
+  const handleChangePassword = (e: React.FormEvent) => {
     e.preventDefault();
     if (newPassword.length < 6) {
       toast.error("New password must be at least 6 characters.");
@@ -94,22 +99,24 @@ export function ProfileView({ initialProfile }: Props) {
       return;
     }
 
-    setIsChangingPassword(true);
-    try {
-      const res = await changePasswordAction({ currentPassword, newPassword });
-      if (res.ok) {
-        toast.success("Password changed successfully.");
-        setCurrentPassword("");
-        setNewPassword("");
-        setConfirmPassword("");
-      } else {
-        toast.error(res.error || "Failed to change password.");
+    changePasswordMutation.mutate(
+      { currentPassword, newPassword },
+      {
+        onSuccess: (res) => {
+          if (res.ok) {
+            toast.success("Password changed successfully.");
+            setCurrentPassword("");
+            setNewPassword("");
+            setConfirmPassword("");
+          } else {
+            toast.error(res.error || "Failed to change password.");
+          }
+        },
+        onError: () => {
+          toast.error("An unexpected error occurred while changing password.");
+        },
       }
-    } catch {
-      toast.error("An unexpected error occurred while changing password.");
-    } finally {
-      setIsChangingPassword(false);
-    }
+    );
   };
 
   const getInitials = (name: string) => {
@@ -163,17 +170,17 @@ export function ProfileView({ initialProfile }: Props) {
             </div>
           </div>
 
-          <form action={logoutAction}>
-            <Button
-              type="submit"
-              variant="outline"
-              size="sm"
-              className="text-xs text-destructive border-destructive/30 hover:bg-destructive/10 hover:text-destructive gap-1.5 h-8.5"
-            >
-              <LogOut className="size-3.5" />
-              <span>Sign out</span>
-            </Button>
-          </form>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={() => logoutMutation.mutate()}
+            disabled={logoutMutation.isPending}
+            className="text-xs text-destructive border-destructive/30 hover:bg-destructive/10 hover:text-destructive gap-1.5 h-8.5"
+          >
+            <LogOut className="size-3.5" />
+            <span>Sign out</span>
+          </Button>
         </div>
       </div>
 

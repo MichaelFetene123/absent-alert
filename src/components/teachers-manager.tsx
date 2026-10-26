@@ -44,12 +44,14 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
+import type { TeacherItemWithDetails } from "@/actions/teacher.actions";
 import {
-  createTeacherAction,
-  updateTeacherAction,
-  deleteTeacherAction,
-  type TeacherItemWithDetails,
-} from "@/actions/teacher.actions";
+  useTeachersDetailsQuery,
+  useAvailableClassesQuery,
+  useCreateTeacherMutation,
+  useUpdateTeacherMutation,
+  useDeleteTeacherMutation,
+} from "@/hooks/use-teachers";
 
 interface TeachersManagerProps {
   initialTeachers: TeacherItemWithDetails[];
@@ -63,14 +65,15 @@ export function TeachersManager({
   isAdmin,
 }: TeachersManagerProps) {
   const router = useRouter();
-  const [teachers, setTeachers] = React.useState<TeacherItemWithDetails[]>(initialTeachers);
 
-  // Sync state if server revalidates
-  const [prevInitialTeachers, setPrevInitialTeachers] = React.useState(initialTeachers);
-  if (initialTeachers !== prevInitialTeachers) {
-    setPrevInitialTeachers(initialTeachers);
-    setTeachers(initialTeachers);
-  }
+  // TanStack Query for teachers and classes
+  const { data: teachers = initialTeachers } = useTeachersDetailsQuery(initialTeachers);
+  const { data: classesList = availableClasses } = useAvailableClassesQuery(availableClasses);
+
+  // TanStack Mutations
+  const createTeacherMutation = useCreateTeacherMutation();
+  const updateTeacherMutation = useUpdateTeacherMutation();
+  const deleteTeacherMutation = useDeleteTeacherMutation();
 
   // Filtering & Search
   const [search, setSearch] = React.useState("");
@@ -83,19 +86,21 @@ export function TeachersManager({
   const [createEmail, setCreateEmail] = React.useState("");
   const [createPassword, setCreatePassword] = React.useState("teacher@123");
   const [createClassIds, setCreateClassIds] = React.useState<string[]>([]);
-  const [isCreating, setIsCreating] = React.useState(false);
 
   // Edit Modal State
   const [editingTeacher, setEditingTeacher] = React.useState<TeacherItemWithDetails | null>(null);
   const [editName, setEditName] = React.useState("");
+
   const [editEmail, setEditEmail] = React.useState("");
   const [editPassword, setEditPassword] = React.useState("");
   const [editClassIds, setEditClassIds] = React.useState<string[]>([]);
-  const [isUpdating, setIsUpdating] = React.useState(false);
 
   // Delete Modal State
   const [deletingTeacher, setDeletingTeacher] = React.useState<TeacherItemWithDetails | null>(null);
-  const [isDeleting, setIsDeleting] = React.useState(false);
+
+  const isCreating = createTeacherMutation.isPending;
+  const isUpdating = updateTeacherMutation.isPending;
+  const isDeleting = deleteTeacherMutation.isPending;
 
   // Filtered teachers list
   const filteredTeachers = React.useMemo(() => {
@@ -146,8 +151,7 @@ export function TeachersManager({
     if (!isAdmin) return;
 
     try {
-      setIsCreating(true);
-      const res = await createTeacherAction({
+      const res = await createTeacherMutation.mutateAsync({
         name: createName,
         email: createEmail,
         password: createPassword,
@@ -165,11 +169,8 @@ export function TeachersManager({
       setCreateEmail("");
       setCreatePassword("teacher@123");
       setCreateClassIds([]);
-      router.refresh();
     } catch (err: any) {
       toast.error(err.message || "An error occurred");
-    } finally {
-      setIsCreating(false);
     }
   }
 
@@ -186,8 +187,7 @@ export function TeachersManager({
     if (!isAdmin || !editingTeacher) return;
 
     try {
-      setIsUpdating(true);
-      const res = await updateTeacherAction({
+      const res = await updateTeacherMutation.mutateAsync({
         id: editingTeacher.id,
         name: editName,
         email: editEmail,
@@ -202,11 +202,8 @@ export function TeachersManager({
 
       toast.success("Teacher account updated successfully");
       setEditingTeacher(null);
-      router.refresh();
     } catch (err: any) {
       toast.error(err.message || "An error occurred");
-    } finally {
-      setIsUpdating(false);
     }
   }
 
@@ -230,8 +227,7 @@ export function TeachersManager({
     }
 
     try {
-      setIsDeleting(true);
-      const res = await deleteTeacherAction(deletingTeacher.id);
+      const res = await deleteTeacherMutation.mutateAsync(deletingTeacher.id);
 
       if (!res.ok) {
         toast.error(res.error || "Failed to delete teacher");
@@ -240,11 +236,8 @@ export function TeachersManager({
 
       toast.success(`Teacher "${deletingTeacher.name}" deleted successfully`);
       setDeletingTeacher(null);
-      router.refresh();
     } catch (err: any) {
       toast.error(err.message || "An error occurred");
-    } finally {
-      setIsDeleting(false);
     }
   }
 
@@ -584,7 +577,7 @@ export function TeachersManager({
                   Assign Classroom Rosters ({createClassIds.length} selected)
                 </Label>
                 <div className="max-h-36 overflow-y-auto divide-y divide-border rounded-xl border border-border p-1 bg-card">
-                  {availableClasses.map((c) => {
+                  {classesList.map((c) => {
                     const isChecked = createClassIds.includes(c.id);
                     return (
                       <label
@@ -686,7 +679,7 @@ export function TeachersManager({
                   Assigned Classes ({editClassIds.length} assigned)
                 </Label>
                 <div className="max-h-36 overflow-y-auto divide-y divide-border rounded-xl border border-border p-1 bg-card">
-                  {availableClasses.map((c) => {
+                  {classesList.map((c) => {
                     const isChecked = editClassIds.includes(c.id);
                     return (
                       <label

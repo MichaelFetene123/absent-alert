@@ -28,9 +28,9 @@ import {
   Loader2,
   Trash2,
 } from "lucide-react";
-import { bulkImportStudentsAction, type BulkImportRowInput } from "@/actions/student.actions";
+import { type BulkImportRowInput } from "@/actions/student.actions";
+import { useBulkImportStudentsMutation } from "@/hooks/use-students";
 import { toast } from "sonner";
-import { useRouter } from "next/navigation";
 
 interface BulkImportModalProps {
   open: boolean;
@@ -52,12 +52,12 @@ export function BulkImportModal({
   classes,
   onSuccess,
 }: BulkImportModalProps) {
-  const router = useRouter();
+  const bulkImportMutation = useBulkImportStudentsMutation();
   const fileInputRef = React.useRef<HTMLInputElement | null>(null);
   const [fileName, setFileName] = React.useState<string | null>(null);
   const [parsedRows, setParsedRows] = React.useState<ParsedRow[]>([]);
   const [isParsing, setIsParsing] = React.useState(false);
-  const [isImporting, setIsImporting] = React.useState(false);
+  const isImporting = bulkImportMutation.isPending;
 
   // Set of class names and IDs for fast client pre-validation
   const classSet = React.useMemo(() => {
@@ -197,43 +197,41 @@ export function BulkImportModal({
     }
   }
 
-  async function handleImport() {
+  function handleImport() {
     if (parsedRows.length === 0) return;
 
-    setIsImporting(true);
-    try {
-      const payload: BulkImportRowInput[] = parsedRows.map((r) => ({
-        admissionNo: r.admissionNo,
-        fullName: r.fullName,
-        classNameOrId: r.classNameOrId,
-        guardianName: r.guardianName,
-        guardianPhone: r.guardianPhone,
-      }));
+    const payload: BulkImportRowInput[] = parsedRows.map((r) => ({
+      admissionNo: r.admissionNo,
+      fullName: r.fullName,
+      classNameOrId: r.classNameOrId,
+      guardianName: r.guardianName,
+      guardianPhone: r.guardianPhone,
+    }));
 
-      const res = await bulkImportStudentsAction(payload);
-      if (res.ok && res.data) {
-        toast.success(
-          `Successfully imported ${res.data.importedCount} student(s)! ${
-            res.data.skippedCount > 0 ? `(${res.data.skippedCount} skipped due to validation)` : ""
-          }`
-        );
-        if (res.data.errors && res.data.errors.length > 0) {
-          toast.warning(
-            `Notice: ${res.data.errors[0].error}${res.data.errors.length > 1 ? ` (+${res.data.errors.length - 1} more)` : ""}`
+    bulkImportMutation.mutate({ rows: payload }, {
+      onSuccess: (res) => {
+        if (res.ok && res.data) {
+          toast.success(
+            `Successfully imported ${res.data.importedCount} student(s)! ${
+              res.data.skippedCount > 0 ? `(${res.data.skippedCount} skipped due to validation)` : ""
+            }`
           );
+          if (res.data.errors && res.data.errors.length > 0) {
+            toast.warning(
+              `Notice: ${res.data.errors[0].error}${res.data.errors.length > 1 ? ` (+${res.data.errors.length - 1} more)` : ""}`
+            );
+          }
+          handleReset();
+          onOpenChange(false);
+          onSuccess?.();
+        } else {
+          toast.error(res.error || "Failed to import students");
         }
-        handleReset();
-        onOpenChange(false);
-        router.refresh();
-        onSuccess?.();
-      } else {
-        toast.error(res.error || "Failed to import students");
-      }
-    } catch (err: any) {
-      toast.error(err.message || "Bulk import failed");
-    } finally {
-      setIsImporting(false);
-    }
+      },
+      onError: (err: any) => {
+        toast.error(err.message || "Bulk import failed");
+      },
+    });
   }
 
   const validCount = parsedRows.filter(

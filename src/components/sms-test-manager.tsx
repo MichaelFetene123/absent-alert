@@ -20,17 +20,20 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-import { testSmsHubAction, type SmsTestResult } from "@/actions/smshub.actions";
+import { useTestSmsHubMutation } from "@/hooks/use-smshub";
+import type { SmsTestResult } from "@/actions/smshub.actions";
 import { useI18n } from "@/lib/i18n/context";
 
 export function SmsTestManager() {
   const { t, locale } = useI18n();
 
+  const testMutation = useTestSmsHubMutation();
+  const isRunning = testMutation.isPending;
+
   const [phone, setPhone] = React.useState("0911234567");
   const [message, setMessage] = React.useState(
     "AbsentAlert Test: Student Almaz Kebede was marked absent on Oct 25."
   );
-  const [isRunning, setIsRunning] = React.useState(false);
   const [result, setResult] = React.useState<SmsTestResult | null>(null);
 
   // Live calculation of encoding & characters
@@ -41,7 +44,7 @@ export function SmsTestManager() {
   const totalChars = estimatedFinalText.length;
   const segments = Math.ceil(totalChars / charLimit) || 1;
 
-  async function handleRunTest(e: React.FormEvent) {
+  function handleRunTest(e: React.FormEvent) {
     e.preventDefault();
     if (!phone.trim()) {
       toast.error("Please enter a valid Ethiopian mobile number");
@@ -52,21 +55,23 @@ export function SmsTestManager() {
       return;
     }
 
-    setIsRunning(true);
     setResult(null);
-    try {
-      const res = await testSmsHubAction(phone, message);
-      setResult(res);
-      if (res.ok) {
-        toast.success("SMSHub Zero-Cost Test Passed!");
-      } else {
-        toast.error(res.error || "Validation failed");
+    testMutation.mutate(
+      { msisdn: phone, text: message },
+      {
+        onSuccess: (res) => {
+          setResult(res);
+          if (res.ok) {
+            toast.success("SMSHub Zero-Cost Test Passed!");
+          } else {
+            toast.error(res.error || "Validation failed");
+          }
+        },
+        onError: (err: any) => {
+          toast.error(err.message || "Failed to execute test");
+        },
       }
-    } catch (err: any) {
-      toast.error(err.message || "Failed to execute test");
-    } finally {
-      setIsRunning(false);
-    }
+    );
   }
 
   const sampleMessages = [

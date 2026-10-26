@@ -66,7 +66,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { toast } from "sonner";
-import { retryNotification } from "@/actions/notification.actions";
+import { useRetryNotificationMutation } from "@/hooks/use-notifications";
 import { useI18n } from "@/lib/i18n/context";
 import { BulkImportModal } from "@/components/bulk-import-modal";
 import type { DashboardOverviewResult } from "@/lib/services/attendance.service";
@@ -104,7 +104,8 @@ type Props = {
 export function DashboardView({ data, reports, user }: Props) {
   const router = useRouter();
   const { t, locale } = useI18n();
-  const [retryingId, setRetryingId] = React.useState<string | null>(null);
+  const retryMutation = useRetryNotificationMutation();
+  const retryingId = retryMutation.isPending ? retryMutation.variables : null;
   const [isBannerDismissed, setIsBannerDismissed] = React.useState(false);
   const [isBulkImportOpen, setIsBulkImportOpen] = React.useState(false);
   const [isMounted, setIsMounted] = React.useState(false);
@@ -118,26 +119,25 @@ export function DashboardView({ data, reports, user }: Props) {
     setIsMounted(true);
   }, []);
 
-  async function handleRetry(notifId: string, studentName: string) {
+  function handleRetry(notifId: string, studentName: string) {
     if (!data.isAdmin) {
       toast.error(locale === "am" ? "የኤስኤምኤስ ሙከራ ለማድረግ የአድሚን ፈቃድ ያስፈልጋል።" : "Only administrators can retry SMS dispatch.");
       return;
     }
 
-    setRetryingId(notifId);
-    try {
-      const res = await retryNotification(notifId);
-      if (res.ok) {
-        toast.success(`SMS retry accepted for ${studentName}`);
-        router.refresh();
-      } else {
-        toast.error(`Retry failed: ${res.error || "SMSHub rejection"}`);
-      }
-    } catch (err: any) {
-      toast.error(err.message || "Failed to retry notification");
-    } finally {
-      setRetryingId(null);
-    }
+    retryMutation.mutate(notifId, {
+      onSuccess: (res) => {
+        if (res.ok) {
+          toast.success(`SMS retry accepted for ${studentName}`);
+          router.refresh();
+        } else {
+          toast.error(`Retry failed: ${res.error || "SMSHub rejection"}`);
+        }
+      },
+      onError: (err: any) => {
+        toast.error(err.message || "Failed to retry notification");
+      },
+    });
   }
 
   // Filter absent students into groups

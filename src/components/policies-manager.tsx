@@ -47,23 +47,28 @@ import type {
   RecipientStrategy,
 } from "@/lib/types/policy";
 import {
-  getAllPoliciesAction,
-  activatePolicyAction,
-  duplicatePolicyAction,
-  archivePolicyAction,
-  createDraftPolicyAction,
-  simulatePolicyAction,
-} from "@/actions/policy.actions";
+  usePoliciesQuery,
+  useActivatePolicyMutation,
+  useDuplicatePolicyMutation,
+  useArchivePolicyMutation,
+  useCreateDraftPolicyMutation,
+} from "@/hooks/use-policies";
 
 export function PoliciesManager() {
   const { t, locale } = useI18n();
 
-  // State
-  const [policies, setPolicies] = React.useState<AbsenceAlertPolicy[]>(SAMPLE_POLICIES);
+  const { data: fetchedPolicies } = usePoliciesQuery();
+  const policies = fetchedPolicies && fetchedPolicies.length > 0 ? fetchedPolicies : SAMPLE_POLICIES;
+
+  const activateMutation = useActivatePolicyMutation();
+  const duplicateMutation = useDuplicatePolicyMutation();
+  const archiveMutation = useArchivePolicyMutation();
+  const createDraftMutation = useCreateDraftPolicyMutation();
+
   const [activeTab, setActiveTab] = React.useState<"active" | "all" | "simulate">("active");
   const [isWizardOpen, setIsWizardOpen] = React.useState(false);
   const [wizardStep, setWizardStep] = React.useState(1);
-  const [isSubmitting, setIsSubmitting] = React.useState(false);
+  const isSubmitting = createDraftMutation.isPending;
 
   // Active policy
   const activePolicy =
@@ -118,14 +123,6 @@ export function PoliciesManager() {
     evaluatePolicy(simInput, activePolicy)
   );
 
-  // Load policies
-  React.useEffect(() => {
-    getAllPoliciesAction().then((res) => {
-      if (res.success && res.policies.length > 0) {
-        setPolicies(res.policies);
-      }
-    });
-  }, []);
 
   // Pre-configured test scenarios for simulator
   const loadScenario = (type: "standard" | "leave" | "unsubmitted" | "window" | "invalid_phone" | "duplicate") => {
@@ -214,54 +211,67 @@ export function PoliciesManager() {
     toast.success(`Simulation evaluated: ${res.decision}`);
   };
 
-  const handleActivatePolicy = async (id: string) => {
-    const res = await activatePolicyAction(id);
-    if (res.success && res.policy) {
-      toast.success(`${res.policy.name} is now the active live policy.`);
-      setPolicies((prev) =>
-        prev.map((p) => (p.id === id ? { ...p, status: "ACTIVE" } : p.status === "ACTIVE" ? { ...p, status: "ARCHIVED" } : p))
-      );
-    } else {
-      toast.error(res.error || "Failed to activate policy.");
-    }
+  const handleActivatePolicy = (id: string) => {
+    activateMutation.mutate(id, {
+      onSuccess: (res) => {
+        if (res.success && res.policy) {
+          toast.success(`${res.policy.name} is now the active live policy.`);
+        } else {
+          toast.error(res.error || "Failed to activate policy.");
+        }
+      },
+      onError: (err: any) => {
+        toast.error(err.message || "Failed to activate policy.");
+      },
+    });
   };
 
-  const handleDuplicatePolicy = async (id: string) => {
-    const res = await duplicatePolicyAction(id);
-    if (res.success && res.policy) {
-      toast.success(`Duplicated policy as draft: ${res.policy.name}`);
-      setPolicies((prev) => [res.policy!, ...prev]);
-    }
+  const handleDuplicatePolicy = (id: string) => {
+    duplicateMutation.mutate(id, {
+      onSuccess: (res) => {
+        if (res.success && res.policy) {
+          toast.success(`Duplicated policy as draft: ${res.policy.name}`);
+        } else {
+          toast.error(res.error || "Failed to duplicate policy.");
+        }
+      },
+      onError: (err: any) => {
+        toast.error(err.message || "Failed to duplicate policy.");
+      },
+    });
   };
 
-  const handleArchivePolicy = async (id: string) => {
-    const res = await archivePolicyAction(id);
-    if (res.success) {
-      toast.success("Policy archived.");
-      setPolicies((prev) =>
-        prev.map((p) => (p.id === id ? { ...p, status: "ARCHIVED" } : p))
-      );
-    } else {
-      toast.error(res.error || "Cannot archive active policy.");
-    }
+  const handleArchivePolicy = (id: string) => {
+    archiveMutation.mutate(id, {
+      onSuccess: (res) => {
+        if (res.success) {
+          toast.success("Policy archived.");
+        } else {
+          toast.error(res.error || "Cannot archive active policy.");
+        }
+      },
+      onError: (err: any) => {
+        toast.error(err.message || "Failed to archive policy.");
+      },
+    });
   };
 
-  const handleCreatePolicy = async () => {
-    setIsSubmitting(true);
-    try {
-      const res = await createDraftPolicyAction(newPolicy);
-      if (res.success && res.policy) {
-        toast.success(`Draft policy created: ${res.policy.name}`);
-        setPolicies((prev) => [res.policy!, ...prev]);
-        setIsWizardOpen(false);
-        setWizardStep(1);
-        setActiveTab("all");
-      }
-    } catch {
-      toast.error("Error creating draft policy.");
-    } finally {
-      setIsSubmitting(false);
-    }
+  const handleCreatePolicy = () => {
+    createDraftMutation.mutate(newPolicy, {
+      onSuccess: (res) => {
+        if (res.success && res.policy) {
+          toast.success(`Draft policy created: ${res.policy.name}`);
+          setIsWizardOpen(false);
+          setWizardStep(1);
+          setActiveTab("all");
+        } else {
+          toast.error(res.error || "Error creating draft policy.");
+        }
+      },
+      onError: (err: any) => {
+        toast.error(err.message || "Error creating draft policy.");
+      },
+    });
   };
 
   return (
