@@ -77,9 +77,6 @@ export default async function AttendancePage({ searchParams }: AttendancePagePro
               <CalendarCheck className="size-6 text-emerald-600" />
               Daily Attendance
             </h1>
-            <p className="text-sm text-slate-500 mt-1">
-              Class authorization security guard.
-            </p>
           </div>
 
           <Card className="border-red-200 dark:border-red-900/60 bg-red-50/40 dark:bg-red-950/20">
