@@ -599,7 +599,7 @@ function ShellInner({ user, children }: DashboardShellProps) {
         {/* Main Content Area (Offset for fixed sidebar on md+) */}
         <main
           className={cn(
-            "flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto w-full transition-all duration-200 min-h-[calc(100vh-3.5rem)]",
+            "flex-1 p-4 sm:p-6 lg:p-8 w-full transition-all duration-200 min-h-[calc(100vh-3.5rem)]",
             collapsed ? "md:ml-16" : "md:ml-60"
           )}
         >

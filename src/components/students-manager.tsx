@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { StudentForm, type StudentItem } from "@/components/student-form";
+import { BulkImportModal } from "@/components/bulk-import-modal";
 import { toggleStudentActive } from "@/actions/student.actions";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
@@ -34,6 +35,7 @@ import {
   Check,
   ShieldCheck,
   Smartphone,
+  FileSpreadsheet,
 } from "lucide-react";
 
 interface StudentsManagerProps {
@@ -53,6 +55,7 @@ export function StudentsManager({
   const [selectedClassId, setSelectedClassId] = React.useState<string>("ALL");
   const [showInactive, setShowInactive] = React.useState(false);
   const [isFormOpen, setIsFormOpen] = React.useState(false);
+  const [isBulkImportOpen, setIsBulkImportOpen] = React.useState(false);
   const [editingStudent, setEditingStudent] = React.useState<StudentItem | null>(null);
   const [isTogglingId, setIsTogglingId] = React.useState<string | null>(null);
   const [copiedPhoneId, setCopiedPhoneId] = React.useState<string | null>(null);
@@ -428,15 +431,26 @@ export function StudentsManager({
 
       {/* Centered Dialog for Create / Edit */}
       {isAdmin && (
-        <StudentForm
-          open={isFormOpen}
-          onOpenChange={setIsFormOpen}
-          classes={classes}
-          student={editingStudent}
-          onSuccess={() => {
-            // State revalidated via router.refresh()
-          }}
-        />
+        <>
+          <StudentForm
+            open={isFormOpen}
+            onOpenChange={setIsFormOpen}
+            classes={classes}
+            student={editingStudent}
+            onSuccess={() => {
+              // State revalidated via router.refresh()
+            }}
+          />
+
+          <BulkImportModal
+            open={isBulkImportOpen}
+            onOpenChange={setIsBulkImportOpen}
+            classes={classes}
+            onSuccess={() => {
+              // State revalidated via router.refresh()
+            }}
+          />
+        </>
       )}
     </div>
   );

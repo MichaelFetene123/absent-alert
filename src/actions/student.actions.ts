@@ -8,7 +8,7 @@ import {
   type StudentInput,
   type UpdateStudentInput,
 } from "@/lib/validations/student";
-import { updateTag, cacheTag } from "next/cache";
+import { updateTag, cacheTag, revalidatePath } from "next/cache";
 import { CACHE_TAGS } from "@/components/cacheTag";
 
 export type ActionResult<T = unknown> = {
@@ -67,6 +67,170 @@ export async function createStudent(input: unknown): Promise<ActionResult> {
     return { ok: true, data: { id: student.id, admissionNo, fullName } };
   } catch (error: any) {
     return { ok: false, error: error.message || "Failed to create student" };
+  }
+}
+
+// ---------------------------------------------------------------------------
+// BULK IMPORT
+// ---------------------------------------------------------------------------
+export type BulkImportRowInput = {
+  admissionNo: string;
+  fullName: string;
+  classNameOrId: string;
+  guardianName: string;
+  guardianPhone: string;
+};
+
+export type BulkImportResult = {
+  importedCount: number;
+  skippedCount: number;
+  errors: Array<{ row: number; admissionNo: string; error: string }>;
+};
+
+export async function bulkImportStudentsAction(
+  rows: BulkImportRowInput[]
+): Promise<ActionResult<BulkImportResult>> {
+  try {
+    await requireAdmin();
+
+    if (!Array.isArray(rows) || rows.length === 0) {
+      return { ok: false, error: "No student records provided for import" };
+    }
+
+    if (rows.length > 500) {
+      return { ok: false, error: "Cannot import more than 500 students in a single batch" };
+    }
+
+    // Preload all classes for matching
+    const allClasses = await db.orm.public.Class.all();
+    const classMap = new Map<string, string>();
+    for (const c of allClasses) {
+      classMap.set(c.id.toLowerCase(), c.id);
+      classMap.set(c.name.toLowerCase().trim(), c.id);
+    }
+
+    // Preload existing admission numbers
+    const existingStudents = await db.orm.public.Student.all();
+    const existingAdmissionNos = new Set(
+      existingStudents.map((s) => s.admissionNo.toLowerCase().trim())
+    );
+
+    const batchAdmissionNos = new Set<string>();
+    const errors: Array<{ row: number; admissionNo: string; error: string }> = [];
+    const validRowsToCreate: Array<{
+      admissionNo: string;
+      fullName: string;
+      classId: string;
+      guardianName: string;
+      guardianPhone: string;
+    }> = [];
+
+    // Import normalizePhone dynamically or from validations
+    const { normalizePhone } = await import("@/lib/validations/common");
+
+    for (let i = 0; i < rows.length; i++) {
+      const r = rows[i];
+      const rowNum = i + 1;
+      const adm = (r.admissionNo || "").trim();
+      const name = (r.fullName || "").trim();
+      const clsKey = (r.classNameOrId || "").toLowerCase().trim();
+      const gName = (r.guardianName || "").trim();
+      const gPhone = (r.guardianPhone || "").trim();
+
+      if (!adm) {
+        errors.push({ row: rowNum, admissionNo: adm, error: "Missing admission number" });
+        continue;
+      }
+
+      if (adm.length > 30) {
+        errors.push({ row: rowNum, admissionNo: adm, error: "Admission number exceeds 30 characters" });
+        continue;
+      }
+
+      const lowerAdm = adm.toLowerCase();
+      if (existingAdmissionNos.has(lowerAdm)) {
+        errors.push({ row: rowNum, admissionNo: adm, error: `Student with admission #${adm} already exists in database` });
+        continue;
+      }
+
+      if (batchAdmissionNos.has(lowerAdm)) {
+        errors.push({ row: rowNum, admissionNo: adm, error: `Duplicate admission #${adm} within this import file` });
+        continue;
+      }
+
+      if (!name || name.length < 2) {
+        errors.push({ row: rowNum, admissionNo: adm, error: "Student name must be at least 2 characters" });
+        continue;
+      }
+
+      const matchedClassId = classMap.get(clsKey);
+      if (!matchedClassId) {
+        errors.push({
+          row: rowNum,
+          admissionNo: adm,
+          error: `Class '${r.classNameOrId}' not found. Available: ${allClasses.map((c) => c.name).join(", ")}`,
+        });
+        continue;
+      }
+
+      if (!gName || gName.length < 2) {
+        errors.push({ row: rowNum, admissionNo: adm, error: "Guardian name must be at least 2 characters" });
+        continue;
+      }
+
+      let normalizedPhone: string;
+      try {
+        normalizedPhone = normalizePhone(gPhone);
+      } catch (err: any) {
+        errors.push({
+          row: rowNum,
+          admissionNo: adm,
+          error: err.message || `Invalid Ethiopian phone number: '${gPhone}'`,
+        });
+        continue;
+      }
+
+      batchAdmissionNos.add(lowerAdm);
+      validRowsToCreate.push({
+        admissionNo: adm,
+        fullName: name,
+        classId: matchedClassId,
+        guardianName: gName,
+        guardianPhone: normalizedPhone,
+      });
+    }
+
+    // Persist all valid rows
+    let importedCount = 0;
+    for (const valid of validRowsToCreate) {
+      const student = await db.orm.public.Student.create({
+        admissionNo: valid.admissionNo,
+        fullName: valid.fullName,
+        classId: valid.classId,
+        active: true,
+      });
+
+      await db.orm.public.Guardian.create({
+        studentId: student.id,
+        name: valid.guardianName,
+        phone: valid.guardianPhone,
+        isPrimary: true,
+      });
+
+      importedCount++;
+    }
+
+    revalidatePath("/students");
+    return {
+      ok: true,
+      data: {
+        importedCount,
+        skippedCount: errors.length,
+        errors,
+      },
+    };
+  } catch (error: any) {
+    return { ok: false, error: error.message || "Failed to bulk import students" };
   }
 }
 
