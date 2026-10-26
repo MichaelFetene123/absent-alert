@@ -5,8 +5,23 @@ import { loginAction, type AuthActionResult } from "@/actions/auth.actions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { Bell, Lock, Mail, ShieldAlert } from "lucide-react";
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
+import {
+  Bell,
+  Lock,
+  Mail,
+  ShieldAlert,
+  CheckCircle2,
+  Eye,
+  EyeOff,
+  Sparkles,
+  ShieldCheck,
+  Zap,
+  GraduationCap,
+  ArrowRight,
+} from "lucide-react";
+import { ThemeToggle } from "@/components/theme-toggle";
+import { cn } from "@/lib/utils";
 
 export default function LoginPage() {
   const [state, formAction, isPending] = useActionState<AuthActionResult | null, FormData>(
@@ -53,12 +68,55 @@ export default function LoginPage() {
           <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">
             AbsentAlert
           </h1>
+          <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 max-w-xs mx-auto">
+            Attendance tracking &amp; automated guardian SMS alerts
+          </p>
         </div>
 
-        {/* Login Card */}
-        <Card className="border border-slate-200 dark:border-slate-800 shadow-md">
-          <CardHeader className="space-y-1 pb-4">
-            <CardTitle className="text-xl">Sign in</CardTitle>
+        {/* Login Glassmorphism Card */}
+        <Card className="border border-slate-200/80 dark:border-slate-800/80 bg-white/85 dark:bg-slate-900/80 backdrop-blur-xl shadow-xl shadow-slate-200/50 dark:shadow-slate-950/50 rounded-2xl overflow-hidden">
+          {/* Quick Demo Switcher Tabs */}
+          <div className="p-2 border-b border-slate-100 dark:border-slate-800/80 bg-slate-50/70 dark:bg-slate-950/50">
+            <div className="grid grid-cols-2 gap-1.5 p-1 rounded-xl bg-slate-200/60 dark:bg-slate-800/60">
+              <button
+                type="button"
+                onClick={() => fillCredentials("admin")}
+                className={cn(
+                  "flex items-center justify-center gap-2 py-2 px-3 rounded-lg text-xs font-semibold transition-all duration-200",
+                  activeTab === "admin"
+                    ? "bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-xs"
+                    : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
+                )}
+              >
+                <ShieldCheck className="size-3.5 text-purple-600 dark:text-purple-400" />
+                <span>Admin Login</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => fillCredentials("teacher")}
+                className={cn(
+                  "flex items-center justify-center gap-2 py-2 px-3 rounded-lg text-xs font-semibold transition-all duration-200",
+                  activeTab === "teacher"
+                    ? "bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-xs"
+                    : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
+                )}
+              >
+                <GraduationCap className="size-3.5 text-blue-600 dark:text-blue-400" />
+                <span>Teacher Login</span>
+              </button>
+            </div>
+          </div>
+
+          <CardHeader className="space-y-1 pb-3 pt-5 px-6">
+            <CardTitle className="text-lg font-bold text-slate-900 dark:text-white">
+              {activeTab === "admin" ? "Administrator Access" : "Teacher Access"}
+            </CardTitle>
+            <CardDescription className="text-xs text-slate-500 dark:text-slate-400">
+              {activeTab === "admin"
+                ? "Full control over classes, teachers, student rosters, and SMS dispatch history."
+                : "Mark daily class attendance for Class 7 B and track student trends."}
+            </CardDescription>
           </CardHeader>
 
           <CardContent className="space-y-4 px-6 pb-6 pt-0">

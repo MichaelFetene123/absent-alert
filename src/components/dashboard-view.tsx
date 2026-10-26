@@ -24,7 +24,7 @@ import {
   Coins,
   AlertTriangle,
 } from "lucide-react";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -95,8 +95,13 @@ export function DashboardView({ data, user }: Props) {
               {locale === "am" ? "የትምህርት ቤት አቴንዳንስ ዳሽቦርድ" : "School Attendance & Alerts"}
             </h1>
           </div>
-          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-            {todayFormatted}
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 font-medium">
+            {new Date(data.todayDate).toLocaleDateString(locale === "am" ? "am-ET" : "en-US", {
+              weekday: "long",
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            })}
           </p>
         </div>
 
@@ -187,6 +192,9 @@ export function DashboardView({ data, user }: Props) {
               </span>
               <span className="text-[11px] text-slate-400">Unexcused</span>
             </div>
+            <p className="text-[11px] text-slate-400 mt-0.5">
+              Automated SMS evaluated
+            </p>
           </CardContent>
         </Card>
 
@@ -211,57 +219,80 @@ export function DashboardView({ data, user }: Props) {
         </Card>
       </div>
 
-      {/* Main Two-Column Content Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Left Column (Span 2): Unmarked Classes & Today's Absent Students */}
-        <div className="lg:col-span-2 space-y-6">
-          {/* Pending / Unmarked Classes Card */}
-          <Card className="border-slate-200 dark:border-slate-800 shadow-xs">
-            <CardHeader className="pb-3">
-              <div className="flex items-center justify-between">
-                <div>
-                  <CardTitle className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                    <School className="size-5 text-emerald-600" />
-                    Today&apos;s Class Attendance Status
-                  </CardTitle>
-                </div>
+      {/* The 5 Critical Questions Interactive Workspace */}
+      <Card className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs overflow-hidden">
+        <CardHeader className="p-4 pb-2 border-b border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/40">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <div>
+              <CardTitle className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                <ShieldCheck className="size-4 text-indigo-600" />
+                <span>Immediate School Operations Intelligence</span>
+              </CardTitle>
+              <CardDescription className="text-xs">
+                Answers to the 5 primary attendance and parent notification questions.
+              </CardDescription>
+            </div>
 
-                <Badge
-                  variant={data.unmarkedClasses.length > 0 ? "outline" : "default"}
-                  className={
-                    data.unmarkedClasses.length > 0
-                      ? "border-amber-300 text-amber-800 bg-amber-50 dark:bg-amber-950/40 dark:text-amber-300"
-                      : "bg-emerald-600 text-white"
-                  }
-                >
-                  {data.unmarkedClasses.length > 0
-                    ? `${data.unmarkedClasses.length} Pending`
-                    : "All Marked"}
-                </Badge>
-              </div>
-            </CardHeader>
-            <CardContent>
-              {data.unmarkedClasses.length > 0 ? (
-                <div className="space-y-3">
-                  <div className="divide-y divide-slate-100 dark:divide-slate-800 rounded-lg border border-slate-200 dark:border-slate-800 overflow-hidden">
-                    {data.unmarkedClasses.map((cls) => (
-                      <div
-                        key={cls.id}
-                        className="p-3 bg-white dark:bg-slate-900/60 flex items-center justify-between gap-3 hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors"
-                      >
-                        <div className="flex items-center gap-2.5">
-                          <div className="p-2 bg-amber-50 dark:bg-amber-950/50 rounded text-amber-600">
-                            <Clock className="size-4" />
-                          </div>
-                          <div>
-                            <span className="font-semibold text-sm text-slate-900 dark:text-white block">
-                              {cls.name}
-                            </span>
-                            <span className="text-xs text-slate-500 dark:text-slate-400">
-                              {cls.studentCount} active students
-                            </span>
-                          </div>
-                        </div>
+            {/* Question Selector Tabs */}
+            <div className="flex flex-wrap gap-1 bg-slate-200/60 dark:bg-slate-800 p-1 rounded-lg">
+              <button
+                type="button"
+                onClick={() => setActiveQuestionTab("absent")}
+                className={`px-2.5 py-1 text-xs rounded-md font-medium transition-all ${
+                  activeQuestionTab === "absent"
+                    ? "bg-white dark:bg-slate-900 text-indigo-600 dark:text-indigo-300 shadow-xs font-bold"
+                    : "text-slate-600 dark:text-slate-400 hover:text-slate-900"
+                }`}
+              >
+                1. Absent Today ({data.todayStats.absent})
+              </button>
+              <button
+                type="button"
+                onClick={() => setActiveQuestionTab("missing")}
+                className={`px-2.5 py-1 text-xs rounded-md font-medium transition-all ${
+                  activeQuestionTab === "missing"
+                    ? "bg-white dark:bg-slate-900 text-indigo-600 dark:text-indigo-300 shadow-xs font-bold"
+                    : "text-slate-600 dark:text-slate-400 hover:text-slate-900"
+                }`}
+              >
+                2. Missing Submissions ({data.unmarkedClasses.length})
+              </button>
+              <button
+                type="button"
+                onClick={() => setActiveQuestionTab("notified")}
+                className={`px-2.5 py-1 text-xs rounded-md font-medium transition-all ${
+                  activeQuestionTab === "notified"
+                    ? "bg-white dark:bg-slate-900 text-indigo-600 dark:text-indigo-300 shadow-xs font-bold"
+                    : "text-slate-600 dark:text-slate-400 hover:text-slate-900"
+                }`}
+              >
+                3. Notified Guardians ({notifiedAbsentStudents.length})
+              </button>
+              <button
+                type="button"
+                onClick={() => setActiveQuestionTab("failed")}
+                className={`px-2.5 py-1 text-xs rounded-md font-medium transition-all ${
+                  activeQuestionTab === "failed"
+                    ? "bg-white dark:bg-slate-900 text-indigo-600 dark:text-indigo-300 shadow-xs font-bold"
+                    : "text-slate-600 dark:text-slate-400 hover:text-slate-900"
+                }`}
+              >
+                4. Action Required ({data.recentFailedNotifications.length})
+              </button>
+              <button
+                type="button"
+                onClick={() => setActiveQuestionTab("recurring")}
+                className={`px-2.5 py-1 text-xs rounded-md font-medium transition-all ${
+                  activeQuestionTab === "recurring"
+                    ? "bg-white dark:bg-slate-900 text-indigo-600 dark:text-indigo-300 shadow-xs font-bold"
+                    : "text-slate-600 dark:text-slate-400 hover:text-slate-900"
+                }`}
+              >
+                5. Recurring Absences
+              </button>
+            </div>
+          </div>
+        </CardHeader>
 
         <CardContent className="p-0">
           {/* Question 1: Which students are absent today? */}
@@ -321,19 +352,8 @@ export function DashboardView({ data, user }: Props) {
                   </TableBody>
                 </Table>
               )}
-            </CardContent>
-          </Card>
-
-          {/* Today's Absent Students Card */}
-          <Card className="border-slate-200 dark:border-slate-800 shadow-xs">
-            <CardHeader className="pb-3">
-              <div className="flex items-center justify-between">
-                <div>
-                  <CardTitle className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                    <AlertCircle className="size-5 text-rose-600" />
-                    Today&apos;s Absent Students ({data.todayAbsentStudents.length})
-                  </CardTitle>
-                </div>
+            </div>
+          )}
 
           {/* Question 2: Which teachers have not submitted attendance? */}
           {activeQuestionTab === "missing" && (
@@ -343,6 +363,9 @@ export function DashboardView({ data, user }: Props) {
                   <CheckCheck className="size-6 text-emerald-500 mx-auto" />
                   <p className="text-xs font-semibold text-slate-700 dark:text-slate-300">
                     All classroom rosters submitted for today
+                  </p>
+                  <p className="text-[11px] text-slate-400">
+                    No missing submissions. 100% of teachers have completed attendance.
                   </p>
                 </div>
               ) : (
@@ -385,29 +408,17 @@ export function DashboardView({ data, user }: Props) {
             </div>
           )}
 
-        {/* Right Column (Span 1): SMS Health & Recent Failures */}
-        <div className="space-y-6">
-          {/* SMS Notification Summary */}
-          <Card className="border-slate-200 dark:border-slate-800 shadow-xs">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                <History className="size-5 text-purple-600" />
-                SMSHub Dispatch Health
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid grid-cols-2 gap-3 text-xs">
-                <div className="p-3 rounded-lg bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-100 dark:border-emerald-900/40">
-                  <span className="text-emerald-700 dark:text-emerald-400 block font-medium">Accepted</span>
-                  <span className="text-xl font-bold text-emerald-900 dark:text-emerald-200">
-                    {data.smsSummary.accepted}
-                  </span>
-                </div>
-                <div className="p-3 rounded-lg bg-rose-50 dark:bg-rose-950/30 border border-rose-100 dark:border-rose-900/40">
-                  <span className="text-rose-700 dark:text-rose-400 block font-medium">Failed</span>
-                  <span className="text-xl font-bold text-rose-900 dark:text-rose-200">
-                    {data.smsSummary.failed}
-                  </span>
+          {/* Question 3: Which absent students have had guardians notified? */}
+          {activeQuestionTab === "notified" && (
+            <div className="overflow-x-auto">
+              {notifiedAbsentStudents.length === 0 ? (
+                <div className="py-8 text-center text-slate-500 space-y-1">
+                  <p className="text-xs font-medium text-slate-700 dark:text-slate-300">
+                    No guardian absence notifications sent yet today
+                  </p>
+                  <p className="text-[11px] text-slate-400">
+                    Submit classroom attendance with absent students to automatically notify parents.
+                  </p>
                 </div>
               ) : (
                 <Table>
@@ -444,27 +455,17 @@ export function DashboardView({ data, user }: Props) {
             </div>
           )}
 
-          {/* Recent Failed Notifications */}
-          <Card className="border-slate-200 dark:border-slate-800 shadow-xs">
-            <CardHeader className="pb-3">
-              <div className="flex items-center justify-between">
-                <CardTitle className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                  <AlertCircle className="size-5 text-rose-600" />
-                  Failed SMS Queue ({data.recentFailedNotifications.length})
-                </CardTitle>
-                {data.recentFailedNotifications.length > 0 && (
-                  <Link href="/notifications?status=FAILED">
-                    <span className="text-xs text-purple-600 hover:underline">View All</span>
-                  </Link>
-                )}
-              </div>
-            </CardHeader>
-            <CardContent>
+          {/* Question 4: Which notifications failed or require attention? */}
+          {activeQuestionTab === "failed" && (
+            <div className="overflow-x-auto">
               {data.recentFailedNotifications.length === 0 ? (
                 <div className="py-8 text-center text-slate-500 space-y-1">
                   <CheckCircle2 className="size-6 text-emerald-500 mx-auto" />
                   <p className="text-xs font-semibold text-slate-700 dark:text-slate-300">
                     Zero failed notifications
+                  </p>
+                  <p className="text-[11px] text-slate-400">
+                    All dispatched parent notifications accepted by provider without errors.
                   </p>
                 </div>
               ) : (

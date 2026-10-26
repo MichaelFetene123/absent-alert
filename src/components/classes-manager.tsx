@@ -582,28 +582,6 @@ export function ClassesManager({
             </DialogTitle>
           </DialogHeader>
 
-          <form onSubmit={handleCreateClass} className="space-y-4 py-2">
-            {!createUseCustom ? (
-              <div className="grid grid-cols-2 gap-3">
-                {/* Grade */}
-                <div className="space-y-1.5">
-                  <Label htmlFor="create-grade" className="text-xs font-semibold">
-                    Grade Level
-                  </Label>
-                  <select
-                    id="create-grade"
-                    value={createGrade}
-                    onChange={(e) => setCreateGrade(e.target.value)}
-                    className="w-full h-9 px-3 rounded-md border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-sm font-medium"
-                    required
-                  >
-                    {COMMON_GRADES.map((g) => (
-                      <option key={g} value={g}>
-                        {g}
-                      </option>
-                    ))}
-                  </select>
-                </div>
 
             <form onSubmit={handleCreateClass} className="space-y-4 py-2">
               {!createUseCustom ? (
