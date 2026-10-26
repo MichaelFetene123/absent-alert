@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { CalendarCheck, Shield, GraduationCap, ShieldAlert, School } from "lucide-react";
 import Link from "next/link";
 
+export const instant = false;
 
 interface AttendancePageProps {
   searchParams: Promise<{

@@ -9,6 +9,8 @@ import { Button } from "@/components/ui/button";
 import { CalendarDays, School, ShieldAlert } from "lucide-react";
 import Link from "next/link";
 
+export const instant = false;
+
 type SearchParamsPromise = Promise<{
   classId?: string;
   startDate?: string;

@@ -2,6 +2,8 @@ import { requireUser } from "@/lib/guards";
 import { getDashboardOverview } from "@/lib/services/attendance.service";
 import { DashboardView } from "@/components/dashboard-view";
 
+export const instant = false;
+
 export default async function DashboardPage() {
   const user = await requireUser();
 
