@@ -12,11 +12,25 @@ const globalForDb = globalThis as unknown as {
   prismaDb?: ReturnType<typeof postgres<Contract>>;
 };
 
+import "dotenv/config";
+
+export function getSanitizedDatabaseUrl(rawUrl?: string): string {
+  const fallbackUrl = "postgresql://mock:mock@localhost:5432/mock?sslmode=disable";
+  const url = rawUrl || process.env["DATABASE_URL"] || fallbackUrl;
+  // In pg/pg-connection-string, 'sslmode=require' emits a security deprecation warning advising
+  // explicit 'sslmode=verify-full' or 'uselibpqcompat=true&sslmode=require'.
+  // Using 'sslmode=verify-full' preserves strong certificate validation and suppresses the warning.
+  if (url.includes("sslmode=require") && !url.includes("uselibpqcompat=true")) {
+    return url.replace("sslmode=require", "sslmode=verify-full");
+  }
+  return url;
+}
+
 export const db =
   globalForDb.prismaDb ??
   postgres<Contract>({
     contractJson,
-    url: process.env["DATABASE_URL"]!,
+    url: getSanitizedDatabaseUrl(),
     poolOptions: {
       connectionTimeoutMillis: 60_000,
       idleTimeoutMillis: 30_000,

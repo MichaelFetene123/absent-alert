@@ -389,7 +389,7 @@ export function BulkImportModal({
                               className="inline-flex items-center gap-1 text-[10px] text-amber-600 dark:text-amber-400 font-medium"
                             >
                               <AlertCircle className="size-3.5 shrink-0" />
-                              <span className="truncate max-w-[80px]">{row.errorNote || "Check"}</span>
+                              <span className="truncate max-w-20">{row.errorNote || "Check"}</span>
                             </span>
                           )}
                         </TableCell>

@@ -12,11 +12,20 @@ const globalForDb = globalThis as unknown as {
   prismaDb?: ReturnType<typeof postgres<Contract>>;
 };
 
+export function getSanitizedDatabaseUrl(rawUrl?: string): string {
+  const url = rawUrl || process.env["DATABASE_URL"] || "";
+  if (!url) return "";
+  if (url.includes("sslmode=require") && !url.includes("uselibpqcompat=true")) {
+    return url.replace("sslmode=require", "sslmode=verify-full");
+  }
+  return url;
+}
+
 export const db =
   globalForDb.prismaDb ??
   postgres<Contract>({
     contractJson,
-    url: process.env["DATABASE_URL"]!,
+    url: getSanitizedDatabaseUrl(),
     poolOptions: {
       connectionTimeoutMillis: 60_000,
       idleTimeoutMillis: 30_000,
