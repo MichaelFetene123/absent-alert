@@ -281,6 +281,20 @@ function ShellInner({ user, children }: DashboardShellProps) {
     i.title.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  const allHrefs = React.useMemo(
+    () => allNavItems.map((i) => i.href),
+    [allNavItems]
+  );
+
+  const checkIsActive = React.useCallback(
+    (href: string) => {
+      if (pathname === href) return true;
+      if (allHrefs.includes(pathname)) return false;
+      return href !== "/dashboard" && pathname.startsWith(href + "/");
+    },
+    [pathname, allHrefs]
+  );
+
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col antialiased">
       {/* Top Universal Navbar */}
@@ -460,9 +474,7 @@ function ShellInner({ user, children }: DashboardShellProps) {
                   <nav className="space-y-0.5">
                     {section.items.map((item) => {
                       const Icon = item.icon;
-                      const isActive =
-                        pathname === item.href ||
-                        (item.href !== "/dashboard" && pathname.startsWith(item.href));
+                      const isActive = checkIsActive(item.href);
 
                       return (
                         <Link
@@ -550,7 +562,7 @@ function ShellInner({ user, children }: DashboardShellProps) {
                     <nav className="space-y-0.5">
                       {sec.items.map((item) => {
                         const Icon = item.icon;
-                        const isActive = pathname === item.href;
+                        const isActive = checkIsActive(item.href);
                         return (
                           <Link
                             key={item.href}
