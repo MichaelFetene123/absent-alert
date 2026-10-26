@@ -10,8 +10,8 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogDescription,
   DialogFooter,
+  DialogDescription,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -132,7 +132,7 @@ export function StudentForm({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md w-full overflow-y-auto rounded-3xl border-slate-200 dark:border-slate-800 p-6">
+      <DialogContent className="sm:max-w-lg max-h-[90vh] overflow-y-auto rounded-3xl border-slate-200 dark:border-slate-800 p-6">
         <DialogHeader className="pb-4 border-b border-slate-100 dark:border-slate-800">
           <div className="flex items-center gap-2.5">
             <div className="p-2 rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400">
@@ -252,9 +252,6 @@ export function StudentForm({
                 {...register("guardianPhone")}
                 className={`h-10 rounded-xl font-mono text-sm ${errors.guardianPhone ? "border-red-500" : ""}`}
               />
-              <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">
-                Ethiopian mobile number. System automatically sanitizes and normalizes to E.164 (+251...) format for SMSHub.
-              </p>
               {errors.guardianPhone && (
                 <p className="text-xs text-red-600">{errors.guardianPhone.message}</p>
               )}

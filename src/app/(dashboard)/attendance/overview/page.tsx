@@ -33,9 +33,6 @@ export default async function AttendanceOverviewPage({
             <CalendarDays className="size-6 text-blue-600" />
             Two-Week Attendance Overview
           </h1>
-          <p className="text-sm text-slate-500 mt-1">
-            Bi-weekly attendance trend grid and absence reporting.
-          </p>
         </div>
 
         <Card className="border-amber-200 dark:border-amber-900/60 bg-amber-50/30 dark:bg-amber-950/20">
@@ -80,9 +77,6 @@ export default async function AttendanceOverviewPage({
             <CalendarDays className="size-6 text-blue-600" />
             Two-Week Attendance Overview
           </h1>
-          <p className="text-sm text-slate-500 mt-1">
-            Role-guarded attendance view.
-          </p>
         </div>
 
         <Card className="border-rose-200 dark:border-rose-900/60 bg-rose-50/30 dark:bg-rose-950/20">

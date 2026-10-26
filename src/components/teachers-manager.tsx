@@ -16,7 +16,6 @@ import {
   Trash2,
   AlertTriangle,
   CheckCircle2,
-  AlertCircle,
   Loader2,
   Lock,
   Mail,
@@ -42,7 +41,6 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogDescription,
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
@@ -534,9 +532,6 @@ export function TeachersManager({
                 <GraduationCap className="size-5 text-purple-600" />
                 <span>Register Faculty Member</span>
               </DialogTitle>
-              <DialogDescription className="text-xs">
-                Create a teacher credentials login and assign initial classroom rosters.
-              </DialogDescription>
             </DialogHeader>
 
             <form onSubmit={handleCreateTeacher} className="space-y-4 py-2">
@@ -643,9 +638,6 @@ export function TeachersManager({
                 <Edit2 className="size-5 text-purple-600" />
                 <span>Edit Faculty: {editingTeacher.name}</span>
               </DialogTitle>
-              <DialogDescription className="text-xs">
-                Update account details, reset password, or adjust class assignments.
-              </DialogDescription>
             </DialogHeader>
 
             <form onSubmit={handleUpdateTeacher} className="space-y-4 py-2">
@@ -685,8 +677,6 @@ export function TeachersManager({
                   type="password"
                   value={editPassword}
                   onChange={(e) => setEditPassword(e.target.value)}
-                  placeholder="••••••••"
-                  className="h-10 rounded-xl font-mono text-sm"
                 />
               </div>
 
@@ -746,57 +736,104 @@ export function TeachersManager({
         <Dialog open={!!deletingTeacher} onOpenChange={(open) => !open && setDeletingTeacher(null)}>
           <DialogContent className="sm:max-w-md rounded-2xl">
             <DialogHeader>
-              <div className="flex items-center gap-2 text-rose-600 mb-1">
-                <div className="p-2 bg-rose-500/10 rounded-xl">
-                  <AlertTriangle className="size-5" />
-                </div>
-                <DialogTitle className="text-lg font-bold">
-                  Delete Faculty Account
-                </DialogTitle>
-              </div>
-              <DialogDescription className="text-sm pt-2 leading-relaxed">
-                Are you certain you want to permanently delete teacher <strong>&quot;{deletingTeacher.name}&quot;</strong>?
-              </DialogDescription>
+              <DialogTitle className="flex items-center gap-2 text-red-600">
+                <AlertTriangle className="size-5" />
+                <span>Delete Teacher: {deletingTeacher.name}</span>
+              </DialogTitle>
             </DialogHeader>
 
-            {deletingTeacher.assignedClasses.length > 0 ? (
-              <div className="p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/20 text-xs text-rose-800 dark:text-rose-300">
-                <strong>Deletion Blocked:</strong> Teacher is actively assigned to {deletingTeacher.assignedClasses.length} class(es). Unassign all classes first.
-              </div>
-            ) : deletingTeacher.markedAttendanceCount > 0 ? (
-              <div className="p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/20 text-xs text-rose-800 dark:text-rose-300">
-                <strong>Audit Lock:</strong> This teacher has {deletingTeacher.markedAttendanceCount} marked attendance records on file. Deleting is prevented to preserve historical school audit integrity.
-              </div>
-            ) : (
-              <p className="text-xs text-slate-500">
-                This account has 0 class assignments and 0 historical attendance records, and can be removed safely.
-              </p>
-            )}
+            <div className="space-y-4 py-2">
+              {deletingTeacher.assignedClasses.length > 0 ? (
+                // DEPENDENCY BLOCKED 1: Active Class Assignments
+                <div className="space-y-4">
+                  <p className="text-sm text-slate-600 dark:text-slate-300">
+                    This teacher is assigned to{" "}
+                    <strong>{deletingTeacher.assignedClasses.length} classroom(s)</strong>:{" "}
+                    {deletingTeacher.assignedClasses.map((c) => c.name).join(", ")}. Unassign them
+                    from all classes before deleting the account.
+                  </p>
 
-            <DialogFooter className="pt-4">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => setDeletingTeacher(null)}
-                className="rounded-xl text-xs"
-              >
-                Cancel
-              </Button>
-              <Button
-                type="button"
-                variant="destructive"
-                disabled={
-                  isDeleting ||
-                  deletingTeacher.assignedClasses.length > 0 ||
-                  deletingTeacher.markedAttendanceCount > 0
-                }
-                onClick={handleDeleteTeacher}
-                className="rounded-xl text-xs font-semibold"
-              >
-                {isDeleting ? <Loader2 className="size-4 animate-spin mr-1.5" /> : null}
-                Delete Account
-              </Button>
-            </DialogFooter>
+                  <div className="flex justify-end gap-2 pt-2">
+                    <Button
+                      id="close-delete-teacher-blocked-btn"
+                      variant="outline"
+                      onClick={() => setDeletingTeacher(null)}
+                    >
+                      Close
+                    </Button>
+                    <Button
+                      id="edit-to-unassign-btn"
+                      onClick={() => {
+                        const target = deletingTeacher;
+                        setDeletingTeacher(null);
+                        openEditModal(target);
+                      }}
+                      className="bg-blue-600 hover:bg-blue-700 text-white gap-1.5"
+                    >
+                      <Edit2 className="size-4" />
+                      <span>Edit & Unassign Classes</span>
+                    </Button>
+                  </div>
+                </div>
+              ) : deletingTeacher.markedAttendanceCount > 0 ? (
+                // DEPENDENCY BLOCKED 2: Marked Attendance Records (Audit Trail)
+                <div className="space-y-4">
+                  <p className="text-sm text-slate-600 dark:text-slate-300">
+                    This teacher has marked{" "}
+                    <strong>{deletingTeacher.markedAttendanceCount} attendance record(s)</strong>,
+                    so the account cannot be deleted. Historical attendance is kept for audit.
+                  </p>
+
+                  <div className="flex justify-end pt-2">
+                    <Button
+                      id="close-audit-blocked-btn"
+                      variant="outline"
+                      onClick={() => setDeletingTeacher(null)}
+                    >
+                      Close
+                    </Button>
+                  </div>
+                </div>
+              ) : (
+                // SAFE TO DELETE STATE
+                <div className="space-y-4">
+                  <p className="text-sm text-slate-600 dark:text-slate-300">
+                    Permanently delete teacher account{" "}
+                    <strong>{deletingTeacher.name}</strong> ({deletingTeacher.email})? This cannot
+                    be undone.
+                  </p>
+
+                  <DialogFooter className="pt-2">
+                    <Button
+                      type="button"
+                      id="cancel-delete-teacher-btn"
+                      variant="outline"
+                      onClick={() => setDeletingTeacher(null)}
+                      disabled={isDeleting}
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      type="button"
+                      id="confirm-delete-teacher-btn"
+                      variant="destructive"
+                      onClick={handleDeleteTeacher}
+                      disabled={isDeleting}
+                      className="cursor-pointer"
+                    >
+                      {isDeleting ? (
+                        <>
+                          <Loader2 className="size-4 animate-spin mr-1.5" />
+                          <span>Deleting...</span>
+                        </>
+                      ) : (
+                        <span>Delete Teacher</span>
+                      )}
+                    </Button>
+                  </DialogFooter>
+                </div>
+              )}
+            </div>
           </DialogContent>
         </Dialog>
       )}

@@ -24,7 +24,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import { toast } from "sonner";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -33,7 +33,6 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogDescription,
 } from "@/components/ui/dialog";
 import {
   Table,
@@ -235,12 +234,6 @@ export function NotificationsManager({
           <h1 className="text-xl font-bold tracking-tight text-slate-900 dark:text-white">
             SMS Notifications
           </h1>
-          {initialData.isAdmin && (
-            <Badge variant="outline" className="text-xs font-medium text-slate-600 dark:text-slate-400 gap-1 py-0.5 px-2">
-              <ShieldCheck className="size-3 text-slate-500" />
-              <span>Admin</span>
-            </Badge>
-          )}
         </div>
 
         <div className="flex items-center gap-2">
@@ -284,9 +277,6 @@ export function NotificationsManager({
             <div className="text-2xl font-bold text-slate-900 dark:text-white mt-1">
               {initialData.summary.total}
             </div>
-            <p className="text-[11px] text-slate-500 mt-0.5">
-              Logged audit trail
-            </p>
           </CardContent>
         </Card>
 
@@ -776,9 +766,6 @@ export function NotificationsManager({
                     SMS Delivery Details &amp; Audit Log
                   </DialogTitle>
                 </div>
-                <DialogDescription className="text-xs">
-                  Audit record for notification #{selectedNotif.id}
-                </DialogDescription>
               </DialogHeader>
 
               {/* Student and recipient summary */}

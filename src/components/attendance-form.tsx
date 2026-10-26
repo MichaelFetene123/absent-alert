@@ -649,12 +649,7 @@ export function AttendanceForm({
             </DialogDescription>
           </DialogHeader>
 
-          <div className="p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/20 text-xs text-amber-900 dark:text-amber-300 space-y-1">
-            <span className="font-bold block">Important Alert Dispatch Notice:</span>
-            <span>Once submitted, SMS alerts will be transmitted directly to all {summary.absent} parents&apos; mobile phones. Please confirm that these absences are accurate.</span>
-          </div>
-
-          <DialogFooter className="flex gap-2 sm:justify-end pt-3">
+          <DialogFooter className="flex gap-2 sm:justify-end pt-2">
             <Button
               type="button"
               variant="outline"

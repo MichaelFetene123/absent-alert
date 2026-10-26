@@ -17,7 +17,6 @@ import {
   Trash2,
   AlertTriangle,
   CheckCircle2,
-  AlertCircle,
   Loader2,
   X,
   ExternalLink,
@@ -41,7 +40,6 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogDescription,
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
@@ -576,16 +574,36 @@ export function ClassesManager({
       {/* CREATE CLASS DIALOG */}
       {isCreateOpen && (
         <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
-          <DialogContent className="sm:max-w-md rounded-2xl">
-            <DialogHeader>
-              <DialogTitle className="flex items-center gap-2 text-lg font-bold">
-                <School className="size-5 text-blue-600" />
-                <span>Create New Classroom</span>
-              </DialogTitle>
-              <DialogDescription className="text-xs">
-                Specify grade level, section identifier, and designate classroom teachers.
-              </DialogDescription>
-            </DialogHeader>
+          <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <School className="size-5 text-blue-600" />
+              <span>Create New Class</span>
+            </DialogTitle>
+          </DialogHeader>
+
+          <form onSubmit={handleCreateClass} className="space-y-4 py-2">
+            {!createUseCustom ? (
+              <div className="grid grid-cols-2 gap-3">
+                {/* Grade */}
+                <div className="space-y-1.5">
+                  <Label htmlFor="create-grade" className="text-xs font-semibold">
+                    Grade Level
+                  </Label>
+                  <select
+                    id="create-grade"
+                    value={createGrade}
+                    onChange={(e) => setCreateGrade(e.target.value)}
+                    className="w-full h-9 px-3 rounded-md border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-sm font-medium"
+                    required
+                  >
+                    {COMMON_GRADES.map((g) => (
+                      <option key={g} value={g}>
+                        {g}
+                      </option>
+                    ))}
+                  </select>
+                </div>
 
             <form onSubmit={handleCreateClass} className="space-y-4 py-2">
               {!createUseCustom ? (
@@ -714,9 +732,6 @@ export function ClassesManager({
                 <Edit2 className="size-5 text-blue-600" />
                 <span>Edit Class: {editingClass.name}</span>
               </DialogTitle>
-              <DialogDescription className="text-xs">
-                Update the display name or adjust faculty assignments.
-              </DialogDescription>
             </DialogHeader>
 
             <form onSubmit={handleUpdateClass} className="space-y-4 py-2">
@@ -790,49 +805,81 @@ export function ClassesManager({
         <Dialog open={!!deletingClass} onOpenChange={(open) => !open && setDeletingClass(null)}>
           <DialogContent className="sm:max-w-md rounded-2xl">
             <DialogHeader>
-              <div className="flex items-center gap-2 text-rose-600 mb-1">
-                <div className="p-2 bg-rose-500/10 rounded-xl">
-                  <AlertTriangle className="size-5" />
-                </div>
-                <DialogTitle className="text-lg font-bold">
-                  Delete Classroom
-                </DialogTitle>
-              </div>
-              <DialogDescription className="text-sm pt-2 leading-relaxed">
-                Are you certain you want to permanently delete <strong>&quot;{deletingClass.name}&quot;</strong>?
-              </DialogDescription>
+              <DialogTitle className="flex items-center gap-2 text-red-600">
+                <AlertTriangle className="size-5" />
+                <span>Delete Class: {deletingClass.name}</span>
+              </DialogTitle>
             </DialogHeader>
 
-            {deletingClass.totalStudentCount > 0 ? (
-              <div className="p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/20 text-xs text-rose-800 dark:text-rose-300">
-                <strong>Deletion Blocked:</strong> This class contains {deletingClass.totalStudentCount} enrolled student(s). All students must be reassigned before deleting this classroom.
-              </div>
-            ) : (
-              <p className="text-xs text-slate-500">
-                This class currently has 0 enrolled students and can safely be deleted.
-              </p>
-            )}
+            <div className="space-y-4 py-2">
+              {deletingClass.totalStudentCount > 0 ? (
+                // DEPENDENCY BLOCKED STATE
+                <div className="space-y-4">
+                  <p className="text-sm text-slate-600 dark:text-slate-300">
+                    This class has{" "}
+                    <strong>{deletingClass.totalStudentCount} enrolled student(s)</strong> (
+                    {deletingClass.activeStudentCount} active). Reassign or delete them in{" "}
+                    <strong>Student Management</strong> before deleting the class.
+                  </p>
 
-            <DialogFooter className="pt-4">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => setDeletingClass(null)}
-                className="rounded-xl text-xs"
-              >
-                Cancel
-              </Button>
-              <Button
-                type="button"
-                variant="destructive"
-                disabled={isDeleting || deletingClass.totalStudentCount > 0}
-                onClick={handleDeleteClass}
-                className="rounded-xl text-xs font-semibold"
-              >
-                {isDeleting ? <Loader2 className="size-4 animate-spin mr-1.5" /> : null}
-                Delete Class
-              </Button>
-            </DialogFooter>
+                  <div className="flex justify-end gap-2 pt-2">
+                    <Button
+                      id="close-delete-blocked-btn"
+                      variant="outline"
+                      onClick={() => setDeletingClass(null)}
+                    >
+                      Close
+                    </Button>
+                    <Link href={`/students?classId=${deletingClass.id}`}>
+                      <Button
+                        id="manage-students-link-btn"
+                        className="bg-blue-600 hover:bg-blue-700 text-white gap-1.5"
+                      >
+                        <Users className="size-4" />
+                        <span>Manage Enrolled Students</span>
+                      </Button>
+                    </Link>
+                  </div>
+                </div>
+              ) : (
+                // SAFE TO DELETE STATE
+                <div className="space-y-4">
+                  <p className="text-sm text-slate-600 dark:text-slate-300">
+                    Permanently delete <strong>{deletingClass.name}</strong>? This cannot be
+                    undone.
+                  </p>
+
+                  <DialogFooter className="pt-2">
+                    <Button
+                      type="button"
+                      id="cancel-delete-btn"
+                      variant="outline"
+                      onClick={() => setDeletingClass(null)}
+                      disabled={isDeleting}
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      type="submit"
+                      id="confirm-delete-btn"
+                      variant="destructive"
+                      onClick={handleDeleteClass}
+                      disabled={isDeleting}
+                      className="cursor-pointer"
+                    >
+                      {isDeleting ? (
+                        <>
+                          <Loader2 className="size-4 animate-spin mr-1.5" />
+                          <span>Deleting...</span>
+                        </>
+                      ) : (
+                        <span>Delete Class</span>
+                      )}
+                    </Button>
+                  </DialogFooter>
+                </div>
+              )}
+            </div>
           </DialogContent>
         </Dialog>
       )}

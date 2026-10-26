@@ -89,14 +89,19 @@ export function TwoWeekGrid({ data, selectedClassId }: Props) {
   }
 
   return (
-    <div className="space-y-6 pb-12">
-      {/* Top Header & Actions */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200 dark:border-slate-800 pb-4">
-        <div className="flex items-center gap-2">
-          <CalendarDays className="size-5 text-slate-700 dark:text-slate-300" />
-          <h1 className="text-xl font-bold tracking-tight text-slate-900 dark:text-white">
-            Two-Week Attendance
-          </h1>
+    <div className="space-y-6">
+      {/* Top Header & Navigation */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <div className="flex items-center gap-2">
+            <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white flex items-center gap-2">
+              <CalendarDays className="size-6 text-blue-600 dark:text-blue-400" />
+              Two-Week Attendance Overview
+            </h1>
+            <Badge variant="outline" className="text-xs font-normal">
+              14-Day View
+            </Badge>
+          </div>
         </div>
 
         <div className="flex items-center gap-2">
@@ -299,10 +304,6 @@ export function TwoWeekGrid({ data, selectedClassId }: Props) {
             <span>Unrecorded</span>
           </div>
         </div>
-
-        <span className="text-[11px] text-slate-400">
-          Click any column date or cell to edit roster
-        </span>
       </div>
 
       {/* Two-Week Grid Table */}
