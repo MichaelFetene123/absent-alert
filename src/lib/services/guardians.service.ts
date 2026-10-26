@@ -18,7 +18,7 @@ export type GuardianDetail = {
 };
 
 import { detectCarrier } from "@/lib/carrier";
-import { cacheTag, CACHE_TAGS } from "@/components/cacheTag";
+import { cacheTag, cacheLife, CACHE_TAGS, CACHE_PROFILES } from "@/components/cacheTag";
 export { detectCarrier };
 
 export async function getGuardiansList(): Promise<{
@@ -29,6 +29,7 @@ export async function getGuardiansList(): Promise<{
   unverifiedCount: number;
 }> {
   "use cache";
+  cacheLife(CACHE_PROFILES.DIRECTORY);
   cacheTag(CACHE_TAGS.GUARDIANS, CACHE_TAGS.STUDENTS);
 
   const [allGuardians, allStudents, allClasses, allNotifs] = await Promise.all([

@@ -1,10 +1,11 @@
 import "server-only";
-import { cacheTag, CACHE_TAGS } from "@/components/cacheTag";
+import { cacheTag, cacheLife, CACHE_TAGS, CACHE_PROFILES } from "@/components/cacheTag";
 import { db } from "@/lib/db";
 import type { UserProfileData } from "@/actions/profile.actions";
 
 export async function fetchUserProfileData(userId: string): Promise<UserProfileData | null> {
   "use cache";
+  cacheLife(CACHE_PROFILES.STRUCTURE);
   cacheTag(CACHE_TAGS.PROFILE(userId));
 
   const user = await db.orm.public.User.where({ id: userId }).first();

@@ -2,7 +2,7 @@ import "server-only";
 import { Temporal } from "temporal-polyfill";
 import { db, withDbRetry } from "@/lib/db";
 import type { AttendanceStatus } from "@/lib/validations/attendance";
-import { updateTag, cacheTag, CACHE_TAGS } from "@/components/cacheTag";
+import { updateTag, cacheTag, cacheLife, CACHE_TAGS, CACHE_PROFILES } from "@/components/cacheTag";
 
 export type AttendanceEntry = {
   studentId: string;
@@ -150,6 +150,7 @@ export async function getClassAttendance(params: {
   date: string;
 }) {
   "use cache";
+  cacheLife(CACHE_PROFILES.ATTENDANCE);
   cacheTag(
     CACHE_TAGS.ATTENDANCE,
     CACHE_TAGS.ATTENDANCE_DAILY(params.classId, params.date)
@@ -191,6 +192,7 @@ export async function getClassAttendance(params: {
  */
 export async function getAccessibleClasses(userId: string, role: "ADMIN" | "TEACHER") {
   "use cache";
+  cacheLife(CACHE_PROFILES.STRUCTURE);
   cacheTag(CACHE_TAGS.CLASSES);
 
   return withDbRetry(async () => {
@@ -294,6 +296,7 @@ export async function getTwoWeekOverview(params: {
   role: "ADMIN" | "TEACHER";
 }): Promise<TwoWeekOverviewResult> {
   "use cache";
+  cacheLife(CACHE_PROFILES.ATTENDANCE);
   cacheTag(
     CACHE_TAGS.ATTENDANCE,
     CACHE_TAGS.ATTENDANCE_OVERVIEW(params.classId)
@@ -568,6 +571,7 @@ export async function getDashboardOverview(params: {
   role: "ADMIN" | "TEACHER";
 }): Promise<DashboardOverviewResult> {
   "use cache";
+  cacheLife(CACHE_PROFILES.DASHBOARD);
   cacheTag(
     CACHE_TAGS.DASHBOARD,
     CACHE_TAGS.ATTENDANCE,

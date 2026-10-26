@@ -1,10 +1,11 @@
 import "server-only";
-import { cacheTag, CACHE_TAGS } from "@/components/cacheTag";
+import { cacheTag, cacheLife, CACHE_TAGS, CACHE_PROFILES } from "@/components/cacheTag";
 import { SmsHub } from "@/lib/sms/smshub";
 import type { SmsHubBalanceResult } from "@/actions/smshub.actions";
 
 export async function fetchSmsHubBalanceData(): Promise<SmsHubBalanceResult> {
   "use cache";
+  cacheLife(CACHE_PROFILES.DASHBOARD);
   cacheTag(CACHE_TAGS.SMSHUB, CACHE_TAGS.SETTINGS);
 
   const apiKey = process.env.SMSHUB_API_KEY;

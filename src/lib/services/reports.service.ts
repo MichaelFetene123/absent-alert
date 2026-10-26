@@ -1,7 +1,7 @@
 import "server-only";
 import { db } from "@/lib/db";
 import { detectCarrier } from "@/lib/services/guardians.service";
-import { cacheTag, CACHE_TAGS } from "@/components/cacheTag";
+import { cacheTag, cacheLife, CACHE_TAGS, CACHE_PROFILES } from "@/components/cacheTag";
 
 export type DailyTrendItem = {
   date: string;
@@ -56,6 +56,7 @@ export async function getReportsData(): Promise<{
   overallAttendanceRate: number;
 }> {
   "use cache";
+  cacheLife(CACHE_PROFILES.ANALYTICS);
   cacheTag(CACHE_TAGS.REPORTS, CACHE_TAGS.ATTENDANCE, CACHE_TAGS.NOTIFICATIONS);
 
   const [allAttendance, allStudents, allClasses, allGuardians, allNotifs] = await Promise.all([

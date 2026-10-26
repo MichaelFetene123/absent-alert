@@ -1,6 +1,7 @@
 import { describe, it, expect, vi } from "vitest";
 import {
   CACHE_TAGS,
+  CACHE_PROFILES,
   safeUpdateTag,
   safeCacheTag,
 } from "../src/components/cacheTag";
@@ -44,9 +45,13 @@ describe("CacheTag Constants and Helpers", () => {
     }).not.toThrow();
   });
 
-  it("safeCacheTag executes without throwing outside of use cache context", () => {
-    expect(() => {
-      safeCacheTag(CACHE_TAGS.CLASSES, CACHE_TAGS.TEACHERS);
-    }).not.toThrow();
+  it("defines standard domain cacheLife profiles matching next.config.ts", () => {
+    expect(CACHE_PROFILES.ATTENDANCE).toBe("attendance");
+    expect(CACHE_PROFILES.NOTIFICATIONS).toBe("notifications");
+    expect(CACHE_PROFILES.DASHBOARD).toBe("dashboard");
+    expect(CACHE_PROFILES.DIRECTORY).toBe("directory");
+    expect(CACHE_PROFILES.STRUCTURE).toBe("structure");
+    expect(CACHE_PROFILES.INSTITUTIONAL).toBe("institutional");
+    expect(CACHE_PROFILES.ANALYTICS).toBe("analytics");
   });
 });

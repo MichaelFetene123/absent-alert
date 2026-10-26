@@ -1,6 +1,6 @@
 import "server-only";
 import { db } from "@/lib/db";
-import { cacheTag, CACHE_TAGS } from "@/components/cacheTag";
+import { cacheTag, cacheLife, CACHE_TAGS, CACHE_PROFILES } from "@/components/cacheTag";
 import {
   DEFAULT_PERIODS,
   DEFAULT_HOLIDAYS,
@@ -21,6 +21,7 @@ export {
 
 export async function getAcademicConfig(): Promise<AcademicYearConfig> {
   "use cache";
+  cacheLife(CACHE_PROFILES.INSTITUTIONAL);
   cacheTag(CACHE_TAGS.ACADEMIC);
 
   return {
@@ -52,6 +53,7 @@ export async function getAcademicConfig(): Promise<AcademicYearConfig> {
 
 export async function getTimetableSchedule() {
   "use cache";
+  cacheLife(CACHE_PROFILES.INSTITUTIONAL);
   cacheTag(CACHE_TAGS.ACADEMIC, CACHE_TAGS.CLASSES);
 
   const classes = await db.orm.public.Class.all();

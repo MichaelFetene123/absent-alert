@@ -1,5 +1,5 @@
 import "server-only";
-import { cacheTag, CACHE_TAGS } from "@/components/cacheTag";
+import { cacheTag, cacheLife, CACHE_TAGS, CACHE_PROFILES } from "@/components/cacheTag";
 import type { AbsenceAlertPolicy } from "@/lib/types/policy";
 import {
   DEFAULT_ACTIVE_POLICY,
@@ -10,6 +10,7 @@ let policiesStore: AbsenceAlertPolicy[] = [...SAMPLE_POLICIES];
 
 export async function fetchActivePolicyData(): Promise<AbsenceAlertPolicy> {
   "use cache";
+  cacheLife(CACHE_PROFILES.INSTITUTIONAL);
   cacheTag(CACHE_TAGS.POLICIES);
 
   const active =
@@ -19,6 +20,7 @@ export async function fetchActivePolicyData(): Promise<AbsenceAlertPolicy> {
 
 export async function fetchAllPoliciesData(): Promise<AbsenceAlertPolicy[]> {
   "use cache";
+  cacheLife(CACHE_PROFILES.INSTITUTIONAL);
   cacheTag(CACHE_TAGS.POLICIES);
 
   return policiesStore;

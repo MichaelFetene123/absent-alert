@@ -1,5 +1,5 @@
 import "server-only";
-import { cacheTag, CACHE_TAGS } from "@/components/cacheTag";
+import { cacheTag, cacheLife, CACHE_TAGS, CACHE_PROFILES } from "@/components/cacheTag";
 import { db } from "@/lib/db";
 
 export type TeacherItemWithDetails = {
@@ -16,6 +16,7 @@ export type TeacherItemWithDetails = {
 
 export async function fetchTeachersWithDetails(): Promise<TeacherItemWithDetails[]> {
   "use cache";
+  cacheLife(CACHE_PROFILES.STRUCTURE);
   cacheTag(CACHE_TAGS.TEACHERS, CACHE_TAGS.CLASSES);
 
   const [allUsers, allClasses, allTeacherClasses, allAttendance] = await Promise.all([
@@ -75,6 +76,7 @@ export async function fetchAvailableClassesForTeachers(): Promise<
   Array<{ id: string; name: string }>
 > {
   "use cache";
+  cacheLife(CACHE_PROFILES.STRUCTURE);
   cacheTag(CACHE_TAGS.CLASSES);
 
   const classes = await db.orm.public.Class.all();

@@ -1,6 +1,6 @@
 import "server-only";
 import { db } from "@/lib/db";
-import { cacheTag, CACHE_TAGS } from "@/components/cacheTag";
+import { cacheTag, cacheLife, CACHE_TAGS, CACHE_PROFILES } from "@/components/cacheTag";
 
 export type AttendanceExceptionItem = {
   id: string;
@@ -24,6 +24,7 @@ export async function getAttendanceExceptions(): Promise<{
   correctionsCount: number;
 }> {
   "use cache";
+  cacheLife(CACHE_PROFILES.ATTENDANCE);
   cacheTag(CACHE_TAGS.EXCEPTIONS, CACHE_TAGS.ATTENDANCE);
 
   // Query attendance records marked as LATE or LEAVE

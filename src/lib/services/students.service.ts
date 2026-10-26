@@ -1,5 +1,5 @@
 import "server-only";
-import { cacheTag, CACHE_TAGS } from "@/components/cacheTag";
+import { cacheTag, cacheLife, CACHE_TAGS, CACHE_PROFILES } from "@/components/cacheTag";
 import { db } from "@/lib/db";
 
 export type EnrichedStudent = {
@@ -20,6 +20,7 @@ export async function fetchStudentsData(params?: {
   isTeacherRole?: boolean;
 }): Promise<EnrichedStudent[]> {
   "use cache";
+  cacheLife(CACHE_PROFILES.DIRECTORY);
   if (params?.classId) {
     cacheTag(CACHE_TAGS.STUDENTS, CACHE_TAGS.STUDENTS_BY_CLASS(params.classId));
   } else {
@@ -78,6 +79,7 @@ export async function fetchStudentsData(params?: {
 
 export async function fetchClassesListData() {
   "use cache";
+  cacheLife(CACHE_PROFILES.STRUCTURE);
   cacheTag(CACHE_TAGS.CLASSES);
   return db.orm.public.Class.all();
 }

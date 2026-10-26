@@ -1,5 +1,5 @@
 import "server-only";
-import { cacheTag, CACHE_TAGS } from "@/components/cacheTag";
+import { cacheTag, cacheLife, CACHE_TAGS, CACHE_PROFILES } from "@/components/cacheTag";
 import { db } from "@/lib/db";
 import { parseClassGradeSection } from "@/lib/validations/class";
 
@@ -21,6 +21,7 @@ export type ClassItemWithDetails = {
 
 export async function fetchClassesWithDetails(): Promise<ClassItemWithDetails[]> {
   "use cache";
+  cacheLife(CACHE_PROFILES.STRUCTURE);
   cacheTag(CACHE_TAGS.CLASSES);
 
   const [allClasses, allStudents, allTeacherLinks, allUsers] = await Promise.all([
@@ -82,6 +83,7 @@ export async function fetchAvailableTeachers(): Promise<
   Array<{ id: string; name: string; email: string }>
 > {
   "use cache";
+  cacheLife(CACHE_PROFILES.STRUCTURE);
   cacheTag(CACHE_TAGS.TEACHERS);
 
   const teachers = await db.orm.public.User.where({ role: "TEACHER" }).all();

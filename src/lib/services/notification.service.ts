@@ -1,7 +1,7 @@
 import "server-only";
 import { db } from "@/lib/db";
 import { sendSms, type SendSmsResult } from "@/lib/sms/smshub";
-import { updateTag, cacheTag, CACHE_TAGS } from "@/components/cacheTag";
+import { updateTag, cacheTag, cacheLife, CACHE_TAGS, CACHE_PROFILES } from "@/components/cacheTag";
 
 export type QueueNotificationInput = {
   attendanceId: string;
@@ -282,6 +282,7 @@ export async function getNotificationHistory(
   params: NotificationHistoryParams
 ): Promise<NotificationHistoryResult> {
   "use cache";
+  cacheLife(CACHE_PROFILES.NOTIFICATIONS);
   cacheTag(CACHE_TAGS.NOTIFICATIONS);
 
   // 1. Determine accessible classes

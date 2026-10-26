@@ -1,4 +1,17 @@
-import { updateTag, cacheTag } from "next/cache";
+import { updateTag, cacheTag, cacheLife } from "next/cache";
+
+// Augment Next.js CacheLifeProfiles interface to register our domain-specific cache profiles
+declare module "next/cache" {
+  interface CacheLifeProfiles {
+    attendance: true;
+    notifications: true;
+    dashboard: true;
+    directory: true;
+    structure: true;
+    institutional: true;
+    analytics: true;
+  }
+}
 
 /**
  * Shared, reusable cache tag constants across AbsentAlert domains.
@@ -63,9 +76,31 @@ export const CACHE_TAGS = {
 export type CacheTagKey = keyof typeof CACHE_TAGS;
 
 /**
- * Re-export native Next.js caching primitives for convenience
+ * Domain-specific cacheLife profile identifiers configured in next.config.ts.
  */
-export { updateTag, cacheTag };
+export const CACHE_PROFILES = {
+  // 1 min revalidation - live student attendance
+  ATTENDANCE: "attendance",
+  // 1 min revalidation - notification delivery logs & SMS dispatch
+  NOTIFICATIONS: "notifications",
+  // 1 min revalidation - real-time operational dashboard & live balance
+  DASHBOARD: "dashboard",
+  // 1 hour revalidation - students and guardians directories
+  DIRECTORY: "directory",
+  // 2 hours revalidation - classes, teachers, and assignment structure
+  STRUCTURE: "structure",
+  // 1 day revalidation - academic calendar and alert policies
+  INSTITUTIONAL: "institutional",
+  // 30 min revalidation - historical attendance analytics and reports
+  ANALYTICS: "analytics",
+} as const;
+
+export type CacheProfileKey = keyof typeof CACHE_PROFILES;
+
+const resolvedCacheLife =
+  typeof cacheLife === "function" ? cacheLife : ((_profile: any) => {});
+
+export { updateTag, cacheTag, resolvedCacheLife as cacheLife };
 
 /**
  * Safely invalidates/updates cache tags, handling any environment boundaries
