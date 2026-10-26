@@ -30,26 +30,36 @@ if (process.env.NODE_ENV !== "production") {
 export type Database = typeof db;
 
 /**
- * Executes a database operation with automatic retry on transient connection timeouts
- * (e.g. Neon serverless scale-to-zero compute wakeup or high-latency handshake glitches).
+ * Executes a database operation with automatic retry on transient connection timeouts,
+ * DNS glitches, and Neon scale-to-zero compute wakeups.
  */
-export async function withDbRetry<T>(fn: () => Promise<T>, maxRetries = 2): Promise<T> {
+export async function withDbRetry<T>(fn: () => Promise<T>, maxRetries = 3): Promise<T> {
   let attempt = 0;
   while (true) {
     try {
       return await fn();
     } catch (err: any) {
       attempt++;
+      const msg = String(err?.message || "");
+      const causeMsg = String(err?.cause?.message || "");
+      const fullError = `${msg} ${causeMsg}`;
+
       const isConnectionError =
         err?.name === "SqlConnectionError" ||
         err?.transient === true ||
-        err?.message?.includes("Connection terminated") ||
-        err?.message?.includes("timeout") ||
-        err?.message?.includes("ECONNRESET");
+        fullError.includes("ENOTFOUND") ||
+        fullError.includes("EAI_AGAIN") ||
+        fullError.includes("getaddrinfo") ||
+        fullError.includes("Connection terminated") ||
+        fullError.includes("timeout") ||
+        fullError.includes("ETIMEDOUT") ||
+        fullError.includes("ECONNRESET") ||
+        fullError.includes("ECONNREFUSED");
 
       if (attempt <= maxRetries && isConnectionError) {
-        console.warn(`[db] Transient connection error on attempt ${attempt}. Retrying in 1s...`);
-        await new Promise((resolve) => setTimeout(resolve, 1000));
+        const delay = Math.min(1000 * Math.pow(1.5, attempt - 1), 4000);
+        console.warn(`[db] Transient connection/DNS error (${msg}) on attempt ${attempt}/${maxRetries}. Retrying in ${delay}ms...`);
+        await new Promise((resolve) => setTimeout(resolve, delay));
         continue;
       }
       throw err;
