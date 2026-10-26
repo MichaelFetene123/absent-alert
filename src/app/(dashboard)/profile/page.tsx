@@ -3,6 +3,8 @@ import { getUserProfileAction } from "@/actions/profile.actions";
 import { ProfileView } from "@/components/profile-view";
 import { redirect } from "next/navigation";
 
+export const instant = false;
+
 export default async function ProfilePage() {
   const user = await requireUser();
   const res = await getUserProfileAction();

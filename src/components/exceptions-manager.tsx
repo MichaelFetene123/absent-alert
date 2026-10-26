@@ -67,13 +67,13 @@ export function ExceptionsManager({
   return (
     <div className="space-y-6 max-w-5xl">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-slate-200 dark:border-slate-800">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-border">
         <div>
-          <h1 className="text-xl font-bold tracking-tight text-slate-900 dark:text-white flex items-center gap-2">
-            <Clock className="size-5 text-indigo-600 dark:text-indigo-400" />
+          <h1 className="text-xl font-bold tracking-tight text-foreground flex items-center gap-2">
+            <Clock className="size-5 text-primary" />
             {locale === "am" ? "የአቴንዳንስ ልዩነቶችና እርማቶች (Exceptions)" : "Attendance Exceptions & Corrections"}
           </h1>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+          <p className="text-xs text-muted-foreground mt-0.5">
             {locale === "am"
               ? "የዘገዩ ተማሪዎች፣ በፈቃድ የቀሩና የተመዘገቡ የአቴንዳንስ እርማቶች ኦዲት መዝገብ።"
               : "Late arrivals tracking, authorized medical/family leave requests, and post-submission attendance corrections."}
@@ -81,14 +81,14 @@ export function ExceptionsManager({
         </div>
 
         {/* Filter Pills */}
-        <div className="flex items-center gap-1.5 bg-slate-100 dark:bg-slate-800 p-1 rounded-lg">
+        <div className="flex items-center gap-1.5 bg-muted p-1 rounded-lg">
           <button
             type="button"
             onClick={() => setFilterType("ALL")}
             className={`px-2.5 py-1 text-xs rounded-md font-medium transition-colors ${
               filterType === "ALL"
-                ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-xs"
-                : "text-slate-600 dark:text-slate-400"
+                ? "bg-background text-foreground shadow-xs"
+                : "text-muted-foreground hover:text-foreground"
             }`}
           >
             All Exceptions
@@ -98,8 +98,8 @@ export function ExceptionsManager({
             onClick={() => setFilterType("LATE")}
             className={`px-2.5 py-1 text-xs rounded-md font-medium transition-colors ${
               filterType === "LATE"
-                ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-xs"
-                : "text-slate-600 dark:text-slate-400"
+                ? "bg-background text-foreground shadow-xs"
+                : "text-muted-foreground hover:text-foreground"
             }`}
           >
             Late Arrivals ({lateCount})
@@ -109,8 +109,8 @@ export function ExceptionsManager({
             onClick={() => setFilterType("LEAVE")}
             className={`px-2.5 py-1 text-xs rounded-md font-medium transition-colors ${
               filterType === "LEAVE"
-                ? "bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-xs"
-                : "text-slate-600 dark:text-slate-400"
+                ? "bg-background text-foreground shadow-xs"
+                : "text-muted-foreground hover:text-foreground"
             }`}
           >
             Approved Leave ({leaveCount})
@@ -120,44 +120,44 @@ export function ExceptionsManager({
 
       {/* KPI Cards */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-        <Card className="p-3 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs">
-          <div className="text-[11px] text-slate-500">Late Arrivals</div>
-          <div className="text-xl font-bold mt-0.5 text-amber-600 dark:text-amber-400">
+        <Card className="p-3 border-border bg-card shadow-xs">
+          <div className="text-[11px] text-muted-foreground">Late Arrivals</div>
+          <div className="text-xl font-bold mt-0.5 text-foreground">
             {lateCount}
           </div>
-          <p className="text-[10px] text-slate-400">Logged after gate cutoff</p>
+          <p className="text-[10px] text-muted-foreground">Logged after gate cutoff</p>
         </Card>
 
-        <Card className="p-3 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs">
-          <div className="text-[11px] text-slate-500">Approved Leave</div>
-          <div className="text-xl font-bold mt-0.5 text-blue-600 dark:text-blue-400">
+        <Card className="p-3 border-border bg-card shadow-xs">
+          <div className="text-[11px] text-muted-foreground">Approved Leave</div>
+          <div className="text-xl font-bold mt-0.5 text-foreground">
             {leaveCount}
           </div>
-          <p className="text-[10px] text-slate-400">SMS alert suppressed</p>
+          <p className="text-[10px] text-muted-foreground">SMS alert suppressed</p>
         </Card>
 
-        <Card className="p-3 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs">
-          <div className="text-[11px] text-slate-500">Audited Corrections</div>
-          <div className="text-xl font-bold mt-0.5 text-indigo-600 dark:text-indigo-400">
+        <Card className="p-3 border-border bg-card shadow-xs">
+          <div className="text-[11px] text-muted-foreground">Audited Corrections</div>
+          <div className="text-xl font-bold mt-0.5 text-foreground">
             {correctionsCount || 2}
           </div>
-          <p className="text-[10px] text-slate-400">Status changes tracked</p>
+          <p className="text-[10px] text-muted-foreground">Status changes tracked</p>
         </Card>
 
-        <Card className="p-3 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs">
-          <div className="text-[11px] text-slate-500">Pending Review</div>
-          <div className="text-xl font-bold mt-0.5 text-emerald-600 dark:text-emerald-400">
+        <Card className="p-3 border-border bg-card shadow-xs">
+          <div className="text-[11px] text-muted-foreground">Pending Review</div>
+          <div className="text-xl font-bold mt-0.5 text-primary">
             0
           </div>
-          <p className="text-[10px] text-slate-400">Queue is clear</p>
+          <p className="text-[10px] text-muted-foreground">Queue is clear</p>
         </Card>
       </div>
 
       {/* Exceptions Table */}
-      <Card className="border-slate-200 dark:border-slate-800 shadow-xs overflow-hidden">
+      <Card className="border-border shadow-xs overflow-hidden">
         <div className="overflow-x-auto">
           <Table>
-            <TableHeader className="bg-slate-50 dark:bg-slate-900/80 border-b border-slate-200 dark:border-slate-800">
+            <TableHeader className="bg-muted/50 border-b border-border">
               <TableRow>
                 <TableHead className="text-xs font-semibold py-3">Student Name</TableHead>
                 <TableHead className="text-xs font-semibold py-3">Class</TableHead>
@@ -170,48 +170,44 @@ export function ExceptionsManager({
             </TableHeader>
             <TableBody>
               {filtered.map((item) => (
-                <TableRow key={item.id} className="hover:bg-slate-50/60 dark:hover:bg-slate-800/40 text-xs">
-                  <TableCell className="font-semibold text-slate-900 dark:text-white py-3">
+                <TableRow key={item.id} className="hover:bg-muted/50 text-xs">
+                  <TableCell className="font-semibold text-foreground py-3">
                     <div>
                       <span>{item.studentName}</span>
-                      <span className="text-[11px] text-slate-400 font-mono ml-1.5">
+                      <span className="text-[11px] text-muted-foreground font-mono ml-1.5">
                         ({item.admissionNo})
                       </span>
                     </div>
                   </TableCell>
 
-                  <TableCell className="py-3 text-slate-600 dark:text-slate-400 font-medium">
+                  <TableCell className="py-3 text-muted-foreground font-medium">
                     {item.className}
                   </TableCell>
 
-                  <TableCell className="py-3 font-mono text-slate-500">
+                  <TableCell className="py-3 font-mono text-muted-foreground">
                     <div>{item.date}</div>
-                    <div className="text-[10px] text-slate-400">{item.timeReported}</div>
+                    <div className="text-[10px] text-muted-foreground/80">{item.timeReported}</div>
                   </TableCell>
 
                   <TableCell className="py-3">
                     <Badge
                       variant="outline"
-                      className={`text-[10px] font-medium ${
-                        item.type === "LATE"
-                          ? "border-amber-200 text-amber-700 bg-amber-50 dark:bg-amber-950/40"
-                          : "border-blue-200 text-blue-700 bg-blue-50 dark:bg-blue-950/40"
-                      }`}
+                      className="text-[10px] font-medium border-border bg-muted/50"
                     >
                       {item.type === "LATE" ? "Late Arrival" : "Approved Leave"}
                     </Badge>
                   </TableCell>
 
-                  <TableCell className="py-3 text-slate-700 dark:text-slate-300">
+                  <TableCell className="py-3 text-foreground">
                     {item.reason || "Standard exception note"}
                   </TableCell>
 
-                  <TableCell className="py-3 text-slate-600 dark:text-slate-400">
+                  <TableCell className="py-3 text-muted-foreground">
                     {item.recordedBy}
                   </TableCell>
 
                   <TableCell className="py-3 text-right">
-                    <Badge className="bg-emerald-600 text-white text-[10px] py-0 px-2">
+                    <Badge variant="default" className="text-[10px] py-0 px-2">
                       Approved
                     </Badge>
                   </TableCell>

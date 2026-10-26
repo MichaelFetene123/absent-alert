@@ -5,6 +5,7 @@ import {
 } from "@/actions/class.actions";
 import { ClassesManager } from "@/components/classes-manager";
 
+export const instant = false;
 
 export default async function ClassesPage() {
   const user = await requireUser();

@@ -90,13 +90,13 @@ export function GuardiansManager({
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-slate-200 dark:border-slate-800">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-border">
         <div>
-          <h1 className="text-xl font-bold tracking-tight text-slate-900 dark:text-white flex items-center gap-2">
-            <Users className="size-5 text-indigo-600 dark:text-indigo-400" />
+          <h1 className="text-xl font-bold tracking-tight text-foreground flex items-center gap-2">
+            <Users className="size-5 text-primary" />
             {locale === "am" ? "የወላጆችና አሳዳጊዎች ማውጫ" : "Parent & Guardian Management"}
           </h1>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+          <p className="text-xs text-muted-foreground mt-0.5">
             {locale === "am"
               ? "የወላጆች የስልክ ቁጥር፣ የኢትዮ ቴሌኮምና ሳፋሪኮም ኔትወርክ ሁኔታና የወላጅ ማሳወቂያ መዝገብ።"
               : "Registered parent contacts, carrier credit pricing, and absence alert notification eligibility."}
@@ -106,64 +106,64 @@ export function GuardiansManager({
 
       {/* KPI Cards */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-        <Card className="p-3.5 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs">
-          <div className="flex items-center justify-between text-slate-500 text-xs">
+        <Card className="p-3.5 border-border bg-card shadow-xs">
+          <div className="flex items-center justify-between text-muted-foreground text-xs">
             <span>{locale === "am" ? "ጠቅላላ ወላጆች" : "Total Guardians"}</span>
-            <Users className="size-4 text-indigo-600" />
+            <Users className="size-4 text-primary" />
           </div>
-          <div className="text-xl font-bold mt-1 text-slate-900 dark:text-white">
+          <div className="text-xl font-bold mt-1 text-foreground">
             {totalGuardians}
           </div>
-          <p className="text-[11px] text-slate-400 mt-0.5">Linked to active students</p>
+          <p className="text-[11px] text-muted-foreground mt-0.5">Linked to active students</p>
         </Card>
 
-        <Card className="p-3.5 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs">
-          <div className="flex items-center justify-between text-slate-500 text-xs">
+        <Card className="p-3.5 border-border bg-card shadow-xs">
+          <div className="flex items-center justify-between text-muted-foreground text-xs">
             <span>{locale === "am" ? "ኢትዮ ቴሌኮም (09...)" : "Ethio Telecom"}</span>
-            <span className="size-2 rounded-full bg-emerald-500" />
+            <span className="size-2 rounded-full bg-chart-1" />
           </div>
-          <div className="text-xl font-bold mt-1 text-slate-900 dark:text-white">
+          <div className="text-xl font-bold mt-1 text-foreground">
             {ethioCount}
           </div>
-          <p className="text-[11px] text-emerald-600 dark:text-emerald-400 font-medium mt-0.5">
+          <p className="text-[11px] text-primary font-medium mt-0.5">
             1 credit / SMS
           </p>
         </Card>
 
-        <Card className="p-3.5 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs">
-          <div className="flex items-center justify-between text-slate-500 text-xs">
+        <Card className="p-3.5 border-border bg-card shadow-xs">
+          <div className="flex items-center justify-between text-muted-foreground text-xs">
             <span>{locale === "am" ? "ሳፋሪኮም (07...)" : "Safaricom"}</span>
-            <span className="size-2 rounded-full bg-blue-500" />
+            <span className="size-2 rounded-full bg-chart-2" />
           </div>
-          <div className="text-xl font-bold mt-1 text-slate-900 dark:text-white">
+          <div className="text-xl font-bold mt-1 text-foreground">
             {safaricomCount}
           </div>
-          <p className="text-[11px] text-blue-600 dark:text-blue-400 font-medium mt-0.5">
+          <p className="text-[11px] text-primary font-medium mt-0.5">
             2 credits / SMS
           </p>
         </Card>
 
-        <Card className="p-3.5 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs">
-          <div className="flex items-center justify-between text-slate-500 text-xs">
+        <Card className="p-3.5 border-border bg-card shadow-xs">
+          <div className="flex items-center justify-between text-muted-foreground text-xs">
             <span>{locale === "am" ? "የተረጋገጡ ቁጥሮች" : "Verified Contacts"}</span>
-            <ShieldCheck className="size-4 text-emerald-600" />
+            <ShieldCheck className="size-4 text-primary" />
           </div>
-          <div className="text-xl font-bold mt-1 text-slate-900 dark:text-white">
+          <div className="text-xl font-bold mt-1 text-foreground">
             100%
           </div>
-          <p className="text-[11px] text-slate-400 mt-0.5">Valid Ethiopian MSISDN</p>
+          <p className="text-[11px] text-muted-foreground mt-0.5">Valid Ethiopian MSISDN</p>
         </Card>
       </div>
 
       {/* Filters & Search */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-white dark:bg-slate-900 p-3 rounded-xl border border-slate-200 dark:border-slate-800 shadow-xs">
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-card p-3 rounded-xl border border-border shadow-xs">
         <div className="relative w-full sm:w-72">
-          <Search className="size-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+          <Search className="size-3.5 text-muted-foreground absolute left-3 top-1/2 -translate-y-1/2" />
           <Input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder={locale === "am" ? "በስም፣ ስልክ ወይም ተማሪ ፈልግ..." : "Search guardian, phone, student..."}
-            className="pl-9 h-8 text-xs bg-slate-50 dark:bg-slate-950 border-slate-200 dark:border-slate-800"
+            className="pl-9 h-8 text-xs bg-background border-border"
           />
         </div>
 
@@ -171,7 +171,7 @@ export function GuardiansManager({
           <select
             value={carrierFilter}
             onChange={(e) => setCarrierFilter(e.target.value)}
-            className="h-8 px-2.5 text-xs rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-700 dark:text-slate-300 font-medium"
+            className="h-8 px-2.5 text-xs rounded-lg border border-border bg-background text-foreground font-medium"
           >
             <option value="ALL">All Carriers (ሁሉም ኔትወርኮች)</option>
             <option value="Ethio Telecom">Ethio Telecom (1 credit)</option>
@@ -181,10 +181,10 @@ export function GuardiansManager({
       </div>
 
       {/* Guardians Table */}
-      <Card className="border-slate-200 dark:border-slate-800 shadow-xs overflow-hidden">
+      <Card className="border-border shadow-xs overflow-hidden">
         <div className="overflow-x-auto">
           <Table>
-            <TableHeader className="bg-slate-50 dark:bg-slate-900/80 border-b border-slate-200 dark:border-slate-800">
+            <TableHeader className="bg-muted/50 border-b border-border">
               <TableRow>
                 <TableHead className="text-xs font-semibold py-3">Guardian Name</TableHead>
                 <TableHead className="text-xs font-semibold py-3">Phone (MSISDN)</TableHead>
@@ -198,7 +198,7 @@ export function GuardiansManager({
             <TableBody>
               {filteredGuardians.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={7} className="text-center py-8 text-slate-400 text-xs">
+                  <TableCell colSpan={7} className="text-center py-8 text-muted-foreground text-xs">
                     No guardians match the selected criteria.
                   </TableCell>
                 </TableRow>
@@ -207,12 +207,12 @@ export function GuardiansManager({
                   const isRevealed = !!revealedPhones[g.id];
                   const displayPhone = maskPhone(g.phone, isRevealed);
                   return (
-                    <TableRow key={g.id} className="hover:bg-slate-50/60 dark:hover:bg-slate-800/40 text-xs">
-                      <TableCell className="font-semibold text-slate-900 dark:text-white py-3">
+                    <TableRow key={g.id} className="hover:bg-muted/50 text-xs">
+                      <TableCell className="font-semibold text-foreground py-3">
                         <div className="flex items-center gap-2">
                           <span>{g.name}</span>
                           {g.isPrimary && (
-                            <Badge variant="outline" className="text-[10px] py-0 px-1.5 font-medium border-indigo-200 text-indigo-700 bg-indigo-50 dark:bg-indigo-950 dark:text-indigo-300">
+                            <Badge variant="secondary" className="text-[10px] py-0 px-1.5 font-medium">
                               Primary
                             </Badge>
                           )}
@@ -221,11 +221,11 @@ export function GuardiansManager({
 
                       <TableCell className="py-3 font-mono">
                         <div className="flex items-center gap-1.5">
-                          <span className="text-slate-800 dark:text-slate-200">{displayPhone}</span>
+                          <span className="text-foreground">{displayPhone}</span>
                           <button
                             type="button"
                             onClick={() => toggleReveal(g.id)}
-                            className="text-slate-400 hover:text-slate-600 p-0.5 rounded"
+                            className="text-muted-foreground hover:text-foreground p-0.5 rounded"
                             title={isRevealed ? "Mask phone" : "Reveal phone"}
                           >
                             {isRevealed ? <EyeOff className="size-3" /> : <Eye className="size-3" />}
@@ -233,11 +233,11 @@ export function GuardiansManager({
                           <button
                             type="button"
                             onClick={() => copyPhone(g.id, g.phone)}
-                            className="text-slate-400 hover:text-slate-600 p-0.5 rounded"
+                            className="text-muted-foreground hover:text-foreground p-0.5 rounded"
                             title="Copy number"
                           >
                             {copiedId === g.id ? (
-                              <Check className="size-3 text-emerald-600" />
+                              <Check className="size-3 text-primary" />
                             ) : (
                               <Copy className="size-3" />
                             )}
@@ -248,32 +248,28 @@ export function GuardiansManager({
                       <TableCell className="py-3">
                         <Badge
                           variant="outline"
-                          className={`text-[10px] font-medium gap-1 py-0.5 ${
-                            g.carrier === "Safaricom"
-                              ? "border-blue-200 text-blue-700 bg-blue-50 dark:bg-blue-950/40 dark:text-blue-300"
-                              : "border-emerald-200 text-emerald-700 bg-emerald-50 dark:bg-emerald-950/40 dark:text-emerald-300"
-                          }`}
+                          className="text-[10px] font-medium gap-1 py-0.5 border-border bg-muted/40"
                         >
-                          <Smartphone className="size-3" />
+                          <Smartphone className="size-3 text-muted-foreground" />
                           {g.carrier} ({g.creditCost} cr)
                         </Badge>
                       </TableCell>
 
-                      <TableCell className="py-3 text-slate-700 dark:text-slate-300">
+                      <TableCell className="py-3 text-foreground">
                         <div>
                           <span className="font-medium">{g.studentName}</span>
-                          <span className="text-[11px] text-slate-400 font-mono ml-1.5">
+                          <span className="text-[11px] text-muted-foreground font-mono ml-1.5">
                             ({g.studentAdmissionNo})
                           </span>
                         </div>
                       </TableCell>
 
-                      <TableCell className="py-3 text-slate-600 dark:text-slate-400 font-medium">
+                      <TableCell className="py-3 text-muted-foreground font-medium">
                         {g.className}
                       </TableCell>
 
                       <TableCell className="py-3">
-                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">
+                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold bg-muted text-muted-foreground">
                           {g.smsReceivedCount} alerts
                         </span>
                       </TableCell>
@@ -282,7 +278,7 @@ export function GuardiansManager({
                         <Button
                           variant="ghost"
                           size="sm"
-                          className="h-7 text-xs text-indigo-600 hover:text-indigo-700 hover:bg-indigo-50 dark:hover:bg-indigo-950"
+                          className="h-7 text-xs text-primary hover:text-primary hover:bg-primary/10"
                           onClick={() => toast.info(`Guardian: ${g.name}\nPhone: ${g.phone}\nStudent: ${g.studentName}`)}
                         >
                           View Profile

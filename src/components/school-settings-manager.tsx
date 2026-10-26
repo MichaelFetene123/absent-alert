@@ -34,12 +34,12 @@ export function SchoolSettingsManager() {
   return (
     <div className="space-y-6 max-w-4xl">
       {/* Header */}
-      <div className="pb-2 border-b border-slate-200 dark:border-slate-800">
-        <h1 className="text-xl font-bold tracking-tight text-slate-900 dark:text-white flex items-center gap-2">
-          <Settings className="size-5 text-indigo-600 dark:text-indigo-400" />
+      <div className="pb-2 border-b border-border">
+        <h1 className="text-xl font-bold tracking-tight text-foreground flex items-center gap-2">
+          <Settings className="size-5 text-primary" />
           {locale === "am" ? "የትምህርት ቤት አጠቃላይ ቅንብሮችና ፖሊሲዎች" : "School Settings & Attendance Policies"}
         </h1>
-        <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+        <p className="text-xs text-muted-foreground mt-0.5">
           {locale === "am"
             ? "የትምህርት ዘመን፣ የስራ ቀናት፣ የማርፈድ ገደብና የመገኘት መቆጣጠሪያ ፖሊሲዎችን ያዋቅሩ።"
             : "Institutional parameters, academic calendar defaults, late arrival thresholds, and notification rules."}
@@ -48,10 +48,10 @@ export function SchoolSettingsManager() {
 
       <form onSubmit={handleSave} className="space-y-6">
         {/* School Profile */}
-        <Card className="border-slate-200 dark:border-slate-800 shadow-xs">
-          <CardHeader className="pb-3 border-b border-slate-100 dark:border-slate-800">
+        <Card className="border-border shadow-xs">
+          <CardHeader className="pb-3 border-b border-border">
             <CardTitle className="text-sm font-semibold flex items-center gap-2">
-              <School className="size-4 text-indigo-600" />
+              <School className="size-4 text-primary" />
               Institutional Identity
             </CardTitle>
           </CardHeader>
@@ -62,7 +62,7 @@ export function SchoolSettingsManager() {
                 <Input
                   value={schoolName}
                   onChange={(e) => setSchoolName(e.target.value)}
-                  className="text-xs bg-slate-50 dark:bg-slate-950"
+                  className="text-xs bg-background border-border"
                 />
               </div>
 
@@ -71,7 +71,7 @@ export function SchoolSettingsManager() {
                 <Input
                   value={academicYear}
                   onChange={(e) => setAcademicYear(e.target.value)}
-                  className="text-xs bg-slate-50 dark:bg-slate-950"
+                  className="text-xs bg-background border-border"
                 />
               </div>
             </div>
@@ -79,10 +79,10 @@ export function SchoolSettingsManager() {
         </Card>
 
         {/* Attendance Policy Rules */}
-        <Card className="border-slate-200 dark:border-slate-800 shadow-xs">
-          <CardHeader className="pb-3 border-b border-slate-100 dark:border-slate-800">
+        <Card className="border-border shadow-xs">
+          <CardHeader className="pb-3 border-b border-border">
             <CardTitle className="text-sm font-semibold flex items-center gap-2">
-              <Clock className="size-4 text-indigo-600" />
+              <Clock className="size-4 text-primary" />
               Attendance Timing &amp; Thresholds
             </CardTitle>
           </CardHeader>
@@ -94,9 +94,9 @@ export function SchoolSettingsManager() {
                   type="number"
                   value={lateThreshold}
                   onChange={(e) => setLateThreshold(e.target.value)}
-                  className="text-xs bg-slate-50 dark:bg-slate-950"
+                  className="text-xs bg-background border-border"
                 />
-                <p className="text-[11px] text-slate-400">
+                <p className="text-[11px] text-muted-foreground">
                   Arrivals after this many minutes past bell are logged as Late.
                 </p>
               </div>
@@ -106,9 +106,9 @@ export function SchoolSettingsManager() {
                 <Input
                   value={submissionCutoff}
                   onChange={(e) => setSubmissionCutoff(e.target.value)}
-                  className="text-xs bg-slate-50 dark:bg-slate-950"
+                  className="text-xs bg-background border-border"
                 />
-                <p className="text-[11px] text-slate-400">
+                <p className="text-[11px] text-muted-foreground">
                   Submissions missing after this time trigger Missing Attendance alerts.
                 </p>
               </div>
@@ -117,7 +117,7 @@ export function SchoolSettingsManager() {
         </Card>
 
         <div className="flex justify-end">
-          <Button type="submit" size="sm" className="bg-indigo-600 hover:bg-indigo-700 text-white text-xs h-9 gap-1.5">
+          <Button type="submit" size="sm" className="text-xs h-9 gap-1.5">
             <Save className="size-3.5" />
             <span>Save School Policies</span>
           </Button>

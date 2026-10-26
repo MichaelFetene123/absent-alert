@@ -3,6 +3,8 @@ import { getDashboardOverview } from "@/lib/services/attendance.service";
 import { getReportsData } from "@/lib/services/reports.service";
 import { DashboardView } from "@/components/dashboard-view";
 
+export const instant = false;
+
 export default async function DashboardPage() {
   const user = await requireUser();
 

@@ -2,6 +2,8 @@ import { requireUser } from "@/lib/guards";
 import { getSmsHubBalanceAction } from "@/actions/smshub.actions";
 import { SmsHubSettingsManager } from "@/components/smshub-settings-manager";
 
+export const instant = false;
+
 export default async function SmsHubSettingsPage() {
   await requireUser();
   const balance = await getSmsHubBalanceAction();

@@ -23,7 +23,7 @@ export function ThemeToggle({ className, showLabel = false }: ThemeToggleProps) 
       <Button
         variant="ghost"
         size={showLabel ? "sm" : "icon-sm"}
-        className={`text-slate-500 hover:text-slate-900 dark:hover:text-white ${className || ""}`}
+        className={`text-muted-foreground hover:text-foreground ${className || ""}`}
         aria-label="Toggle theme"
         disabled
       >
@@ -44,7 +44,7 @@ export function ThemeToggle({ className, showLabel = false }: ThemeToggleProps) 
       variant="ghost"
       size={showLabel ? "sm" : "icon-sm"}
       onClick={toggleTheme}
-      className={`relative text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors ${
+      className={`relative text-muted-foreground hover:text-foreground hover:bg-muted transition-colors ${
         showLabel ? "justify-start gap-2.5 px-3 w-full" : "size-8 p-0"
       } ${className || ""}`}
       title={isDark ? "Switch to Light mode (or press 'D')" : "Switch to Dark mode (or press 'D')"}
@@ -52,12 +52,12 @@ export function ThemeToggle({ className, showLabel = false }: ThemeToggleProps) 
     >
       <div className="relative size-4 flex items-center justify-center shrink-0">
         <Sun
-          className={`size-4 text-amber-500 transition-all duration-300 ${
+          className={`size-4 text-primary transition-all duration-300 ${
             isDark ? "rotate-90 scale-0 opacity-0 absolute" : "rotate-0 scale-100 opacity-100"
           }`}
         />
         <Moon
-          className={`size-4 text-blue-400 transition-all duration-300 ${
+          className={`size-4 text-primary transition-all duration-300 ${
             isDark ? "rotate-0 scale-100 opacity-100" : "-rotate-90 scale-0 opacity-0 absolute"
           }`}
         />
@@ -65,7 +65,7 @@ export function ThemeToggle({ className, showLabel = false }: ThemeToggleProps) 
       {showLabel && (
         <div className="flex items-center justify-between w-full text-xs font-medium">
           <span>{isDark ? "Dark Mode" : "Light Mode"}</span>
-          <span className="text-[10px] text-slate-400 dark:text-slate-500 font-mono">
+          <span className="text-[10px] text-muted-foreground font-mono">
             {isDark ? "Dark" : "Light"}
           </span>
         </div>
@@ -86,12 +86,12 @@ export function ThemeSegmentedToggle({ className }: { className?: string }) {
   );
 
   if (!mounted) {
-    return <div className={`h-8 w-24 rounded-lg bg-slate-100 dark:bg-slate-800 animate-pulse ${className || ""}`} />;
+    return <div className={`h-8 w-24 rounded-lg bg-muted animate-pulse ${className || ""}`} />;
   }
 
   return (
     <div
-      className={`inline-flex items-center p-0.5 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700/60 ${className || ""}`}
+      className={`inline-flex items-center p-0.5 rounded-lg bg-muted border border-border ${className || ""}`}
       role="group"
       aria-label="Theme selection"
     >
@@ -100,8 +100,8 @@ export function ThemeSegmentedToggle({ className }: { className?: string }) {
         onClick={() => setTheme("light")}
         className={`p-1.5 rounded-md transition-all ${
           theme === "light"
-            ? "bg-white text-amber-600 shadow-xs dark:bg-slate-700"
-            : "text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
+            ? "bg-background text-foreground shadow-xs"
+            : "text-muted-foreground hover:text-foreground"
         }`}
         title="Light theme"
       >
@@ -113,8 +113,8 @@ export function ThemeSegmentedToggle({ className }: { className?: string }) {
         onClick={() => setTheme("dark")}
         className={`p-1.5 rounded-md transition-all ${
           theme === "dark"
-            ? "bg-white text-blue-500 shadow-xs dark:bg-slate-700 dark:text-blue-400"
-            : "text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
+            ? "bg-background text-foreground shadow-xs"
+            : "text-muted-foreground hover:text-foreground"
         }`}
         title="Dark theme"
       >
@@ -126,8 +126,8 @@ export function ThemeSegmentedToggle({ className }: { className?: string }) {
         onClick={() => setTheme("system")}
         className={`p-1.5 rounded-md transition-all ${
           theme === "system"
-            ? "bg-white text-slate-900 shadow-xs dark:bg-slate-700 dark:text-white"
-            : "text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
+            ? "bg-background text-foreground shadow-xs"
+            : "text-muted-foreground hover:text-foreground"
         }`}
         title="System preference"
       >

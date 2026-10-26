@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { CalendarCheck, Shield, GraduationCap, ShieldAlert, School } from "lucide-react";
 import Link from "next/link";
 
+export const instant = false;
 
 interface AttendancePageProps {
   searchParams: Promise<{
@@ -36,24 +37,24 @@ export default async function AttendancePage({ searchParams }: AttendancePagePro
     return (
       <div className="space-y-6">
         <div>
-          <h1 className="text-xl font-bold tracking-tight text-slate-900 dark:text-white flex items-center gap-2">
-            <CalendarCheck className="size-5 text-slate-700 dark:text-slate-300" />
+          <h1 className="text-xl font-bold tracking-tight text-foreground flex items-center gap-2">
+            <CalendarCheck className="size-5 text-muted-foreground" />
             Daily Attendance
           </h1>
         </div>
 
-        <Card className="border-amber-200 dark:border-amber-900/60 bg-amber-50/30 dark:bg-amber-950/20">
+        <Card className="border-border bg-card text-card-foreground">
           <CardHeader>
-            <CardTitle className="text-base flex items-center gap-2 text-amber-800 dark:text-amber-400">
-              <School className="size-5" />
+            <CardTitle className="text-base flex items-center gap-2 text-foreground">
+              <School className="size-5 text-muted-foreground" />
               No Assigned Classes Found
             </CardTitle>
-            <CardDescription>
+            <CardDescription className="text-muted-foreground">
               Your teacher account ({user.email}) has not been assigned to any classes yet.
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <p className="text-sm text-slate-600 dark:text-slate-400">
+            <p className="text-sm text-muted-foreground">
               Please contact your school administrator to assign you to your designated classroom.
             </p>
           </CardContent>
@@ -73,28 +74,28 @@ export default async function AttendancePage({ searchParams }: AttendancePagePro
       return (
         <div className="space-y-6">
           <div>
-            <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white flex items-center gap-2">
-              <CalendarCheck className="size-6 text-emerald-600" />
+            <h1 className="text-2xl font-bold tracking-tight text-foreground flex items-center gap-2">
+              <CalendarCheck className="size-6 text-primary" />
               Daily Attendance
             </h1>
           </div>
 
-          <Card className="border-red-200 dark:border-red-900/60 bg-red-50/40 dark:bg-red-950/20">
+          <Card className="border-destructive/30 bg-destructive/10">
             <CardHeader>
-              <CardTitle className="text-base flex items-center gap-2 text-red-700 dark:text-red-400">
+              <CardTitle className="text-base flex items-center gap-2 text-destructive">
                 <ShieldAlert className="size-5" />
                 Access Denied: Unauthorized Class
               </CardTitle>
-              <CardDescription>
+              <CardDescription className="text-destructive/80">
                 You are not assigned to the requested classroom ({requestedClassId}).
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <p className="text-sm text-slate-600 dark:text-slate-400">
+              <p className="text-sm text-muted-foreground">
                 Teachers can only view and mark attendance for classrooms they are officially assigned to teach.
               </p>
               <Link href={`/attendance?classId=${accessibleClasses[0]!.id}&date=${selectedDate}`}>
-                <Button size="sm" className="bg-blue-600 hover:bg-blue-700 text-white">
+                <Button size="sm">
                   Switch to My Assigned Class ({accessibleClasses[0]!.name})
                 </Button>
               </Link>
@@ -117,23 +118,23 @@ export default async function AttendancePage({ searchParams }: AttendancePagePro
   return (
     <div className="space-y-6">
       {/* Page Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-slate-200 dark:border-slate-800 pb-4">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-border pb-4">
         <div className="flex items-center gap-2">
-          <CalendarCheck className="size-5 text-slate-700 dark:text-slate-300" />
-          <h1 className="text-xl font-bold tracking-tight text-slate-900 dark:text-white">
+          <CalendarCheck className="size-5 text-muted-foreground" />
+          <h1 className="text-xl font-bold tracking-tight text-foreground">
             Daily Attendance
           </h1>
         </div>
 
         <div className="flex items-center gap-2">
           {isAdmin ? (
-            <Badge variant="outline" className="text-xs font-medium text-slate-600 dark:text-slate-400 gap-1.5 py-1 px-2.5">
-              <Shield className="size-3 text-slate-500" />
+            <Badge variant="outline" className="text-xs font-medium gap-1.5 py-1 px-2.5">
+              <Shield className="size-3 text-muted-foreground" />
               <span>Admin (All Classes)</span>
             </Badge>
           ) : (
-            <Badge variant="outline" className="text-xs font-medium text-slate-600 dark:text-slate-400 gap-1.5 py-1 px-2.5">
-              <GraduationCap className="size-3 text-slate-500" />
+            <Badge variant="outline" className="text-xs font-medium gap-1.5 py-1 px-2.5">
+              <GraduationCap className="size-3 text-muted-foreground" />
               <span>Teacher: {activeClass.name}</span>
             </Badge>
           )}

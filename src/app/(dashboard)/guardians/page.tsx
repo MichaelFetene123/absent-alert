@@ -2,6 +2,8 @@ import { requireUser } from "@/lib/guards";
 import { getGuardiansList } from "@/lib/services/guardians.service";
 import { GuardiansManager } from "@/components/guardians-manager";
 
+export const instant = false;
+
 export default async function GuardiansPage() {
   const user = await requireUser();
   const data = await getGuardiansList();

@@ -46,15 +46,14 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="relative min-h-screen flex flex-col justify-center items-center px-4 py-12 bg-slate-50 dark:bg-slate-950 overflow-hidden select-none">
+    <div className="relative min-h-screen flex flex-col justify-center items-center px-4 py-12 bg-background text-foreground overflow-hidden select-none">
       {/* Ambient Radial Gradient Mesh Background */}
-      <div className="absolute top-1/4 -left-40 size-96 rounded-full bg-blue-500/15 dark:bg-blue-600/10 blur-3xl pointer-events-none" />
-      <div className="absolute top-1/3 -right-40 size-96 rounded-full bg-indigo-500/15 dark:bg-indigo-600/10 blur-3xl pointer-events-none" />
-      <div className="absolute bottom-10 left-1/3 size-80 rounded-full bg-emerald-500/10 dark:bg-emerald-600/5 blur-3xl pointer-events-none" />
+      <div className="absolute top-1/4 -left-40 size-96 rounded-full bg-primary/10 blur-3xl pointer-events-none" />
+      <div className="absolute top-1/3 -right-40 size-96 rounded-full bg-primary/5 blur-3xl pointer-events-none" />
 
       {/* Top Bar with Theme Toggle */}
       <header className="absolute top-4 right-4 sm:top-6 sm:right-6 flex items-center gap-3 z-20">
-        <div className="p-1 rounded-xl bg-white/80 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 backdrop-blur-md shadow-xs">
+        <div className="p-1 rounded-xl bg-card/80 border border-border backdrop-blur-md shadow-xs">
           <ThemeToggle />
         </div>
       </header>
@@ -62,33 +61,33 @@ export default function LoginPage() {
       <div className="relative w-full max-w-md z-10 space-y-6">
         {/* Brand Header */}
         <div className="text-center space-y-2">
-          <div className="inline-flex items-center justify-center size-14 rounded-2xl bg-gradient-to-tr from-blue-700 via-blue-600 to-indigo-500 text-white shadow-xl shadow-blue-500/30 ring-4 ring-blue-500/10 dark:ring-blue-500/20 transform hover:scale-105 transition-transform duration-200">
+          <div className="inline-flex items-center justify-center size-14 rounded-2xl bg-primary text-primary-foreground shadow-xl shadow-primary/20 ring-4 ring-primary/10 transform hover:scale-105 transition-transform duration-200">
             <Bell className="size-7" />
           </div>
-          <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">
+          <h1 className="text-3xl font-extrabold tracking-tight text-foreground">
             AbsentAlert
           </h1>
-          <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 max-w-xs mx-auto">
+          <p className="text-xs sm:text-sm text-muted-foreground max-w-xs mx-auto">
             Attendance tracking &amp; automated guardian SMS alerts
           </p>
         </div>
 
-        {/* Login Glassmorphism Card */}
-        <Card className="border border-slate-200/80 dark:border-slate-800/80 bg-white/85 dark:bg-slate-900/80 backdrop-blur-xl shadow-xl shadow-slate-200/50 dark:shadow-slate-950/50 rounded-2xl overflow-hidden">
+        {/* Login Card */}
+        <Card className="border border-border bg-card text-card-foreground shadow-xl rounded-2xl overflow-hidden">
           {/* Quick Demo Switcher Tabs */}
-          <div className="p-2 border-b border-slate-100 dark:border-slate-800/80 bg-slate-50/70 dark:bg-slate-950/50">
-            <div className="grid grid-cols-2 gap-1.5 p-1 rounded-xl bg-slate-200/60 dark:bg-slate-800/60">
+          <div className="p-2 border-b border-border bg-muted/40">
+            <div className="grid grid-cols-2 gap-1.5 p-1 rounded-xl bg-muted">
               <button
                 type="button"
                 onClick={() => fillCredentials("admin")}
                 className={cn(
                   "flex items-center justify-center gap-2 py-2 px-3 rounded-lg text-xs font-semibold transition-all duration-200",
                   activeTab === "admin"
-                    ? "bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-xs"
-                    : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
+                    ? "bg-background text-foreground shadow-xs"
+                    : "text-muted-foreground hover:text-foreground"
                 )}
               >
-                <ShieldCheck className="size-3.5 text-purple-600 dark:text-purple-400" />
+                <ShieldCheck className="size-3.5 text-primary" />
                 <span>Admin Login</span>
               </button>
 
@@ -98,21 +97,21 @@ export default function LoginPage() {
                 className={cn(
                   "flex items-center justify-center gap-2 py-2 px-3 rounded-lg text-xs font-semibold transition-all duration-200",
                   activeTab === "teacher"
-                    ? "bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-xs"
-                    : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
+                    ? "bg-background text-foreground shadow-xs"
+                    : "text-muted-foreground hover:text-foreground"
                 )}
               >
-                <GraduationCap className="size-3.5 text-blue-600 dark:text-blue-400" />
+                <GraduationCap className="size-3.5 text-primary" />
                 <span>Teacher Login</span>
               </button>
             </div>
           </div>
 
           <CardHeader className="space-y-1 pb-3 pt-5 px-6">
-            <CardTitle className="text-lg font-bold text-slate-900 dark:text-white">
+            <CardTitle className="text-lg font-bold text-foreground">
               {activeTab === "admin" ? "Administrator Access" : "Teacher Access"}
             </CardTitle>
-            <CardDescription className="text-xs text-slate-500 dark:text-slate-400">
+            <CardDescription className="text-xs text-muted-foreground">
               {activeTab === "admin"
                 ? "Full control over classes, teachers, student rosters, and SMS dispatch history."
                 : "Mark daily class attendance for Class 7 B and track student trends."}
@@ -121,19 +120,19 @@ export default function LoginPage() {
 
           <CardContent className="space-y-4 px-6 pb-6 pt-0">
             {state?.error && (
-              <div className="rounded-xl bg-red-50 dark:bg-red-950/40 p-3 text-xs text-red-700 dark:text-red-400 border border-red-200 dark:border-red-900/60 flex items-start gap-2.5 animate-in fade-in duration-200">
-                <ShieldAlert className="size-4 shrink-0 text-red-600 dark:text-red-400 mt-0.5" />
-                <span>{state.error}</span>
+              <div className="rounded-xl bg-destructive/10 p-3 text-xs text-destructive border border-destructive/20 flex items-start gap-2.5 animate-in fade-in duration-200">
+                <ShieldAlert className="size-4 shrink-0 text-destructive mt-0.5" />
+                <span>{state?.error}</span>
               </div>
             )}
 
             <form action={formAction} className="space-y-4">
               <div className="space-y-1.5">
-                <Label htmlFor="email" className="text-xs font-medium text-slate-700 dark:text-slate-300">
+                <Label htmlFor="email" className="text-xs font-medium text-foreground">
                   Email Address
                 </Label>
                 <div className="relative">
-                  <Mail className="absolute left-3.5 top-2.5 size-4 text-slate-400" />
+                  <Mail className="absolute left-3.5 top-2.5 size-4 text-muted-foreground" />
                   <Input
                     id="email"
                     name="email"
@@ -142,7 +141,7 @@ export default function LoginPage() {
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="pl-10 h-10 text-xs rounded-xl border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 focus-visible:ring-blue-500"
+                    className="pl-10 h-10 text-xs rounded-xl"
                     autoComplete="email"
                   />
                 </div>
@@ -150,15 +149,15 @@ export default function LoginPage() {
 
               <div className="space-y-1.5">
                 <div className="flex items-center justify-between">
-                  <Label htmlFor="password" className="text-xs font-medium text-slate-700 dark:text-slate-300">
+                  <Label htmlFor="password" className="text-xs font-medium text-foreground">
                     Password
                   </Label>
-                  <span className="text-[11px] text-slate-400 font-mono">
+                  <span className="text-[11px] text-muted-foreground font-mono">
                     {activeTab === "admin" ? "admin@123" : "teacher@123"}
                   </span>
                 </div>
                 <div className="relative">
-                  <Lock className="absolute left-3.5 top-2.5 size-4 text-slate-400" />
+                  <Lock className="absolute left-3.5 top-2.5 size-4 text-muted-foreground" />
                   <Input
                     id="password"
                     name="password"
@@ -167,13 +166,13 @@ export default function LoginPage() {
                     required
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="pl-10 pr-10 h-10 text-xs rounded-xl border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 focus-visible:ring-blue-500"
+                    className="pl-10 pr-10 h-10 text-xs rounded-xl"
                     autoComplete="current-password"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-2.5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors"
+                    className="absolute right-3 top-2.5 text-muted-foreground hover:text-foreground transition-colors"
                   >
                     {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
                   </button>
@@ -182,12 +181,12 @@ export default function LoginPage() {
 
               <Button
                 type="submit"
-                className="w-full h-10 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold text-xs shadow-md shadow-blue-500/25 transition-all duration-200 active:scale-98 gap-1.5"
+                className="w-full h-10 rounded-xl font-semibold text-xs shadow-md transition-all duration-200 active:scale-98 gap-1.5"
                 disabled={isPending}
               >
                 {isPending ? (
                   <span className="flex items-center gap-2">
-                    <span className="size-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    <span className="size-3.5 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin" />
                     Signing in...
                   </span>
                 ) : (
@@ -200,12 +199,12 @@ export default function LoginPage() {
             </form>
 
             {/* Quick Demo Footer */}
-            <div className="pt-3 border-t border-slate-100 dark:border-slate-800/80">
-              <div className="flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400">
+            <div className="pt-3 border-t border-border">
+              <div className="flex items-center justify-between text-[11px] text-muted-foreground">
                 <span className="flex items-center gap-1.5">
-                  <Zap className="size-3 text-amber-500" /> Demo credentials auto-filled
+                  <Zap className="size-3 text-primary" /> Demo credentials auto-filled
                 </span>
-                <span className="font-mono text-slate-400">v0.0.1</span>
+                <span className="font-mono text-muted-foreground">v0.0.1</span>
               </div>
             </div>
           </CardContent>

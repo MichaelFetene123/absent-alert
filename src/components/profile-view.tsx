@@ -124,43 +124,39 @@ export function ProfileView({ initialProfile }: Props) {
   return (
     <div className="space-y-6 max-w-4xl mx-auto">
       {/* Profile Header Banner */}
-      <div className="relative rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 shadow-xs overflow-hidden">
+      <div className="relative rounded-2xl bg-card text-card-foreground border border-border p-6 shadow-xs overflow-hidden">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
           <div className="flex items-center gap-4">
-            <div className="size-16 rounded-2xl bg-gradient-to-tr from-indigo-600 to-indigo-500 text-white font-bold text-xl flex items-center justify-center shadow-md shadow-indigo-500/20 shrink-0">
+            <div className="size-16 rounded-2xl bg-primary text-primary-foreground font-bold text-xl flex items-center justify-center shadow-xs shrink-0">
               {getInitials(profile.name)}
             </div>
 
             <div className="space-y-1">
               <div className="flex items-center gap-2.5">
-                <h1 className="text-xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
+                <h1 className="text-xl font-bold tracking-tight text-foreground">
                   {profile.name}
                 </h1>
                 <Badge
-                  variant="outline"
-                  className={
-                    profile.role === "ADMIN"
-                      ? "bg-purple-500/10 text-purple-700 dark:text-purple-300 border-purple-500/30 text-xs font-semibold"
-                      : "bg-blue-500/10 text-blue-700 dark:text-blue-300 border-blue-500/30 text-xs font-semibold"
-                  }
+                  variant={profile.role === "ADMIN" ? "default" : "secondary"}
+                  className="text-xs font-semibold"
                 >
                   {profile.role === "ADMIN" ? "School Administrator" : "Teacher"}
                 </Badge>
               </div>
 
-              <p className="text-xs text-slate-500 dark:text-slate-400 font-mono">
+              <p className="text-xs text-muted-foreground font-mono">
                 {profile.email}
               </p>
 
-              <div className="flex items-center gap-4 text-xs text-slate-500 pt-1">
+              <div className="flex items-center gap-4 text-xs text-muted-foreground pt-1">
                 <span className="flex items-center gap-1.5">
-                  <School className="size-3.5 text-indigo-500" />
+                  <School className="size-3.5 text-primary" />
                   {profile.assignedClasses.length > 0
                     ? profile.assignedClasses.join(", ")
                     : "School-Wide Access"}
                 </span>
                 <span className="flex items-center gap-1.5">
-                  <CalendarCheck className="size-3.5 text-emerald-500" />
+                  <CalendarCheck className="size-3.5 text-primary" />
                   {profile.totalMarkedCount} Attendance Records Marked
                 </span>
               </div>
@@ -172,7 +168,7 @@ export function ProfileView({ initialProfile }: Props) {
               type="submit"
               variant="outline"
               size="sm"
-              className="text-xs text-rose-600 border-rose-200 dark:border-rose-900/40 hover:bg-rose-50 dark:hover:bg-rose-950/20 gap-1.5 h-8.5"
+              className="text-xs text-destructive border-destructive/30 hover:bg-destructive/10 hover:text-destructive gap-1.5 h-8.5"
             >
               <LogOut className="size-3.5" />
               <span>Sign out</span>
@@ -182,33 +178,36 @@ export function ProfileView({ initialProfile }: Props) {
       </div>
 
       {/* Navigation Tabs */}
-      <div className="flex border-b border-slate-200 dark:border-slate-800 gap-6">
+      <div className="flex border-b border-border gap-6">
         <button
+          type="button"
           onClick={() => setActiveTab("general")}
           className={`pb-3 text-sm font-medium border-b-2 transition-colors ${
             activeTab === "general"
-              ? "border-indigo-600 text-indigo-600 dark:text-indigo-400 dark:border-indigo-400"
-              : "border-transparent text-slate-500 hover:text-slate-700"
+              ? "border-primary text-primary"
+              : "border-transparent text-muted-foreground hover:text-foreground"
           }`}
         >
           {locale === "am" ? "የግል መረጃ" : "Personal Information"}
         </button>
         <button
+          type="button"
           onClick={() => setActiveTab("security")}
           className={`pb-3 text-sm font-medium border-b-2 transition-colors ${
             activeTab === "security"
-              ? "border-indigo-600 text-indigo-600 dark:text-indigo-400 dark:border-indigo-400"
-              : "border-transparent text-slate-500 hover:text-slate-700"
+              ? "border-primary text-primary"
+              : "border-transparent text-muted-foreground hover:text-foreground"
           }`}
         >
           {locale === "am" ? "ደህንነትና የይለፍ ቃል" : "Security & Password"}
         </button>
         <button
+          type="button"
           onClick={() => setActiveTab("preferences")}
           className={`pb-3 text-sm font-medium border-b-2 transition-colors ${
             activeTab === "preferences"
-              ? "border-indigo-600 text-indigo-600 dark:text-indigo-400 dark:border-indigo-400"
-              : "border-transparent text-slate-500 hover:text-slate-700"
+              ? "border-primary text-primary"
+              : "border-transparent text-muted-foreground hover:text-foreground"
           }`}
         >
           {locale === "am" ? "ምርጫዎች" : "Preferences & Language"}
@@ -217,13 +216,13 @@ export function ProfileView({ initialProfile }: Props) {
 
       {/* TAB 1: PERSONAL INFORMATION */}
       {activeTab === "general" && (
-        <Card className="border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs">
+        <Card className="border-border bg-card text-card-foreground shadow-xs">
           <CardHeader className="pb-3">
-            <CardTitle className="text-base font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-              <UserIcon className="size-4 text-indigo-600" />
+            <CardTitle className="text-base font-bold text-foreground flex items-center gap-2">
+              <UserIcon className="size-4 text-primary" />
               <span>Account Information</span>
             </CardTitle>
-            <CardDescription className="text-xs text-slate-500">
+            <CardDescription className="text-xs text-muted-foreground">
               Update your full name and primary email address used for sign in and institutional alerts.
             </CardDescription>
           </CardHeader>
@@ -232,7 +231,7 @@ export function ProfileView({ initialProfile }: Props) {
             <form onSubmit={handleUpdateProfile} className="space-y-4">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-1.5">
-                  <label className="text-xs font-medium text-slate-700 dark:text-slate-300">
+                  <label className="text-xs font-medium text-foreground">
                     Full Name
                   </label>
                   <Input
@@ -245,7 +244,7 @@ export function ProfileView({ initialProfile }: Props) {
                 </div>
 
                 <div className="space-y-1.5">
-                  <label className="text-xs font-medium text-slate-700 dark:text-slate-300">
+                  <label className="text-xs font-medium text-foreground">
                     Email Address
                   </label>
                   <Input
@@ -259,16 +258,16 @@ export function ProfileView({ initialProfile }: Props) {
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2 border-t border-slate-100 dark:border-slate-800">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2 border-t border-border">
                 <div className="space-y-1">
-                  <span className="text-[11px] font-medium text-slate-400 uppercase tracking-wider block">
+                  <span className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider block">
                     Institutional Role
                   </span>
-                  <div className="text-xs font-semibold text-slate-800 dark:text-slate-200 flex items-center gap-1.5 mt-0.5">
-                    <Shield className="size-3.5 text-indigo-500" />
+                  <div className="text-xs font-semibold text-foreground flex items-center gap-1.5 mt-0.5">
+                    <Shield className="size-3.5 text-primary" />
                     <span>{profile.role === "ADMIN" ? "System Administrator" : "Classroom Teacher"}</span>
                   </div>
-                  <span className="text-[11px] text-slate-400 block">
+                  <span className="text-[11px] text-muted-foreground block">
                     {profile.role === "ADMIN"
                       ? "Full administrative rights to modify policies, SMS credentials, and rosters."
                       : "Authorized to record daily attendance and submit parent absence notifications."}
@@ -276,7 +275,7 @@ export function ProfileView({ initialProfile }: Props) {
                 </div>
 
                 <div className="space-y-1">
-                  <span className="text-[11px] font-medium text-slate-400 uppercase tracking-wider block">
+                  <span className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider block">
                     Assigned Classes
                   </span>
                   <div className="flex flex-wrap gap-1.5 mt-1">
@@ -287,7 +286,7 @@ export function ProfileView({ initialProfile }: Props) {
                         </Badge>
                       ))
                     ) : (
-                      <span className="text-xs text-slate-500">All institutional classes</span>
+                      <span className="text-xs text-muted-foreground">All institutional classes</span>
                     )}
                   </div>
                 </div>
@@ -297,7 +296,7 @@ export function ProfileView({ initialProfile }: Props) {
                 <Button
                   type="submit"
                   disabled={isSavingProfile}
-                  className="bg-indigo-600 hover:bg-indigo-700 text-white text-xs h-9 px-4 gap-1.5"
+                  className="text-xs h-9 px-4 gap-1.5"
                 >
                   <Save className="size-3.5" />
                   {isSavingProfile ? "Saving..." : "Save Profile Details"}
@@ -310,13 +309,13 @@ export function ProfileView({ initialProfile }: Props) {
 
       {/* TAB 2: SECURITY & PASSWORD */}
       {activeTab === "security" && (
-        <Card className="border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs">
+        <Card className="border-border bg-card text-card-foreground shadow-xs">
           <CardHeader className="pb-3">
-            <CardTitle className="text-base font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-              <KeyRound className="size-4 text-indigo-600" />
+            <CardTitle className="text-base font-bold text-foreground flex items-center gap-2">
+              <KeyRound className="size-4 text-primary" />
               <span>Change Account Password</span>
             </CardTitle>
-            <CardDescription className="text-xs text-slate-500">
+            <CardDescription className="text-xs text-muted-foreground">
               Ensure your account is protected with a secure password. Minimum 6 characters.
             </CardDescription>
           </CardHeader>
@@ -324,7 +323,7 @@ export function ProfileView({ initialProfile }: Props) {
           <CardContent className="space-y-5">
             <form onSubmit={handleChangePassword} className="space-y-4 max-w-md">
               <div className="space-y-1.5">
-                <label className="text-xs font-medium text-slate-700 dark:text-slate-300">
+                <label className="text-xs font-medium text-foreground">
                   Current Password
                 </label>
                 <div className="relative">
@@ -339,7 +338,7 @@ export function ProfileView({ initialProfile }: Props) {
                   <button
                     type="button"
                     onClick={() => setShowCurrentPassword(!showCurrentPassword)}
-                    className="absolute right-2.5 top-2.5 text-slate-400 hover:text-slate-600"
+                    className="absolute right-2.5 top-2.5 text-muted-foreground hover:text-foreground"
                   >
                     {showCurrentPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
                   </button>
@@ -347,7 +346,7 @@ export function ProfileView({ initialProfile }: Props) {
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-xs font-medium text-slate-700 dark:text-slate-300">
+                <label className="text-xs font-medium text-foreground">
                   New Password
                 </label>
                 <div className="relative">
@@ -362,7 +361,7 @@ export function ProfileView({ initialProfile }: Props) {
                   <button
                     type="button"
                     onClick={() => setShowNewPassword(!showNewPassword)}
-                    className="absolute right-2.5 top-2.5 text-slate-400 hover:text-slate-600"
+                    className="absolute right-2.5 top-2.5 text-muted-foreground hover:text-foreground"
                   >
                     {showNewPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
                   </button>
@@ -370,7 +369,7 @@ export function ProfileView({ initialProfile }: Props) {
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-xs font-medium text-slate-700 dark:text-slate-300">
+                <label className="text-xs font-medium text-foreground">
                   Confirm New Password
                 </label>
                 <Input
@@ -387,7 +386,7 @@ export function ProfileView({ initialProfile }: Props) {
                 <Button
                   type="submit"
                   disabled={isChangingPassword}
-                  className="bg-indigo-600 hover:bg-indigo-700 text-white text-xs h-9 px-4 gap-1.5"
+                  className="text-xs h-9 px-4 gap-1.5"
                 >
                   <Lock className="size-3.5" />
                   {isChangingPassword ? "Updating Password..." : "Update Password"}
@@ -395,8 +394,8 @@ export function ProfileView({ initialProfile }: Props) {
               </div>
             </form>
 
-            <div className="p-3 rounded-lg bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60 text-xs text-slate-500 space-y-1">
-              <span className="font-semibold text-slate-700 dark:text-slate-300 block">
+            <div className="p-3 rounded-lg bg-muted/50 border border-border text-xs text-muted-foreground space-y-1">
+              <span className="font-semibold text-foreground block">
                 Security Best Practices
               </span>
               <p>• Avoid reusing passwords from other personal or email accounts.</p>
@@ -408,13 +407,13 @@ export function ProfileView({ initialProfile }: Props) {
 
       {/* TAB 3: PREFERENCES */}
       {activeTab === "preferences" && (
-        <Card className="border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xs">
+        <Card className="border-border bg-card text-card-foreground shadow-xs">
           <CardHeader className="pb-3">
-            <CardTitle className="text-base font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-              <Globe className="size-4 text-indigo-600" />
+            <CardTitle className="text-base font-bold text-foreground flex items-center gap-2">
+              <Globe className="size-4 text-primary" />
               <span>Language & Interface Preferences</span>
             </CardTitle>
-            <CardDescription className="text-xs text-slate-500">
+            <CardDescription className="text-xs text-muted-foreground">
               Select your preferred language for the application dashboard and reports.
             </CardDescription>
           </CardHeader>
@@ -429,15 +428,15 @@ export function ProfileView({ initialProfile }: Props) {
                 }}
                 className={`p-4 rounded-xl border text-left transition-all ${
                   locale === "en"
-                    ? "border-indigo-600 bg-indigo-50/50 dark:bg-indigo-950/20"
-                    : "border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/50"
+                    ? "border-primary bg-primary/10 shadow-xs ring-1 ring-primary/20"
+                    : "border-border hover:border-foreground/20 bg-card text-card-foreground"
                 }`}
               >
                 <div className="flex items-center justify-between mb-1">
-                  <span className="font-bold text-sm text-slate-900 dark:text-slate-100">English (US)</span>
-                  {locale === "en" && <CheckCircle2 className="size-4 text-indigo-600" />}
+                  <span className="font-bold text-sm text-foreground">English (US)</span>
+                  {locale === "en" && <CheckCircle2 className="size-4 text-primary" />}
                 </div>
-                <p className="text-xs text-slate-500">Default institutional dashboard language.</p>
+                <p className="text-xs text-muted-foreground">Default institutional dashboard language.</p>
               </button>
 
               <button
@@ -448,15 +447,15 @@ export function ProfileView({ initialProfile }: Props) {
                 }}
                 className={`p-4 rounded-xl border text-left transition-all ${
                   locale === "am"
-                    ? "border-indigo-600 bg-indigo-50/50 dark:bg-indigo-950/20"
-                    : "border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/50"
+                    ? "border-primary bg-primary/10 shadow-xs ring-1 ring-primary/20"
+                    : "border-border hover:border-foreground/20 bg-card text-card-foreground"
                 }`}
               >
                 <div className="flex items-center justify-between mb-1">
-                  <span className="font-bold text-sm text-slate-900 dark:text-slate-100">አማርኛ (ኢትዮጵያ)</span>
-                  {locale === "am" && <CheckCircle2 className="size-4 text-indigo-600" />}
+                  <span className="font-bold text-sm text-foreground">አማርኛ (ኢትዮጵያ)</span>
+                  {locale === "am" && <CheckCircle2 className="size-4 text-primary" />}
                 </div>
-                <p className="text-xs text-slate-500">የአማርኛ ቋንቋ ዳሽቦርድ እና ሪፖርቶች።</p>
+                <p className="text-xs text-muted-foreground">የአማርኛ ቋንቋ ዳሽቦርድ እና ሪፖርቶች።</p>
               </button>
             </div>
           </CardContent>

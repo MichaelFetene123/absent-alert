@@ -2,6 +2,7 @@ import { requireUser } from "@/lib/guards";
 import { listStudents, listClasses } from "@/actions/student.actions";
 import { StudentsManager } from "@/components/students-manager";
 
+export const instant = false;
 
 export default async function StudentsPage() {
   const user = await requireUser();

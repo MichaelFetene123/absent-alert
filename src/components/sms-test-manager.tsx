@@ -87,12 +87,12 @@ export function SmsTestManager() {
   return (
     <div className="space-y-6 max-w-4xl">
       {/* Header */}
-      <div className="pb-2 border-b border-slate-200 dark:border-slate-800">
-        <h1 className="text-xl font-bold tracking-tight text-slate-900 dark:text-white flex items-center gap-2">
-          <ShieldCheck className="size-5 text-indigo-600 dark:text-indigo-400" />
+      <div className="pb-2 border-b border-border">
+        <h1 className="text-xl font-bold tracking-tight text-foreground flex items-center gap-2">
+          <ShieldCheck className="size-5 text-primary" />
           {locale === "am" ? "የSMSHub የሙከራ መልእክት መላኪያ (0 ወጪ)" : "SMSHub Zero-Cost Test Mode"}
         </h1>
-        <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+        <p className="text-xs text-muted-foreground mt-0.5">
           {locale === "am"
             ? "በPOST /api/test በኩል የስልክ ቁጥርን ትክክለኛነት፣ የፊደላት ብዛትና የአማርኛ ኢንኮዲንግ ያለ ምንም ክሬዲት ወጪ ያረጋግጡ።"
             : "Safely validate Ethiopian mobile numbers, message length, Amharic Unicode encoding, and credit estimates via POST /api/test without consuming credits."}
@@ -102,11 +102,11 @@ export function SmsTestManager() {
       <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
         {/* Test Form */}
         <div className="md:col-span-7 space-y-4">
-          <Card className="border-slate-200 dark:border-slate-800 shadow-xs">
+          <Card className="border-border shadow-xs">
             <CardHeader className="pb-3">
               <CardTitle className="text-sm font-semibold flex items-center justify-between">
                 <span>Test Parameters</span>
-                <Badge variant="outline" className="text-[10px] bg-emerald-50 text-emerald-700 border-emerald-200">
+                <Badge variant="outline" className="text-[10px] bg-primary/10 text-primary border-primary/20">
                   Zero Cost (0 Credits)
                 </Badge>
               </CardTitle>
@@ -127,16 +127,16 @@ export function SmsTestManager() {
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
                     placeholder="0911234567 or 0712345678"
-                    className="font-mono text-xs bg-slate-50 dark:bg-slate-950"
+                    className="font-mono text-xs bg-background border-border"
                   />
-                  <p className="text-[11px] text-slate-400">
+                  <p className="text-[11px] text-muted-foreground">
                     Accepts 09xxxxxxxx, 07xxxxxxxx, 2519..., +251...
                   </p>
                 </div>
 
                 {/* Quick Presets */}
                 <div className="space-y-1.5">
-                  <Label className="text-xs font-semibold text-slate-600 dark:text-slate-400">
+                  <Label className="text-xs font-semibold text-muted-foreground">
                     Load Sample Preset Message:
                   </Label>
                   <div className="flex flex-wrap gap-1.5">
@@ -145,7 +145,7 @@ export function SmsTestManager() {
                         key={m.label}
                         type="button"
                         onClick={() => setMessage(m.text)}
-                        className="px-2 py-1 rounded text-[11px] font-medium border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300"
+                        className="px-2 py-1 rounded text-[11px] font-medium border border-border hover:bg-muted text-foreground"
                       >
                         {m.label}
                       </button>
@@ -160,7 +160,7 @@ export function SmsTestManager() {
                       Message Body
                     </Label>
                     <div className="flex items-center gap-1.5 text-[11px]">
-                      <span className="font-mono text-slate-500">
+                      <span className="font-mono text-muted-foreground">
                         {message.length} chars (raw)
                       </span>
                       <Badge variant="outline" className="text-[10px] py-0 px-1 font-mono uppercase">
@@ -173,7 +173,7 @@ export function SmsTestManager() {
                     rows={4}
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
-                    className="w-full text-xs p-2.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 focus:outline-hidden focus:ring-2 focus:ring-indigo-500 font-sans"
+                    className="w-full text-xs p-2.5 rounded-lg border border-border bg-background focus:outline-hidden focus:ring-2 focus:ring-ring font-sans text-foreground"
                     placeholder="Type message text here..."
                   />
                 </div>
@@ -182,7 +182,7 @@ export function SmsTestManager() {
                 <Button
                   type="submit"
                   disabled={isRunning}
-                  className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium text-xs h-9 gap-1.5"
+                  className="w-full font-medium text-xs h-9 gap-1.5"
                 >
                   {isRunning ? (
                     <>
@@ -203,46 +203,46 @@ export function SmsTestManager() {
 
         {/* Live Preview & Provider Signature Panel */}
         <div className="md:col-span-5 space-y-4">
-          <Card className="border-slate-200 dark:border-slate-800 shadow-xs bg-slate-50/50 dark:bg-slate-900/50">
+          <Card className="border-border shadow-xs bg-muted/30">
             <CardHeader className="pb-2">
               <CardTitle className="text-xs font-semibold flex items-center gap-1.5">
-                <Smartphone className="size-3.5 text-indigo-600" />
+                <Smartphone className="size-3.5 text-primary" />
                 Live Message Preview (With Auto Signature)
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
-              <div className="p-3.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 shadow-xs space-y-2">
-                <p className="text-xs text-slate-800 dark:text-slate-200 whitespace-pre-wrap leading-relaxed">
+              <div className="p-3.5 rounded-xl border border-border bg-card shadow-xs space-y-2">
+                <p className="text-xs text-foreground whitespace-pre-wrap leading-relaxed">
                   {message}
-                  <span className="text-slate-400 dark:text-slate-500 font-medium">
+                  <span className="text-muted-foreground font-medium">
                     {signature}
                   </span>
                 </p>
               </div>
 
               {/* Character & Segment Budget */}
-              <div className="space-y-1.5 text-xs bg-white dark:bg-slate-950 p-3 rounded-lg border border-slate-200 dark:border-slate-800">
-                <div className="flex justify-between text-slate-600 dark:text-slate-400">
+              <div className="space-y-1.5 text-xs bg-card p-3 rounded-lg border border-border">
+                <div className="flex justify-between text-muted-foreground">
                   <span>Encoding Mode:</span>
-                  <span className="font-semibold text-slate-900 dark:text-white uppercase">
+                  <span className="font-semibold text-foreground uppercase">
                     {isUnicode ? "Unicode (Amharic)" : "GSM-7 (Standard)"}
                   </span>
                 </div>
-                <div className="flex justify-between text-slate-600 dark:text-slate-400">
+                <div className="flex justify-between text-muted-foreground">
                   <span>Total Chars with Signature:</span>
-                  <span className="font-semibold text-slate-900 dark:text-white">
+                  <span className="font-semibold text-foreground">
                     {totalChars} / {charLimit} per segment
                   </span>
                 </div>
-                <div className="flex justify-between text-slate-600 dark:text-slate-400">
+                <div className="flex justify-between text-muted-foreground">
                   <span>Segment Count:</span>
-                  <span className="font-semibold text-slate-900 dark:text-white">
+                  <span className="font-semibold text-foreground">
                     {segments} {segments === 1 ? "SMS segment" : "SMS segments"}
                   </span>
                 </div>
-                <div className="flex justify-between text-slate-600 dark:text-slate-400 border-t border-slate-100 dark:border-slate-800 pt-1.5">
+                <div className="flex justify-between text-muted-foreground border-t border-border pt-1.5">
                   <span>Est. Credit Cost:</span>
-                  <span className="font-bold text-indigo-600 dark:text-indigo-400">
+                  <span className="font-bold text-primary">
                     {segments * (phone.startsWith("07") ? 2 : 1)} Credits
                   </span>
                 </div>
@@ -255,37 +255,37 @@ export function SmsTestManager() {
             <Card
               className={`border shadow-xs ${
                 result.ok
-                  ? "border-emerald-200 dark:border-emerald-800 bg-emerald-50/40 dark:bg-emerald-950/20"
-                  : "border-rose-200 dark:border-rose-800 bg-rose-50/40 dark:bg-rose-950/20"
+                  ? "border-primary/20 bg-primary/10"
+                  : "border-destructive/20 bg-destructive/10"
               }`}
             >
               <CardContent className="p-3.5 space-y-2">
                 <div className="flex items-center gap-2">
                   {result.ok ? (
-                    <CheckCircle2 className="size-4 text-emerald-600 dark:text-emerald-400" />
+                    <CheckCircle2 className="size-4 text-primary" />
                   ) : (
-                    <AlertTriangle className="size-4 text-rose-600 dark:text-rose-400" />
+                    <AlertTriangle className="size-4 text-destructive" />
                   )}
-                  <span className="text-xs font-bold text-slate-900 dark:text-white">
+                  <span className="text-xs font-bold text-foreground">
                     {result.ok ? "SMSHub /api/test Passed" : "Validation Rejected"}
                   </span>
                 </div>
 
                 {result.ok && result.data && (
-                  <div className="text-[11px] space-y-1 font-mono text-slate-600 dark:text-slate-300">
+                  <div className="text-[11px] space-y-1 font-mono text-foreground">
                     <p>• Status: {result.data.message_status}</p>
                     <p>• Network: {result.data.network.toUpperCase()}</p>
                     <p>• Credits Needed: {result.data.credits_needed}</p>
                     <p>• Credits Used: 0 (Zero Cost)</p>
                     <p>• Remaining Balance: {result.data.credits_remaining}</p>
-                    <p className="text-emerald-700 dark:text-emerald-300 font-sans font-medium mt-1">
+                    <p className="text-primary font-sans font-medium mt-1">
                       {result.data.message}
                     </p>
                   </div>
                 )}
 
                 {!result.ok && (
-                  <p className="text-xs text-rose-700 dark:text-rose-300 font-medium">
+                  <p className="text-xs text-destructive font-medium">
                     {result.error}
                   </p>
                 )}
