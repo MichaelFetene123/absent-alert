@@ -17,6 +17,7 @@ import {
   Download,
   Flame,
   Check,
+  Printer,
 } from "lucide-react";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -113,6 +114,17 @@ export function TwoWeekGrid({ data, selectedClassId }: Props) {
           >
             <Download className="size-3.5 text-muted-foreground" />
             <span>Export CSV</span>
+          </Button>
+
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => window.print()}
+            className="h-8 px-2.5 text-xs font-medium gap-1.5"
+            title="Print 2-week classroom attendance matrix"
+          >
+            <Printer className="size-3.5 text-slate-500" />
+            <span>Print Grid</span>
           </Button>
 
           <Link href={`/attendance?classId=${selectedClassId}`}>

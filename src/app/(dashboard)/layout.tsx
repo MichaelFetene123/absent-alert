@@ -2,8 +2,6 @@ import { requireUser } from "@/lib/guards";
 import { redirect } from "next/navigation";
 import { DashboardShell } from "@/components/dashboard-shell";
 
-export const instant = false;
-
 export default async function DashboardLayout({
   children,
 }: {

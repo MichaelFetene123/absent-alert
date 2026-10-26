@@ -43,6 +43,7 @@ import {
   Zap,
   Sparkles,
   ArrowRight,
+  Printer,
 } from "lucide-react";
 
 export type StudentAttendanceItem = {
@@ -86,6 +87,7 @@ export function AttendanceForm({
   const [statusFilter, setStatusFilter] = React.useState<"ALL" | AttendanceStatus>("ALL");
   const [isPending, setIsPending] = React.useState(false);
   const [isConfirmOpen, setIsConfirmOpen] = React.useState(false);
+  const [activeRowIndex, setActiveRowIndex] = React.useState<number>(0);
 
   // Sync state if initialStudents changes from server revalidation
   const [prevInitialStudents, setPrevInitialStudents] = React.useState(initialStudents);
@@ -211,19 +213,82 @@ export function AttendanceForm({
     }
   };
 
-  // Keyboard shortcut Ctrl+S or Cmd+S
+  // Keyboard shortcuts: Rapid marking (P, A, L, E), navigation (Up, Down), and save (Ctrl+S, Ctrl+Enter)
   const handleSaveRef = React.useRef(handleSaveClick);
   React.useEffect(() => {
     handleSaveRef.current = handleSaveClick;
   });
 
+  const filteredStudentsRef = React.useRef(filteredStudents);
+  React.useEffect(() => {
+    filteredStudentsRef.current = filteredStudents;
+  });
+
+  const activeRowIndexRef = React.useRef(activeRowIndex);
+  React.useEffect(() => {
+    activeRowIndexRef.current = activeRowIndex;
+  });
+
   React.useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if ((e.ctrlKey || e.metaKey) && e.key === "s") {
+      const target = e.target as HTMLElement | null;
+      const isInput =
+        target &&
+        (target.tagName === "INPUT" ||
+          target.tagName === "TEXTAREA" ||
+          target.tagName === "SELECT" ||
+          target.isContentEditable);
+
+      // Save shortcut works from anywhere
+      if ((e.ctrlKey || e.metaKey) && (e.key === "s" || e.key === "Enter")) {
         e.preventDefault();
         handleSaveRef.current();
+        return;
+      }
+
+      // Ignore single-key shortcuts when typing in search or text boxes
+      if (isInput) return;
+
+      const currentList = filteredStudentsRef.current;
+      const curIdx = activeRowIndexRef.current;
+
+      if (e.key === "ArrowDown" || e.key === "j") {
+        e.preventDefault();
+        setActiveRowIndex((i) => Math.min(currentList.length - 1, i + 1));
+      } else if (e.key === "ArrowUp" || e.key === "k") {
+        e.preventDefault();
+        setActiveRowIndex((i) => Math.max(0, i - 1));
+      } else if (e.key === "p" || e.key === "P") {
+        e.preventDefault();
+        const student = currentList[curIdx];
+        if (student) {
+          handleStatusChange(student.studentId, "PRESENT");
+          setActiveRowIndex((i) => Math.min(currentList.length - 1, i + 1));
+        }
+      } else if (e.key === "a" || e.key === "A") {
+        e.preventDefault();
+        const student = currentList[curIdx];
+        if (student) {
+          handleStatusChange(student.studentId, "ABSENT");
+          setActiveRowIndex((i) => Math.min(currentList.length - 1, i + 1));
+        }
+      } else if (e.key === "l" || e.key === "L") {
+        e.preventDefault();
+        const student = currentList[curIdx];
+        if (student) {
+          handleStatusChange(student.studentId, "LATE");
+          setActiveRowIndex((i) => Math.min(currentList.length - 1, i + 1));
+        }
+      } else if (e.key === "e" || e.key === "E") {
+        e.preventDefault();
+        const student = currentList[curIdx];
+        if (student) {
+          handleStatusChange(student.studentId, "LEAVE");
+          setActiveRowIndex((i) => Math.min(currentList.length - 1, i + 1));
+        }
       }
     };
+
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
@@ -281,6 +346,18 @@ export function AttendanceForm({
                 <span>New Session</span>
               </Badge>
             )}
+
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => window.print()}
+              className="text-xs font-medium gap-1.5 h-9 px-3 rounded-lg text-slate-700 dark:text-slate-300 border-slate-300 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800"
+              title="Print official classroom attendance sheet (Ctrl+P)"
+            >
+              <Printer className="size-3.5 text-slate-500" />
+              <span>Print Sheet</span>
+            </Button>
 
             <Button
               type="button"
@@ -410,6 +487,18 @@ export function AttendanceForm({
         </div>
       )}
 
+      {/* Printable Institutional Header (Visible only when printed) */}
+      <div className="print-only mb-6">
+        <div className="text-center border-b border-slate-300 pb-4 mb-3">
+          <h1 className="text-xl font-bold uppercase tracking-wider text-slate-900">
+            AbsentAlert Official School Attendance Roster
+          </h1>
+          <p className="text-xs text-slate-600 mt-1">
+            Class: <strong>{classes.find((c) => c.id === selectedClassId)?.name || selectedClassId}</strong> | Date: <strong>{selectedDate}</strong> | Total Enrolled: <strong>{initialStudents.length} Students</strong>
+          </p>
+        </div>
+      </div>
+
       {/* Search and Filters Bar */}
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
         <div className="relative flex-1 max-w-md">
@@ -437,6 +526,32 @@ export function AttendanceForm({
           <p className="text-xs font-medium text-muted-foreground">
             Showing <span className="font-bold text-foreground">{filteredStudents.length}</span> of {initialStudents.length} students
           </p>
+        </div>
+      </div>
+
+      {/* Rapid Keyboard Navigation Guide */}
+      <div className="flex flex-wrap items-center justify-between gap-2 px-3.5 py-2 rounded-xl bg-slate-100/90 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60 text-[11px] text-slate-600 dark:text-slate-300">
+        <div className="flex flex-wrap items-center gap-1.5">
+          <Sparkles className="size-3.5 text-indigo-500 shrink-0" />
+          <span className="font-bold text-slate-900 dark:text-white">Rapid Teacher Mode:</span>
+          <span className="font-mono bg-white dark:bg-slate-900 px-1 py-0.5 rounded border border-slate-200 dark:border-slate-700 font-bold text-[10px] text-emerald-600">P</span>
+          <span>Present</span>
+          <span className="text-slate-300 dark:text-slate-600">•</span>
+          <span className="font-mono bg-white dark:bg-slate-900 px-1 py-0.5 rounded border border-slate-200 dark:border-slate-700 font-bold text-[10px] text-rose-600">A</span>
+          <span>Absent</span>
+          <span className="text-slate-300 dark:text-slate-600">•</span>
+          <span className="font-mono bg-white dark:bg-slate-900 px-1 py-0.5 rounded border border-slate-200 dark:border-slate-700 font-bold text-[10px] text-blue-600">L</span>
+          <span>Late</span>
+          <span className="text-slate-300 dark:text-slate-600">•</span>
+          <span className="font-mono bg-white dark:bg-slate-900 px-1 py-0.5 rounded border border-slate-200 dark:border-slate-700 font-bold text-[10px] text-amber-600">E</span>
+          <span>Leave</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <span className="font-mono bg-white dark:bg-slate-900 px-1.5 py-0.5 rounded border border-slate-200 dark:border-slate-700 font-bold text-[10px]">↑/↓</span>
+          <span>Navigate</span>
+          <span className="text-slate-300 dark:text-slate-600">•</span>
+          <span className="font-mono bg-white dark:bg-slate-900 px-1.5 py-0.5 rounded border border-slate-200 dark:border-slate-700 font-bold text-[10px]">Ctrl+S</span>
+          <span>Save</span>
         </div>
       </div>
 
@@ -471,8 +586,9 @@ export function AttendanceForm({
                 </TableCell>
               </TableRow>
             ) : (
-              filteredStudents.map((student) => {
+              filteredStudents.map((student, idx) => {
                 const currentStatus = statuses[student.studentId] || "PRESENT";
+                const isActiveRow = idx === activeRowIndex;
 
                 return (
                   <TableRow
@@ -571,6 +687,22 @@ export function AttendanceForm({
         </Table>
       </div>
 
+      {/* Printable Institutional Signature Block (Visible only when printed) */}
+      <div className="print-only mt-8 pt-6 border-t border-slate-300">
+        <div className="grid grid-cols-2 gap-8 text-sm">
+          <div>
+            <p className="font-semibold text-slate-800">Homeroom Teacher Signature:</p>
+            <div className="mt-8 border-b border-slate-400 w-56"></div>
+            <p className="text-xs text-slate-500 mt-1">Date: ____________________</p>
+          </div>
+          <div>
+            <p className="font-semibold text-slate-800">School Administrator / Principal Signature:</p>
+            <div className="mt-8 border-b border-slate-400 w-56"></div>
+            <p className="text-xs text-slate-500 mt-1">Date: ____________________</p>
+          </div>
+        </div>
+      </div>
+
       {/* Floating Bottom Sticky Save Action Bar */}
       <div className="fixed bottom-4 left-0 right-0 z-30 px-4 md:px-8 max-w-4xl mx-auto pointer-events-none">
         <div className="pointer-events-auto p-3 rounded-xl bg-card/95 backdrop-blur-md border border-border shadow-lg flex flex-col sm:flex-row items-center justify-between gap-3">
@@ -591,6 +723,18 @@ export function AttendanceForm({
           </div>
 
           <div className="flex items-center gap-2 w-full sm:w-auto">
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => window.print()}
+              className="h-9 px-3 rounded-lg text-xs font-medium text-slate-700 dark:text-slate-300 border-slate-300 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800"
+              title="Print official classroom attendance sheet"
+            >
+              <Printer className="size-3.5 text-slate-500" />
+              <span>Print</span>
+            </Button>
+
             <Button
               type="button"
               variant="outline"
