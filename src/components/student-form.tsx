@@ -10,7 +10,6 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogDescription,
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -131,25 +130,18 @@ export function StudentForm({
   if (!open) return null;
 
   return (
-    <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent side="right" className="sm:max-w-md w-full overflow-y-auto rounded-l-3xl border-slate-200 dark:border-slate-800 p-6">
-        <SheetHeader className="pb-4 border-b border-slate-100 dark:border-slate-800">
-          <div className="flex items-center gap-2.5">
-            <div className="p-2 rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400">
-              {isEdit ? <Save className="size-5" /> : <UserPlus className="size-5" />}
-            </div>
-            <div>
-              <SheetTitle className="text-xl font-bold text-slate-900 dark:text-white">
-                {isEdit ? "Edit Student Profile" : "Register New Student"}
-              </SheetTitle>
-              <SheetDescription className="text-xs text-slate-500 mt-0.5">
-                {isEdit
-                  ? "Update academic records and guardian mobile details"
-                  : "Add student to active classroom roster with guardian mobile alert phone"}
-              </SheetDescription>
-            </div>
-          </div>
-        </SheetHeader>
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="sm:max-w-lg max-h-[90vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle className="flex items-center gap-2">
+            {isEdit ? (
+              <Save className="size-5 text-blue-600" />
+            ) : (
+              <UserPlus className="size-5 text-blue-600" />
+            )}
+            <span>{isEdit ? "Edit Student" : "Register New Student"}</span>
+          </DialogTitle>
+        </DialogHeader>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-5 py-4">
           {/* Admission Number */}
@@ -252,9 +244,6 @@ export function StudentForm({
                 {...register("guardianPhone")}
                 className={`h-10 rounded-xl font-mono text-sm ${errors.guardianPhone ? "border-red-500" : ""}`}
               />
-              <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">
-                Ethiopian mobile number. System automatically sanitizes and normalizes to E.164 (+251...) format for SMSHub.
-              </p>
               {errors.guardianPhone && (
                 <p className="text-xs text-red-600">{errors.guardianPhone.message}</p>
               )}
