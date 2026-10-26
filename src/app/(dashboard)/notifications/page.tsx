@@ -2,6 +2,8 @@ import { requireUser } from "@/lib/guards";
 import { getNotificationHistory } from "@/lib/services/notification.service";
 import { NotificationsManager } from "@/components/notifications-manager";
 
+export const instant = false;
+
 type SearchParamsPromise = Promise<{
   status?: string;
   classId?: string;

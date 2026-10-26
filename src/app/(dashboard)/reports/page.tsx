@@ -2,6 +2,8 @@ import { requireUser } from "@/lib/guards";
 import { getReportsData } from "@/lib/services/reports.service";
 import { ReportsManager } from "@/components/reports-manager";
 
+export const instant = false;
+
 export default async function ReportsPage() {
   await requireUser();
   const data = await getReportsData();
