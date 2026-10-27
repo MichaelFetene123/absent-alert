@@ -6,7 +6,6 @@ import {
   CheckCircle2,
   AlertCircle,
   Clock,
-  RefreshCw,
   Search,
   Copy,
   Check,
@@ -42,12 +41,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useQueryClient } from "@tanstack/react-query";
-import { queryKeys } from "@/hooks/query-keys";
 import {
   useNotificationsQuery,
   useRetryNotificationMutation,
-  useBatchRetryNotificationsMutation,
 } from "@/hooks/use-notifications";
 import type {
   NotificationHistoryItem,
@@ -66,10 +62,8 @@ export function NotificationsManager({
   selectedStatus,
   selectedClassId,
 }: Props) {
-  const queryClient = useQueryClient();
   const { data = initialData } = useNotificationsQuery(undefined, initialData);
   const retryMutation = useRetryNotificationMutation();
-  const batchRetryMutation = useBatchRetryNotificationsMutation();
 
   // Filter state
   const [search, setSearch] = React.useState("");
@@ -84,7 +78,6 @@ export function NotificationsManager({
 
   // Loading states
   const retryingId = retryMutation.isPending ? retryMutation.variables : null;
-  const isBatchRetrying = batchRetryMutation.isPending;
   const [copiedRefId, setCopiedRefId] = React.useState<string | null>(null);
   const [copiedJson, setCopiedJson] = React.useState(false);
 
@@ -154,29 +147,6 @@ export function NotificationsManager({
     });
   }
 
-  // Handle batch retry of all failed notifications
-  function handleBatchRetry() {
-    if (!data.isAdmin) {
-      toast.error("Unauthorized: Only administrators can retry SMS dispatch.");
-      return;
-    }
-
-    batchRetryMutation.mutate(undefined, {
-      onSuccess: (res) => {
-        if (res.ok) {
-          toast.success(`Batch retry completed: ${res.sent} sent, ${res.failed} failed`, {
-            description: `Processed ${res.total} notifications`,
-          });
-        } else {
-          toast.error(`Batch retry partially failed: ${res.error || `${res.failed} errors`}`);
-        }
-      },
-      onError: (err: any) => {
-        toast.error(err.message || "Failed to execute batch retry");
-      },
-    });
-  }
-
   // Copy helper
   function copyToClipboard(text: string, id: string) {
     navigator.clipboard.writeText(text);
@@ -229,42 +199,11 @@ export function NotificationsManager({
   return (
     <div className="space-y-6 pb-12">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-border pb-4">
-        <div className="flex items-center gap-2">
-          <History className="size-5 text-foreground" />
-          <h1 className="text-xl font-bold tracking-tight text-foreground">
-            SMS Notifications
-          </h1>
-        </div>
-
-        <div className="flex items-center gap-2">
-          {data.isAdmin && data.summary.failed > 0 && (
-            <Button
-              variant="destructive"
-              size="sm"
-              onClick={handleBatchRetry}
-              disabled={isBatchRetrying}
-              className="gap-1.5 h-8 px-3 rounded-lg text-xs font-medium"
-            >
-              {isBatchRetrying ? (
-                <Loader2 className="size-3.5 animate-spin" />
-              ) : (
-                <RotateCcw className="size-3.5" />
-              )}
-              Retry Failed ({data.summary.failed})
-            </Button>
-          )}
-
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => queryClient.invalidateQueries({ queryKey: queryKeys.notifications.all })}
-            className="gap-1.5 h-8 px-2.5 rounded-lg text-xs font-medium"
-          >
-            <RefreshCw className="size-3.5 text-muted-foreground" />
-            <span>Refresh</span>
-          </Button>
-        </div>
+      <div className="flex items-center gap-2 border-b border-border pb-4">
+        <History className="size-5 text-foreground" />
+        <h1 className="text-xl font-bold tracking-tight text-foreground">
+          SMS Notifications
+        </h1>
       </div>
 
       {/* KPI Cards */}
