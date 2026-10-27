@@ -33,7 +33,6 @@ import {
   Loader2,
   CheckCheck,
   Send,
-  Zap,
   HelpCircle,
   ShieldCheck,
   Coins,
@@ -303,13 +302,6 @@ export function DashboardView({ data, reports, user }: Props) {
               </Button>
             </Link>
           )}
-
-          <Link href="/notifications/test">
-            <Button variant="outline" size="sm" className="h-8.5 px-2.5 rounded-lg text-xs font-medium gap-1.5">
-              <Zap className="size-3.5 text-primary" />
-              <span>SMS Test (0 Cost)</span>
-            </Button>
-          </Link>
 
           <Link href="/notifications">
             <Button variant="outline" size="sm" className="h-8.5 px-2.5 rounded-lg text-xs font-medium gap-1.5">

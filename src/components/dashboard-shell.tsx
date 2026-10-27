@@ -23,7 +23,6 @@ import {
   PanelLeftOpen,
   CheckCircle2,
   FileText,
-  Zap,
   BarChart3,
   Settings,
   Clock,
@@ -37,7 +36,6 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { LanguageToggle } from "@/components/language-toggle";
-import { RoleSwitcher } from "@/components/role-switcher";
 import { I18nProvider, useI18n } from "@/lib/i18n/context";
 import { useLogoutMutation } from "@/hooks/use-auth";
 import { cn } from "@/lib/utils";
@@ -230,13 +228,6 @@ function ShellInner({ user, children }: DashboardShellProps) {
           badgeColor: "bg-primary/10 text-primary border-primary/20",
         },
         {
-          title: locale === "am" ? "የሙከራ ኤስኤምኤስ" : "SMS Test Mode",
-          href: "/notifications/test",
-          icon: Zap,
-          badge: "0 Cost",
-          badgeColor: "bg-muted text-foreground border-border",
-        },
-        {
           title: locale === "am" ? "የSMSHub ውቅር" : "SMSHub Integration",
           href: "/settings/smshub",
           icon: Smartphone,
@@ -281,19 +272,13 @@ function ShellInner({ user, children }: DashboardShellProps) {
     i.title.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const allHrefs = React.useMemo(
-    () => allNavItems.map((i) => i.href),
-    [allNavItems]
-  );
+  const allHrefs = allNavItems.map((i) => i.href);
 
-  const checkIsActive = React.useCallback(
-    (href: string) => {
-      if (pathname === href) return true;
-      if (allHrefs.includes(pathname)) return false;
-      return href !== "/dashboard" && pathname.startsWith(href + "/");
-    },
-    [pathname, allHrefs]
-  );
+  const checkIsActive = (href: string) => {
+    if (pathname === href) return true;
+    if (allHrefs.includes(pathname)) return false;
+    return href !== "/dashboard" && pathname.startsWith(href + "/");
+  };
 
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col antialiased">
@@ -357,24 +342,8 @@ function ShellInner({ user, children }: DashboardShellProps) {
 
           {/* Right Controls */}
           <div className="flex items-center gap-2">
-            {/* Role Switcher */}
-            <RoleSwitcher currentRole={user.role} />
-
             {/* Language Switcher (EN / AM) */}
             <LanguageToggle />
-
-            {/* Quick Action: Mark Attendance */}
-            <Link href="/attendance">
-              <Button
-                size="sm"
-                className="font-medium text-xs h-8 gap-1.5 px-2.5 sm:px-3 rounded-lg shadow-xs"
-              >
-                <CalendarCheck className="size-3.5" />
-                <span className="hidden sm:inline">
-                  {locale === "am" ? "አቴንዳንስ መዝግብ" : "Take Attendance"}
-                </span>
-              </Button>
-            </Link>
 
             {/* Dark / Light Mode Toggle */}
             <ThemeToggle />

@@ -12,7 +12,6 @@ import {
   ExternalLink,
   Lock,
   Loader2,
-  Zap,
   Clock,
   ArrowRight,
 } from "lucide-react";
@@ -25,7 +24,6 @@ import { toast } from "sonner";
 import { useI18n } from "@/lib/i18n/context";
 import { useSmsHubBalanceQuery } from "@/hooks/use-smshub";
 import type { SmsHubBalanceResult } from "@/actions/smshub.actions";
-import Link from "next/link";
 
 interface SmsHubSettingsManagerProps {
   initialBalance: SmsHubBalanceResult;
@@ -81,13 +79,6 @@ export function SmsHubSettingsManager({
             <RefreshCw className={`size-3.5 ${isRefreshing ? "animate-spin" : ""}`} />
             <span>Check Balance</span>
           </Button>
-
-          <Link href="/notifications/test">
-            <Button size="sm" className="text-xs h-8 gap-1.5">
-              <Zap className="size-3.5" />
-              <span>Test SMS (0 Cost)</span>
-            </Button>
-          </Link>
         </div>
       </div>
 

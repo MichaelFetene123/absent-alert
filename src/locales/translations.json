@@ -20,7 +20,6 @@
         "messageHistory": "Message History",
         "notificationRules": "Automation Rules",
         "smsTemplates": "SMS Templates",
-        "smsTestMode": "SMS Test Mode",
         "smsHubSettings": "SMSHub Integration",
         "webhookDiagnostics": "Webhook Events",
         "reports": "Reports & Analytics",
@@ -183,7 +182,6 @@
       "tabs": {
         "history": "Message History",
         "templates": "SMS Templates",
-        "testMode": "SMS Test Mode",
         "rules": "Automated Triggers",
         "smshub": "SMSHub Settings",
         "webhooks": "Webhook Diagnostics"
@@ -201,24 +199,6 @@
         "providerRef": "Message ID",
         "requestId": "Request ID",
         "actions": "Actions"
-      },
-      "testMode": {
-        "title": "Zero-Cost SMSHub Test Mode",
-        "description": "Validate Ethiopian mobile format, message length, Amharic encoding, and calculate estimated credits without sending real SMS.",
-        "phoneLabel": "Test Mobile Number",
-        "phonePlaceholder": "0911223344 or 0711223344",
-        "messageLabel": "Message Text",
-        "signatureNotice": "SMSHub automatically appends your account signature. Live character count reflects total segment payload.",
-        "runTest": "Run Validation Test (0 Cost)",
-        "running": "Validating with SMSHub API...",
-        "results": "Validation Result Details",
-        "encoding": "Encoding Mode",
-        "chars": "Total Characters",
-        "charLimit": "Single Segment Limit",
-        "creditsNeeded": "Credits Needed",
-        "creditsUsed": "Credits Used (Always 0)",
-        "wouldSend": "Would Send in Live Mode",
-        "testPassed": "SMSHub Validation Passed: Message structure, signature, and carrier routing are verified."
       },
       "templates": {
         "title": "Notification Templates",
@@ -271,7 +251,6 @@
         "messageHistory": "የመልእክት ታሪክ",
         "notificationRules": "የማሳወቂያ ደንቦች",
         "smsTemplates": "የኤስኤምኤስ ቴምፕሌቶች",
-        "smsTestMode": "የሙከራ ኤስኤምኤስ",
         "smsHubSettings": "የSMSHub ውቅር",
         "webhookDiagnostics": "የዌብሁክ ክስተቶች",
         "reports": "ሪፖርቶችና ትንታኔዎች",
@@ -434,7 +413,6 @@
       "tabs": {
         "history": "የመልእክት ታሪክ",
         "templates": "የኤስኤምኤስ ቴምፕሌቶች",
-        "testMode": "የሙከራ ኤስኤምኤስ (0 ወጪ)",
         "rules": "የማሳወቂያ ደንቦች",
         "smshub": "የSMSHub ቅንብሮች",
         "webhooks": "የዌብሁክ ክስተቶች"
@@ -452,24 +430,6 @@
         "providerRef": "የመልእክት መለያ",
         "requestId": "የጥያቄ መለያ",
         "actions": "እርምጃዎች"
-      },
-      "testMode": {
-        "title": "ያለክፍያ የSMSHub ሙከራ (Zero-Cost Test)",
-        "description": "የስልክ ቁጥር ትክክለኛነትን፣ የመልእክት ርዝመትን፣ የአማርኛ ዩኒኮድ ሁኔታንና የሚያስፈልገውን ክሬዲት ያለ ምንም ወጪ ያረጋግጡ።",
-        "phoneLabel": "የሙከራ ስልክ ቁጥር",
-        "phonePlaceholder": "0911223344 ወይም 0711223344",
-        "messageLabel": "የመልእክት ጽሑፍ",
-        "signatureNotice": "SMSHub የት/ቤቱን ፊርማ በራሱ ያያይዛል። አጠቃላይ የፊደላት ቁጥር ከፊርማው ጋር ተደምሮ ይታያል።",
-        "runTest": "ሙከራውን አሂድ (0 ወጪ)",
-        "running": "በSMSHub API በመፈተሽ ላይ...",
-        "results": "የፍተሻ ውጤት ዝርዝር",
-        "encoding": "የኢንኮዲንግ ዓይነት",
-        "chars": "አጠቃላይ ፊደላት",
-        "charLimit": "የአንድ መልእክት ገደብ",
-        "creditsNeeded": "የሚያስፈልግ ክሬዲት",
-        "creditsUsed": "ጥቅም ላይ የዋለ ክሬዲት (ሁሌም 0)",
-        "wouldSend": "በቀጥታ ስርጭት የሚላክ",
-        "testPassed": "የSMSHub ፍተሻ ተሳክቷል፡ የመልእክቱ አወቃቀር፣ ፊርማና የኔትወርክ መስመር በትክክል ተረጋግጧል።"
       },
       "templates": {
         "title": "የማሳወቂያ ቴምፕሌቶች",

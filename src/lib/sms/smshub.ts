@@ -66,12 +66,6 @@ export class SmsHub {
     });
   }
 
-  /**
-   * Validate parameters, length, and moderation without sending or spending credits.
-   */
-  async test(msisdn: string, text: string): Promise<Record<string, unknown>> {
-    return this.call<Record<string, unknown>>("POST", "/api/test", { msisdn, text });
-  }
 
   /**
    * Check remaining credits and pricing rules.
