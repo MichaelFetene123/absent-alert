@@ -26,7 +26,6 @@ import {
   BarChart3,
   Settings,
   Clock,
-  Smartphone,
   User,
   ChevronDown,
 } from "lucide-react";
@@ -217,12 +216,6 @@ function ShellInner({ user, children }: DashboardShellProps) {
           title: locale === "am" ? "የኤስኤምኤስ ቴምፕሌቶች" : "SMS Templates",
           href: "/notifications/templates",
           icon: FileText,
-          badge: null,
-        },
-        {
-          title: locale === "am" ? "የSMSHub ውቅር" : "SMSHub Integration",
-          href: "/settings/smshub",
-          icon: Smartphone,
           badge: null,
         },
       ],
