@@ -276,7 +276,7 @@ export function ProfileView({ initialProfile }: Props) {
                   </div>
                   <span className="text-[11px] text-muted-foreground block">
                     {profile.role === "ADMIN"
-                      ? "Full administrative rights to modify policies, SMS credentials, and rosters."
+                      ? "Full administrative rights to modify system configurations, SMS credentials, and rosters."
                       : "Authorized to record daily attendance and submit parent absence notifications."}
                   </span>
                 </div>

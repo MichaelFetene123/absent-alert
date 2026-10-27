@@ -16,7 +16,6 @@ describe("CacheTag Constants and Helpers", () => {
     expect(CACHE_TAGS.EXCEPTIONS).toBe("exceptions");
     expect(CACHE_TAGS.NOTIFICATIONS).toBe("notifications");
     expect(CACHE_TAGS.TEMPLATES).toBe("templates");
-    expect(CACHE_TAGS.POLICIES).toBe("policies");
     expect(CACHE_TAGS.SETTINGS).toBe("settings");
     expect(CACHE_TAGS.SMSHUB).toBe("smshub");
     expect(CACHE_TAGS.ACADEMIC).toBe("academic");
@@ -35,7 +34,6 @@ describe("CacheTag Constants and Helpers", () => {
     expect(CACHE_TAGS.EXCEPTION("exc-222")).toBe("exception-exc-222");
     expect(CACHE_TAGS.NOTIFICATION("notif-999")).toBe("notification-notif-999");
     expect(CACHE_TAGS.TEMPLATE("tpl-333")).toBe("template-tpl-333");
-    expect(CACHE_TAGS.POLICY("pol-444")).toBe("policy-pol-444");
     expect(CACHE_TAGS.PROFILE("usr-555")).toBe("profile-usr-555");
   });
 

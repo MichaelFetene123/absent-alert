@@ -28,11 +28,6 @@ export const queryKeys = {
     list: (params?: { status?: string; classId?: string; date?: string; page?: number; pageSize?: number }) =>
       [...queryKeys.notifications.all, "list", params ?? {}] as const,
   },
-  policies: {
-    all: ["policies"] as const,
-    active: () => [...queryKeys.policies.all, "active"] as const,
-    list: () => [...queryKeys.policies.all, "list"] as const,
-  },
   profile: {
     all: ["profile"] as const,
     user: () => [...queryKeys.profile.all, "user"] as const,

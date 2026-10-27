@@ -52,10 +52,6 @@ export const CACHE_TAGS = {
   TEMPLATES: "templates",
   TEMPLATE: (id: string) => `template-${id}`,
 
-  // Policies domain
-  POLICIES: "policies",
-  POLICY: (id: string) => `policy-${id}`,
-
   // Settings domain
   SETTINGS: "settings",
   SMSHUB: "smshub",
@@ -89,7 +85,7 @@ export const CACHE_PROFILES = {
   DIRECTORY: "directory",
   // 2 hours revalidation - classes, teachers, and assignment structure
   STRUCTURE: "structure",
-  // 1 day revalidation - academic calendar and alert policies
+  // 1 day revalidation - academic calendar and institutional settings
   INSTITUTIONAL: "institutional",
   // 30 min revalidation - historical attendance analytics and reports
   ANALYTICS: "analytics",

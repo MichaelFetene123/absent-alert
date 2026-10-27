@@ -28,7 +28,7 @@ export function SchoolSettingsManager() {
 
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
-    toast.success("School attendance policies and operational settings saved.");
+    toast.success("School operational settings saved.");
   };
 
   return (
@@ -37,12 +37,12 @@ export function SchoolSettingsManager() {
       <div className="pb-2 border-b border-border">
         <h1 className="text-xl font-bold tracking-tight text-foreground flex items-center gap-2">
           <Settings className="size-5 text-primary" />
-          {locale === "am" ? "የትምህርት ቤት አጠቃላይ ቅንብሮችና ፖሊሲዎች" : "School Settings & Attendance Policies"}
+          {locale === "am" ? "የትምህርት ቤት አጠቃላይ ቅንብሮች" : "School Settings"}
         </h1>
         <p className="text-xs text-muted-foreground mt-0.5">
           {locale === "am"
-            ? "የትምህርት ዘመን፣ የስራ ቀናት፣ የማርፈድ ገደብና የመገኘት መቆጣጠሪያ ፖሊሲዎችን ያዋቅሩ።"
-            : "Institutional parameters, academic calendar defaults, late arrival thresholds, and notification rules."}
+            ? "የትምህርት ዘመን፣ የስራ ቀናትና የማርፈድ ገደብ ቅንብሮችን ያዋቅሩ።"
+            : "Institutional parameters, academic calendar defaults, and late arrival thresholds."}
         </p>
       </div>
 
@@ -78,7 +78,7 @@ export function SchoolSettingsManager() {
           </CardContent>
         </Card>
 
-        {/* Attendance Policy Rules */}
+        {/* Attendance Timing & Threshold Rules */}
         <Card className="border-border shadow-xs">
           <CardHeader className="pb-3 border-b border-border">
             <CardTitle className="text-sm font-semibold flex items-center gap-2">
@@ -119,7 +119,7 @@ export function SchoolSettingsManager() {
         <div className="flex justify-end">
           <Button type="submit" size="sm" className="text-xs h-9 gap-1.5">
             <Save className="size-3.5" />
-            <span>Save School Policies</span>
+            <span>Save School Settings</span>
           </Button>
         </div>
       </form>

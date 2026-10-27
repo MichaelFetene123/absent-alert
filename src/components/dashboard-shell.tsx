@@ -27,7 +27,6 @@ import {
   Settings,
   Clock,
   Smartphone,
-  Sliders,
   User,
   ChevronDown,
 } from "lucide-react";
@@ -219,13 +218,6 @@ function ShellInner({ user, children }: DashboardShellProps) {
           href: "/notifications/templates",
           icon: FileText,
           badge: null,
-        },
-        {
-          title: locale === "am" ? "የመቅረት ፖሊሲዎች" : "Alert Policies",
-          href: "/settings/policies",
-          icon: Sliders,
-          badge: "Engine",
-          badgeColor: "bg-primary/10 text-primary border-primary/20",
         },
         {
           title: locale === "am" ? "የSMSHub ውቅር" : "SMSHub Integration",
