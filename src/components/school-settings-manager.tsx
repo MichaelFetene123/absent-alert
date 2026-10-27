@@ -30,7 +30,7 @@ export function SchoolSettingsManager() {
       href: "/settings/overview",
       icon: CalendarDays,
       badge: locale === "am" ? "የ14-ቀን እይታ" : "14-Day View",
-      badgeColor: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20",
+      badgeColor: "bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20",
       cta: locale === "am" ? "የ2 ሳምንት እይታ ይክፈቱ" : "View Two-Week Grid",
     },
     {
