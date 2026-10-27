@@ -301,7 +301,7 @@ export function DashboardView({ data, reports, user }: Props) {
             </Link>
           )}
 
-          <Link href="/notifications">
+          <Link href="/settings/notifications">
             <Button variant="outline" size="sm" className="h-8.5 px-2.5 rounded-lg text-xs font-medium gap-1.5">
               <History className="size-3.5 text-muted-foreground" />
               <span>SMS Logs</span>

@@ -11,7 +11,7 @@ type SearchParamsPromise = Promise<{
   page?: string;
 }>;
 
-export default async function NotificationsPage({
+export default async function SettingsNotificationsPage({
   searchParams,
 }: {
   searchParams: SearchParamsPromise;

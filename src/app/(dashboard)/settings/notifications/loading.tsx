@@ -1,5 +1,5 @@
 import { NotificationsSkeleton } from "@/components/skeletons/notifications-skeleton";
 
-export default function NotificationsLoading() {
+export default function SettingsNotificationsLoading() {
   return <NotificationsSkeleton />;
 }

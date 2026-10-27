@@ -3,7 +3,7 @@ import { TemplatesManager } from "@/components/templates-manager";
 
 export const instant = false;
 
-export default async function TemplatesPage() {
+export default async function SettingsTemplatesPage() {
   await requireUser();
   return <TemplatesManager />;
 }

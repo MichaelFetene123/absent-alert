@@ -51,6 +51,20 @@ const nextConfig: NextConfig = {
   experimental: {
     agentUpgrade: "security",
   },
+  async redirects() {
+    return [
+      {
+        source: "/notifications",
+        destination: "/settings/notifications",
+        permanent: false,
+      },
+      {
+        source: "/notifications/templates",
+        destination: "/settings/templates",
+        permanent: false,
+      },
+    ];
+  },
 };
 
 export default nextConfig;

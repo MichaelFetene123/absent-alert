@@ -23,6 +23,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import { toast } from "sonner";
+import { SettingsNav } from "@/components/settings-nav";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -198,6 +199,8 @@ export function NotificationsManager({
 
   return (
     <div className="space-y-6 pb-12">
+      <SettingsNav />
+
       {/* Header */}
       <div className="flex items-center gap-2 border-b border-border pb-4">
         <History className="size-5 text-foreground" />

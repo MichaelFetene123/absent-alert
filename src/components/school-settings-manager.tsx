@@ -1,128 +1,109 @@
 "use client";
 
 import * as React from "react";
+import Link from "next/link";
 import {
   Settings,
-  School,
-  Calendar,
-  Clock,
-  Shield,
-  Bell,
-  CheckCircle2,
-  Save,
+  History,
+  FileText,
+  ArrowRight,
+  ShieldCheck,
+  Send,
+  Sparkles,
 } from "lucide-react";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { toast } from "sonner";
+import { Badge } from "@/components/ui/badge";
 import { useI18n } from "@/lib/i18n/context";
 
 export function SchoolSettingsManager() {
-  const { t, locale } = useI18n();
+  const { locale } = useI18n();
 
-  const [schoolName, setSchoolName] = React.useState("Addis Ababa Academy");
-  const [academicYear, setAcademicYear] = React.useState("2017 E.C. (2024/2025)");
-  const [lateThreshold, setLateThreshold] = React.useState("15");
-  const [submissionCutoff, setSubmissionCutoff] = React.useState("10:00 AM");
-
-  const handleSave = (e: React.FormEvent) => {
-    e.preventDefault();
-    toast.success("School operational settings saved.");
-  };
+  const menuItems = [
+    {
+      title: locale === "am" ? "የመልእክት ታሪክ" : "Message History",
+      subtitle: locale === "am" ? "የወላጅ ማሳወቂያዎች ክትትል" : "Parent Notifications & SMS Dispatch",
+      description:
+        locale === "am"
+          ? "የተላኩ የቀሪ ማሳወቂያዎች ዝርዝር፣ የSMSHub የስርጭት ሁኔታና ያልተሳኩ መልእክቶችን ዳግም መላኪያ።"
+          : "Audit absence notifications sent to guardians, carrier delivery status from SMSHub, and retry failed alerts.",
+      href: "/settings/notifications",
+      icon: History,
+      badge: locale === "am" ? "የቀጥታ ክትትል" : "Live Dispatch Logs",
+      badgeColor: "bg-primary/10 text-primary border-primary/20",
+      cta: locale === "am" ? "የመልእክት ታሪክ ይመልከቱ" : "View Message History",
+    },
+    {
+      title: locale === "am" ? "የኤስኤምኤስ ቴምፕሌቶች" : "SMS Templates",
+      subtitle: locale === "am" ? "የማሳወቂያ ጽሑፎች ውቅር" : "Message Templates & Dynamic Tags",
+      description:
+        locale === "am"
+          ? "በእንግሊዝኛና በአማርኛ የተዘጋጁ የቀሪዎች ማሳወቂያ ጽሑፎችን ማስተካከል፣ መፈተሽና ማዋቀር።"
+          : "Create and customize automated absence and late alert message templates in English and Amharic with dynamic tags.",
+      href: "/settings/templates",
+      icon: FileText,
+      badge: locale === "am" ? "አማርኛና እንግሊዝኛ" : "English & Amharic",
+      badgeColor: "bg-sky-500/10 text-sky-600 dark:text-sky-400 border-sky-500/20",
+      cta: locale === "am" ? "ቴምፕሌቶችን ያዋቅሩ" : "Configure Templates",
+    },
+  ];
 
   return (
-    <div className="space-y-6 max-w-4xl">
+    <div className="space-y-6 max-w-5xl">
       {/* Header */}
-      <div className="pb-2 border-b border-border">
+      <div className="pb-3 border-b border-border">
         <h1 className="text-xl font-bold tracking-tight text-foreground flex items-center gap-2">
           <Settings className="size-5 text-primary" />
-          {locale === "am" ? "የትምህርት ቤት አጠቃላይ ቅንብሮች" : "School Settings"}
+          {locale === "am" ? "የትምህርት ቤት ቅንብሮች" : "School Settings"}
         </h1>
         <p className="text-xs text-muted-foreground mt-0.5">
           {locale === "am"
-            ? "የትምህርት ዘመን፣ የስራ ቀናትና የማርፈድ ገደብ ቅንብሮችን ያዋቅሩ።"
-            : "Institutional parameters, academic calendar defaults, and late arrival thresholds."}
+            ? "የመልእክት ስርጭት ታሪክ፣ የወላጅ ማሳወቂያ ቴምፕሌቶችና የግንኙነት ውቅሮች ማዕከል።"
+            : "Institutional communication center, SMS dispatch logs, and notification template settings."}
         </p>
       </div>
 
-      <form onSubmit={handleSave} className="space-y-6">
-        {/* School Profile */}
-        <Card className="border-border shadow-xs">
-          <CardHeader className="pb-3 border-b border-border">
-            <CardTitle className="text-sm font-semibold flex items-center gap-2">
-              <School className="size-4 text-primary" />
-              Institutional Identity
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4 pt-4 text-xs">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="space-y-1.5">
-                <Label className="text-xs font-semibold">School Name</Label>
-                <Input
-                  value={schoolName}
-                  onChange={(e) => setSchoolName(e.target.value)}
-                  className="text-xs bg-background border-border"
-                />
+      {/* Card-Based Menu */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {menuItems.map((item) => {
+          const Icon = item.icon;
+          return (
+            <Link
+              key={item.href}
+              href={item.href}
+              className="group block rounded-xl border border-border bg-card text-card-foreground p-5 shadow-xs hover:border-primary/50 hover:shadow-md transition-all duration-200"
+            >
+              <div className="flex items-start justify-between gap-3 mb-3">
+                <div className="size-10 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0 group-hover:bg-primary group-hover:text-primary-foreground transition-colors duration-200">
+                  <Icon className="size-5" />
+                </div>
+                <Badge
+                  variant="outline"
+                  className={`text-[10px] font-semibold border ${item.badgeColor}`}
+                >
+                  {item.badge}
+                </Badge>
               </div>
 
-              <div className="space-y-1.5">
-                <Label className="text-xs font-semibold">Active Academic Year</Label>
-                <Input
-                  value={academicYear}
-                  onChange={(e) => setAcademicYear(e.target.value)}
-                  className="text-xs bg-background border-border"
-                />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Attendance Timing & Threshold Rules */}
-        <Card className="border-border shadow-xs">
-          <CardHeader className="pb-3 border-b border-border">
-            <CardTitle className="text-sm font-semibold flex items-center gap-2">
-              <Clock className="size-4 text-primary" />
-              Attendance Timing &amp; Thresholds
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4 pt-4 text-xs">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="space-y-1.5">
-                <Label className="text-xs font-semibold">Late Arrival Threshold (Minutes)</Label>
-                <Input
-                  type="number"
-                  value={lateThreshold}
-                  onChange={(e) => setLateThreshold(e.target.value)}
-                  className="text-xs bg-background border-border"
-                />
-                <p className="text-[11px] text-muted-foreground">
-                  Arrivals after this many minutes past bell are logged as Late.
+              <div>
+                <h2 className="text-base font-semibold text-foreground group-hover:text-primary transition-colors flex items-center gap-1.5">
+                  {item.title}
+                </h2>
+                <p className="text-[11px] font-medium text-muted-foreground mt-0.5">
+                  {item.subtitle}
+                </p>
+                <p className="text-xs text-muted-foreground mt-2 leading-relaxed">
+                  {item.description}
                 </p>
               </div>
 
-              <div className="space-y-1.5">
-                <Label className="text-xs font-semibold">Teacher Submission Deadline</Label>
-                <Input
-                  value={submissionCutoff}
-                  onChange={(e) => setSubmissionCutoff(e.target.value)}
-                  className="text-xs bg-background border-border"
-                />
-                <p className="text-[11px] text-muted-foreground">
-                  Submissions missing after this time trigger Missing Attendance alerts.
-                </p>
+              <div className="mt-5 pt-3 border-t border-border/60 flex items-center justify-between text-xs font-semibold text-primary">
+                <span>{item.cta}</span>
+                <ArrowRight className="size-4 transition-transform group-hover:translate-x-1 duration-200" />
               </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <div className="flex justify-end">
-          <Button type="submit" size="sm" className="text-xs h-9 gap-1.5">
-            <Save className="size-3.5" />
-            <span>Save School Settings</span>
-          </Button>
-        </div>
-      </form>
+            </Link>
+          );
+        })}
+      </div>
     </div>
   );
 }

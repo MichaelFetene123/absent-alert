@@ -1,5 +1,5 @@
 import { TemplatesSkeleton } from "@/components/skeletons/templates-skeleton";
 
-export default function TemplatesLoading() {
+export default function SettingsTemplatesLoading() {
   return <TemplatesSkeleton />;
 }
