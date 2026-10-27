@@ -15,6 +15,8 @@ import {
   Plus,
   School,
   ExternalLink,
+  User,
+  GraduationCap,
 } from "lucide-react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -28,6 +30,14 @@ import {
   TableHead,
   TableCell,
 } from "@/components/ui/table";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import { toast } from "sonner";
 import { useI18n } from "@/lib/i18n/context";
 import type { GuardianDetail } from "@/lib/services/guardians.service";
@@ -52,6 +62,14 @@ export function GuardiansManager({
   const [carrierFilter, setCarrierFilter] = React.useState<string>("ALL");
   const [revealedPhones, setRevealedPhones] = React.useState<Record<string, boolean>>({});
   const [copiedId, setCopiedId] = React.useState<string | null>(null);
+  const [selectedGuardian, setSelectedGuardian] = React.useState<GuardianDetail | null>(null);
+  const [modalCopied, setModalCopied] = React.useState(false);
+
+  const handleCopyModalPhone = (phone: string) => {
+    navigator.clipboard.writeText(phone);
+    setModalCopied(true);
+    setTimeout(() => setModalCopied(false), 2000);
+  };
 
   const toggleReveal = (id: string) => {
     setRevealedPhones((prev) => ({ ...prev, [id]: !prev[id] }));
@@ -279,7 +297,7 @@ export function GuardiansManager({
                           variant="ghost"
                           size="sm"
                           className="h-7 text-xs text-primary hover:text-primary hover:bg-primary/10"
-                          onClick={() => toast.info(`Guardian: ${g.name}\nPhone: ${g.phone}\nStudent: ${g.studentName}`)}
+                          onClick={() => setSelectedGuardian(g)}
                         >
                           View Profile
                         </Button>
@@ -292,6 +310,174 @@ export function GuardiansManager({
           </Table>
         </div>
       </Card>
+
+      {/* Guardian & Student Profile Dialog */}
+      <Dialog
+        open={!!selectedGuardian}
+        onOpenChange={(isOpen) => {
+          if (!isOpen) {
+            setSelectedGuardian(null);
+            setModalCopied(false);
+          }
+        }}
+      >
+        <DialogContent className="sm:max-w-md p-6 rounded-2xl">
+          {selectedGuardian && (
+            <div className="space-y-5">
+              <DialogHeader>
+                <div className="flex items-center gap-2.5">
+                  <div className="size-9 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
+                    <User className="size-4.5" />
+                  </div>
+                  <div>
+                    <DialogTitle className="text-base font-bold text-foreground">
+                      {locale === "am" ? "የወላጅና ተማሪ ፕሮፋይል" : "Guardian & Student Profile"}
+                    </DialogTitle>
+                    <DialogDescription className="text-xs text-muted-foreground mt-0.5">
+                      {locale === "am"
+                        ? "የተማሪውና የአሳዳጊው ዝርዝር መረጃ"
+                        : "Verified contact record and student assignment"}
+                    </DialogDescription>
+                  </div>
+                </div>
+              </DialogHeader>
+
+              {/* Guardian Information Card */}
+              <div className="p-4 rounded-xl border border-border bg-muted/40 space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+                    {locale === "am" ? "የወላጅ/አሳዳጊ መረጃ" : "Guardian Information"}
+                  </span>
+                  {selectedGuardian.isPrimary ? (
+                    <Badge variant="secondary" className="text-[10px] py-0 px-2 font-medium">
+                      Primary Guardian
+                    </Badge>
+                  ) : (
+                    <Badge variant="outline" className="text-[10px] py-0 px-2 font-medium">
+                      Secondary Guardian
+                    </Badge>
+                  )}
+                </div>
+
+                <div className="grid grid-cols-2 gap-3 text-xs">
+                  <div>
+                    <p className="text-[11px] text-muted-foreground">
+                      {locale === "am" ? "የወላጅ ሙሉ ስም" : "Guardian Name"}
+                    </p>
+                    <p className="font-semibold text-foreground mt-0.5 text-sm">
+                      {selectedGuardian.name}
+                    </p>
+                  </div>
+
+                  <div>
+                    <p className="text-[11px] text-muted-foreground">
+                      {locale === "am" ? "የስልክ ቁጥር" : "Phone Number"}
+                    </p>
+                    <div className="flex items-center gap-1.5 mt-0.5">
+                      <span className="font-mono font-semibold text-foreground">
+                        {selectedGuardian.phone}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => handleCopyModalPhone(selectedGuardian.phone)}
+                        className="text-muted-foreground hover:text-foreground p-0.5 rounded transition-colors"
+                        title="Copy phone"
+                      >
+                        {modalCopied ? (
+                          <Check className="size-3 text-primary" />
+                        ) : (
+                          <Copy className="size-3" />
+                        )}
+                      </button>
+                    </div>
+                  </div>
+
+                  <div>
+                    <p className="text-[11px] text-muted-foreground">
+                      {locale === "am" ? "ኔትወርክና ወጪ" : "Carrier Network"}
+                    </p>
+                    <p className="font-medium text-foreground mt-0.5 flex items-center gap-1">
+                      <Smartphone className="size-3 text-muted-foreground" />
+                      {selectedGuardian.carrier} ({selectedGuardian.creditCost} cr)
+                    </p>
+                  </div>
+
+                  <div>
+                    <p className="text-[11px] text-muted-foreground">
+                      {locale === "am" ? "የኤስኤምኤስ ቋንቋ" : "SMS Language"}
+                    </p>
+                    <p className="font-medium text-foreground mt-0.5">
+                      {selectedGuardian.preferredLanguage === "am"
+                        ? "አማርኛ (Unicode)"
+                        : "English (GSM-7)"}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Linked Student Information Card */}
+              <div className="p-4 rounded-xl border border-border bg-card shadow-xs space-y-3">
+                <div className="flex items-center gap-2">
+                  <GraduationCap className="size-4 text-primary" />
+                  <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+                    {locale === "am" ? "የተማሪው መረጃ" : "Linked Student"}
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3 text-xs">
+                  <div>
+                    <p className="text-[11px] text-muted-foreground">
+                      {locale === "am" ? "የተማሪው ስም" : "Student Name"}
+                    </p>
+                    <p className="font-semibold text-foreground mt-0.5 text-sm">
+                      {selectedGuardian.studentName}
+                    </p>
+                  </div>
+
+                  <div>
+                    <p className="text-[11px] text-muted-foreground">
+                      {locale === "am" ? "የተማሪ መለያ (ID / ADM)" : "Student ID / ADM"}
+                    </p>
+                    <p className="font-mono font-semibold text-primary mt-0.5">
+                      {selectedGuardian.studentAdmissionNo}
+                    </p>
+                  </div>
+
+                  <div>
+                    <p className="text-[11px] text-muted-foreground">
+                      {locale === "am" ? "ክፍል" : "Assigned Class"}
+                    </p>
+                    <p className="font-medium text-foreground mt-0.5 flex items-center gap-1">
+                      <School className="size-3 text-muted-foreground" />
+                      {selectedGuardian.className}
+                    </p>
+                  </div>
+
+                  <div>
+                    <p className="text-[11px] text-muted-foreground">
+                      {locale === "am" ? "የደረሱ ማሳወቂያዎች" : "Alerts Delivered"}
+                    </p>
+                    <p className="font-medium text-foreground mt-0.5">
+                      {selectedGuardian.smsReceivedCount} SMS alerts
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <DialogFooter className="pt-2 sm:justify-end gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setSelectedGuardian(null)}
+                  className="h-8 text-xs rounded-lg"
+                >
+                  {locale === "am" ? "ዝጋ" : "Close"}
+                </Button>
+              </DialogFooter>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
