@@ -41,7 +41,6 @@ import {
   History,
   Send,
   Zap,
-  Sparkles,
   ArrowRight,
   Printer,
 } from "lucide-react";
@@ -474,20 +473,6 @@ export function AttendanceForm({
         </button>
       </div>
 
-      {/* SMS Alert Notice */}
-      {summary.absent > 0 && (
-        <div className="p-3.5 rounded-xl border border-border bg-muted/50 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
-          <div className="flex items-center gap-2.5">
-            <Send className="size-4 text-primary shrink-0" />
-            <p className="text-foreground">
-              Saving will notify guardians of <strong>{summary.absent} absent student{summary.absent > 1 ? "s" : ""}</strong> by SMS.
-            </p>
-          </div>
-          <span className="font-medium text-muted-foreground shrink-0">
-            {summary.absent} {summary.absent === 1 ? "notification" : "notifications"}
-          </span>
-        </div>
-      )}
 
       {/* Printable Institutional Header (Visible only when printed) */}
       <div className="print-only mb-6">
@@ -531,31 +516,6 @@ export function AttendanceForm({
         </div>
       </div>
 
-      {/* Rapid Keyboard Navigation Guide */}
-      <div className="flex flex-wrap items-center justify-between gap-2 px-3.5 py-2 rounded-xl bg-slate-100/90 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60 text-[11px] text-slate-600 dark:text-slate-300">
-        <div className="flex flex-wrap items-center gap-1.5">
-          <Sparkles className="size-3.5 text-indigo-500 shrink-0" />
-          <span className="font-bold text-slate-900 dark:text-white">Rapid Teacher Mode:</span>
-          <span className="font-mono bg-white dark:bg-slate-900 px-1 py-0.5 rounded border border-slate-200 dark:border-slate-700 font-bold text-[10px] text-emerald-600">P</span>
-          <span>Present</span>
-          <span className="text-slate-300 dark:text-slate-600">•</span>
-          <span className="font-mono bg-white dark:bg-slate-900 px-1 py-0.5 rounded border border-slate-200 dark:border-slate-700 font-bold text-[10px] text-rose-600">A</span>
-          <span>Absent</span>
-          <span className="text-slate-300 dark:text-slate-600">•</span>
-          <span className="font-mono bg-white dark:bg-slate-900 px-1 py-0.5 rounded border border-slate-200 dark:border-slate-700 font-bold text-[10px] text-blue-600">L</span>
-          <span>Late</span>
-          <span className="text-slate-300 dark:text-slate-600">•</span>
-          <span className="font-mono bg-white dark:bg-slate-900 px-1 py-0.5 rounded border border-slate-200 dark:border-slate-700 font-bold text-[10px] text-amber-600">E</span>
-          <span>Leave</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <span className="font-mono bg-white dark:bg-slate-900 px-1.5 py-0.5 rounded border border-slate-200 dark:border-slate-700 font-bold text-[10px]">↑/↓</span>
-          <span>Navigate</span>
-          <span className="text-slate-300 dark:text-slate-600">•</span>
-          <span className="font-mono bg-white dark:bg-slate-900 px-1.5 py-0.5 rounded border border-slate-200 dark:border-slate-700 font-bold text-[10px]">Ctrl+S</span>
-          <span>Save</span>
-        </div>
-      </div>
 
       {/* Student Attendance Roster Table */}
       <div className="rounded-xl border border-border bg-card overflow-hidden">
