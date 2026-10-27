@@ -406,7 +406,7 @@ export function AttendanceForm({
           onClick={() => setStatusFilter(statusFilter === "LEAVE" ? "ALL" : "LEAVE")}
           className={`p-3.5 rounded-xl border text-left transition-colors ${
             statusFilter === "LEAVE"
-              ? "border-primary bg-primary/10 ring-1 ring-primary"
+              ? "border-purple-500 bg-purple-500/10 ring-1 ring-purple-500"
               : "border-border bg-card hover:bg-muted/50"
           }`}
         >
@@ -414,7 +414,7 @@ export function AttendanceForm({
             <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
               Excused Leave
             </span>
-            <FileQuestion className="size-4 text-muted-foreground" />
+            <FileQuestion className="size-4 text-purple-600 dark:text-purple-400" />
           </div>
           <div className="text-2xl font-bold text-foreground mt-1">
             {summary.leave}
@@ -430,7 +430,7 @@ export function AttendanceForm({
           onClick={() => setStatusFilter(statusFilter === "LATE" ? "ALL" : "LATE")}
           className={`p-3.5 rounded-xl border text-left transition-colors ${
             statusFilter === "LATE"
-              ? "border-primary bg-primary/10 ring-1 ring-primary"
+              ? "border-amber-500 bg-amber-500/10 ring-1 ring-amber-500"
               : "border-border bg-card hover:bg-muted/50"
           }`}
         >
@@ -438,7 +438,7 @@ export function AttendanceForm({
             <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
               Late Arrival
             </span>
-            <Clock className="size-4 text-muted-foreground" />
+            <Clock className="size-4 text-amber-600 dark:text-amber-400" />
           </div>
           <div className="text-2xl font-bold text-foreground mt-1">
             {summary.late}
@@ -532,7 +532,13 @@ export function AttendanceForm({
                   <TableRow
                     key={student.studentId}
                     className={`hover:bg-muted/50 transition-colors ${
-                      currentStatus === "ABSENT" ? "bg-destructive/5" : ""
+                      currentStatus === "ABSENT"
+                        ? "bg-destructive/5 dark:bg-destructive/10"
+                        : currentStatus === "LEAVE"
+                        ? "bg-purple-500/5 dark:bg-purple-500/10"
+                        : currentStatus === "LATE"
+                        ? "bg-amber-500/5 dark:bg-amber-500/10"
+                        : ""
                     }`}
                   >
                     {/* Admission Number */}
@@ -554,6 +560,16 @@ export function AttendanceForm({
                             SMS active
                           </span>
                         )}
+                        {currentStatus === "LEAVE" && (
+                          <span className="text-[11px] text-purple-600 dark:text-purple-400 font-medium">
+                            Excused
+                          </span>
+                        )}
+                        {currentStatus === "LATE" && (
+                          <span className="text-[11px] text-amber-600 dark:text-amber-400 font-medium">
+                            Tardy
+                          </span>
+                        )}
                       </div>
                     </TableCell>
 
@@ -566,7 +582,7 @@ export function AttendanceForm({
                           onClick={() => handleStatusChange(student.studentId, "PRESENT")}
                           className={`px-2.5 py-1 text-xs font-semibold rounded-md transition-all ${
                             currentStatus === "PRESENT"
-                              ? "bg-primary text-primary-foreground shadow-xs"
+                              ? "bg-primary text-primary-foreground shadow-xs font-bold"
                               : "text-muted-foreground hover:text-foreground"
                           }`}
                           title="Mark Present"
@@ -580,7 +596,7 @@ export function AttendanceForm({
                           onClick={() => handleStatusChange(student.studentId, "ABSENT")}
                           className={`px-2.5 py-1 text-xs font-semibold rounded-md transition-all ${
                             currentStatus === "ABSENT"
-                              ? "bg-destructive text-destructive-foreground shadow-xs"
+                              ? "bg-destructive text-destructive-foreground shadow-xs font-bold"
                               : "text-muted-foreground hover:text-foreground"
                           }`}
                           title="Mark Absent"
@@ -594,7 +610,7 @@ export function AttendanceForm({
                           onClick={() => handleStatusChange(student.studentId, "LEAVE")}
                           className={`px-2.5 py-1 text-xs font-semibold rounded-md transition-all ${
                             currentStatus === "LEAVE"
-                              ? "bg-secondary text-secondary-foreground shadow-xs"
+                              ? "bg-purple-600 text-white hover:bg-purple-700 dark:bg-purple-600 dark:hover:bg-purple-500 shadow-xs font-bold"
                               : "text-muted-foreground hover:text-foreground"
                           }`}
                           title="Mark On Leave"
@@ -608,7 +624,7 @@ export function AttendanceForm({
                           onClick={() => handleStatusChange(student.studentId, "LATE")}
                           className={`px-2.5 py-1 text-xs font-semibold rounded-md transition-all ${
                             currentStatus === "LATE"
-                              ? "bg-secondary text-secondary-foreground shadow-xs"
+                              ? "bg-amber-500 text-white hover:bg-amber-600 dark:bg-amber-600 dark:hover:bg-amber-500 shadow-xs font-bold"
                               : "text-muted-foreground hover:text-foreground"
                           }`}
                           title="Mark Late"
@@ -652,10 +668,10 @@ export function AttendanceForm({
             <span className="px-2 py-0.5 rounded-md bg-destructive/10 text-destructive font-semibold border border-destructive/20">
               {summary.absent} A
             </span>
-            <span className="px-2 py-0.5 rounded-md bg-muted text-muted-foreground font-semibold border border-border">
+            <span className="px-2 py-0.5 rounded-md bg-purple-500/10 text-purple-700 dark:text-purple-300 font-semibold border border-purple-500/20">
               {summary.leave} L
             </span>
-            <span className="px-2 py-0.5 rounded-md bg-muted text-muted-foreground font-semibold border border-border">
+            <span className="px-2 py-0.5 rounded-md bg-amber-500/10 text-amber-700 dark:text-amber-300 font-semibold border border-amber-500/20">
               {summary.late} T
             </span>
           </div>

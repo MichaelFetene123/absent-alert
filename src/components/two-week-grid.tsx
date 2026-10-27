@@ -294,13 +294,13 @@ export function TwoWeekGrid({ data, selectedClassId }: Props) {
             <span>Absent</span>
           </div>
           <div className="flex items-center gap-1">
-            <span className="size-5 rounded flex items-center justify-center font-bold text-[10px] bg-secondary text-secondary-foreground border border-border">
+            <span className="size-5 rounded flex items-center justify-center font-bold text-[10px] bg-purple-500/15 text-purple-700 dark:text-purple-300 border border-purple-500/25">
               L
             </span>
             <span>Leave</span>
           </div>
           <div className="flex items-center gap-1">
-            <span className="size-5 rounded flex items-center justify-center font-bold text-[10px] bg-secondary text-secondary-foreground border border-border">
+            <span className="size-5 rounded flex items-center justify-center font-bold text-[10px] bg-amber-500/15 text-amber-700 dark:text-amber-300 border border-amber-500/25">
               T
             </span>
             <span>Late</span>
@@ -542,13 +542,13 @@ export function TwoWeekGrid({ data, selectedClassId }: Props) {
                             )}
 
                             {status === "LEAVE" && (
-                              <span className="size-6 rounded-md flex items-center justify-center font-bold text-[11px] bg-secondary text-secondary-foreground border border-border">
+                              <span className="size-6 rounded-md flex items-center justify-center font-bold text-[11px] bg-purple-500/15 text-purple-700 dark:text-purple-300 border border-purple-500/25">
                                 L
                               </span>
                             )}
 
                             {status === "LATE" && (
-                              <span className="size-6 rounded-md flex items-center justify-center font-bold text-[11px] bg-secondary text-secondary-foreground border border-border">
+                              <span className="size-6 rounded-md flex items-center justify-center font-bold text-[11px] bg-amber-500/15 text-amber-700 dark:text-amber-300 border border-amber-500/25">
                                 T
                               </span>
                             )}
