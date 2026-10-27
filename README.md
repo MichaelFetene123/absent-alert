@@ -7,7 +7,7 @@
 ## 🚀 Key Features
 
 - **Daily Attendance Marking**: Streamlined, fast attendance marking (`PRESENT`, `ABSENT`, `LEAVE`, `LATE`) designed for desktop and mobile devices.
-- **Automated Absence SMS Alerts**: The moment a student is marked `ABSENT`, the system queues an SMS alert for the student's primary guardian with localized Ethiopian phone number normalization (`09...`, `07...` → `+251...`).
+- **Automated Absence SMS Alerts**: The moment a student is marked `ABSENT`, the system queues an SMS alert for the student's primary guardian(family) with localized Ethiopian phone number normalization (`09...`, `07...` → `+251...`).
 - **Resilient Delivery & Retry Engine**:
   - Independent database persistence: SMS failures never block attendance saves.
   - Concurrency-safe in-flight locks to prevent duplicate SMS transmissions.

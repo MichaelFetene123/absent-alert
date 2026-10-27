@@ -45,10 +45,8 @@ import {
   Sparkles,
   FileSpreadsheet,
   Search,
-  ChevronRight,
   ShieldAlert,
   ArrowUpRight,
-  Layers,
   Radio,
   Phone,
 } from "lucide-react";
@@ -737,43 +735,6 @@ export function DashboardView({ data, reports, user }: Props) {
             </div>
           )}
         </CardContent>
-      </Card>
-
-      {/* Quick Administrative Tools */}
-      <Card className="rounded-xl border border-border bg-card text-card-foreground shadow-xs p-4 space-y-3">
-        <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-          Quick Administrative Tools
-        </span>
-        <div className="space-y-1.5">
-          <Link href="/attendance/overview" className="flex items-center justify-between p-2 rounded-lg text-xs font-medium text-foreground hover:bg-muted transition-colors">
-            <span className="flex items-center gap-2">
-              <Layers className="size-3.5 text-primary" />
-              <span>2-Week Attendance Matrix</span>
-            </span>
-            <ChevronRight className="size-3.5 text-muted-foreground" />
-          </Link>
-          <Link href="/reports" className="flex items-center justify-between p-2 rounded-lg text-xs font-medium text-foreground hover:bg-muted transition-colors">
-            <span className="flex items-center gap-2">
-              <TrendingUp className="size-3.5 text-primary" />
-              <span>Executive Attendance Analytics</span>
-            </span>
-            <ChevronRight className="size-3.5 text-muted-foreground" />
-          </Link>
-          <Link href="/settings/policy" className="flex items-center justify-between p-2 rounded-lg text-xs font-medium text-foreground hover:bg-muted transition-colors">
-            <span className="flex items-center gap-2">
-              <ShieldCheck className="size-3.5 text-primary" />
-              <span>Absence Alert Policy Rules</span>
-            </span>
-            <ChevronRight className="size-3.5 text-muted-foreground" />
-          </Link>
-          <Link href="/settings/smshub" className="flex items-center justify-between p-2 rounded-lg text-xs font-medium text-foreground hover:bg-muted transition-colors">
-            <span className="flex items-center gap-2">
-              <Coins className="size-3.5 text-primary" />
-              <span>SMSHub Token Configuration</span>
-            </span>
-            <ChevronRight className="size-3.5 text-muted-foreground" />
-          </Link>
-        </div>
       </Card>
 
       {/* Bulk Import Modal */}
