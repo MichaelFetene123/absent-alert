@@ -21,11 +21,6 @@
         "notificationRules": "Automation Rules",
         "smsTemplates": "SMS Templates",
         "webhookDiagnostics": "Webhook Events",
-        "reports": "Reports & Analytics",
-        "dailyReport": "Daily Attendance",
-        "gradeComparison": "Grade Comparison",
-        "recurringAbsences": "Recurring Absences",
-        "smsAnalytics": "SMS Credit Analytics",
         "administration": "Administration",
         "teachers": "Teachers & Staff",
         "schoolSettings": "School Settings",
@@ -206,27 +201,6 @@
         "preview": "Live Template Preview",
         "gsmInfo": "English GSM-7: 160 characters per SMS. Amharic Unicode: 70 characters per SMS including signature."
       }
-    },
-    "reports": {
-      "title": "Educational Analytics & Attendance Reports",
-      "subtitle": "Institutional attendance statistics, chronic absenteeism indicators, and SMS notification delivery audit.",
-      "tabs": {
-        "daily": "Daily Attendance",
-        "grades": "Grade Comparison",
-        "recurring": "Recurring Absences",
-        "sms": "SMS & Notification Analytics"
-      },
-      "metrics": {
-        "attendanceRate": "Overall Attendance Rate",
-        "totalSessions": "Total Marked Sessions",
-        "chronicStudents": "Students at Risk (Chronic)",
-        "creditsConsumed": "Total SMS Credits Used",
-        "carrierSplit": "Carrier Distribution (Ethio vs Safaricom)"
-      },
-      "export": {
-        "button": "Export Report (CSV)",
-        "print": "Print-Ready Summary"
-      }
     }
   },
   "am": {
@@ -251,11 +225,6 @@
         "notificationRules": "የማሳወቂያ ደንቦች",
         "smsTemplates": "የኤስኤምኤስ ቴምፕሌቶች",
         "webhookDiagnostics": "የዌብሁክ ክስተቶች",
-        "reports": "ሪፖርቶችና ትንታኔዎች",
-        "dailyReport": "የዕለት አቴንዳንስ",
-        "gradeComparison": "የክፍል ንጽጽር",
-        "recurringAbsences": "ተደጋጋሚ መቅረቶች",
-        "smsAnalytics": "የኤስኤምኤስ ክሬዲት ትንታኔ",
         "administration": "አስተዳደር",
         "teachers": "መምህራንና ሠራተኞች",
         "schoolSettings": "የት/ቤት ቅንብሮች",
@@ -435,27 +404,6 @@
         "variables": "ተለዋዋጭ ቃላት፡ {student_name}, {class_name}, {date}, {school_name}",
         "preview": "የቴምፕሌት ቅድመ-እይታ",
         "gsmInfo": "የእንግሊዝኛ GSM-7፡ 160 ፊደላት በአንድ መልእክት። የአማርኛ ዩኒኮድ፡ ከፊርማ ጋር 70 ፊደላት በአንድ መልእክት።"
-      }
-    },
-    "reports": {
-      "title": "የትምህርት ትንታኔዎችና የአቴንዳንስ ሪፖርቶች",
-      "subtitle": "የት/ቤት አጠቃላይ የአቴንዳንስ ስታትስቲክስ፣ ተደጋጋሚ የመቅረት አመላካቾችና የኤስኤምኤስ ስርጭት ኦዲት።",
-      "tabs": {
-        "daily": "የዕለት አቴንዳንስ",
-        "grades": "የክፍሎች ንጽጽር",
-        "recurring": "ተደጋጋሚ መቅረቶች",
-        "sms": "የኤስኤምኤስና ማሳወቂያ ትንታኔ"
-      },
-      "metrics": {
-        "attendanceRate": "አጠቃላይ የመገኘት መጠን",
-        "totalSessions": "ጠቅላላ የተመዘገቡ ክፍለ-ጊዜያት",
-        "chronicStudents": "ስጋት ያለባቸው (ተደጋጋሚ ቀሪዎች)",
-        "creditsConsumed": "ጥቅም ላይ የዋለ አጠቃላይ ክሬዲት",
-        "carrierSplit": "የኔትወርክ ስርጭት (ኢትዮ ቴሌኮም እና ሳፋሪኮም)"
-      },
-      "export": {
-        "button": "ሪፖርቱን አውርድ (CSV)",
-        "print": "ለህትመት የተዘጋጀ ማጠቃለያ"
       }
     }
   }

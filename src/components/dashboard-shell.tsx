@@ -23,7 +23,6 @@ import {
   PanelLeftOpen,
   CheckCircle2,
   FileText,
-  BarChart3,
   Settings,
   Clock,
   User,
@@ -216,17 +215,6 @@ function ShellInner({ user, children }: DashboardShellProps) {
           title: locale === "am" ? "የኤስኤምኤስ ቴምፕሌቶች" : "SMS Templates",
           href: "/notifications/templates",
           icon: FileText,
-          badge: null,
-        },
-      ],
-    },
-    {
-      label: locale === "am" ? "ሪፖርቶችና ትንታኔዎች" : "Reports & Analytics",
-      items: [
-        {
-          title: locale === "am" ? "የትምህርት ሪፖርቶች" : "Reports & Analytics",
-          href: "/reports",
-          icon: BarChart3,
           badge: null,
         },
       ],

@@ -701,16 +701,10 @@ export function DashboardView({ data, reports, user }: Props) {
           {/* Question 5: Which students have recurring attendance problems? */}
           {activeQuestionTab === "recurring" && (
             <div className="p-4 space-y-3">
-              <div className="flex items-center justify-between">
+              <div>
                 <span className="text-xs text-muted-foreground">
                   Students with 3 or more absences in the current evaluation window:
                 </span>
-                <Link href="/reports">
-                  <Button variant="ghost" size="sm" className="h-7 text-xs text-primary gap-1">
-                    <span>Full Risk Report</span>
-                    <ArrowRight className="size-3" />
-                  </Button>
-                </Link>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
