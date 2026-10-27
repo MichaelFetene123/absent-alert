@@ -234,7 +234,9 @@ export function TeachersManager({
         return;
       }
 
-      toast.success(`Teacher "${deletingTeacher.name}" deleted successfully`);
+      toast.error(`Teacher "${deletingTeacher.name}" deleted successfully`, {
+        icon: <Trash2 className="size-4" />,
+      });
       setDeletingTeacher(null);
     } catch (err: any) {
       toast.error(err.message || "An error occurred");

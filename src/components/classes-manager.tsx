@@ -255,7 +255,9 @@ export function ClassesManager({
         return;
       }
 
-      toast.success(`Class "${deletingClass.name}" deleted successfully`);
+      toast.error(`Class "${deletingClass.name}" deleted successfully`, {
+        icon: <Trash2 className="size-4" />,
+      });
       setDeletingClass(null);
     } catch (err: any) {
       toast.error(err.message || "An error occurred");
