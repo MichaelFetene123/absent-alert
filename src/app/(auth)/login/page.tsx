@@ -5,7 +5,7 @@ import { useLoginMutation } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import {
   Bell,
   Lock,
@@ -16,7 +16,6 @@ import {
   EyeOff,
   Sparkles,
   ShieldCheck,
-  Zap,
   GraduationCap,
   ArrowRight,
 } from "lucide-react";
@@ -106,15 +105,10 @@ export default function LoginPage() {
             </div>
           </div>
 
-          <CardHeader className="space-y-1 pb-3 pt-5 px-6">
+          <CardHeader className="pt-3 pb-2 px-6">
             <CardTitle className="text-lg font-bold text-foreground">
               {activeTab === "admin" ? "Administrator Access" : "Teacher Access"}
             </CardTitle>
-            <CardDescription className="text-xs text-muted-foreground">
-              {activeTab === "admin"
-                ? "Full control over classes, teachers, student rosters, and SMS dispatch history."
-                : "Mark daily class attendance for Class 7 B and track student trends."}
-            </CardDescription>
           </CardHeader>
 
           <CardContent className="space-y-4 px-6 pb-6 pt-0">
@@ -154,14 +148,9 @@ export default function LoginPage() {
               </div>
 
               <div className="space-y-1.5">
-                <div className="flex items-center justify-between">
-                  <Label htmlFor="password" className="text-xs font-medium text-foreground">
-                    Password
-                  </Label>
-                  <span className="text-[11px] text-muted-foreground font-mono">
-                    {activeTab === "admin" ? "admin@123" : "teacher@123"}
-                  </span>
-                </div>
+                <Label htmlFor="password" className="text-xs font-medium text-foreground">
+                  Password
+                </Label>
                 <div className="relative">
                   <Lock className="absolute left-3.5 top-2.5 size-4 text-muted-foreground" />
                   <Input
@@ -203,16 +192,6 @@ export default function LoginPage() {
                 )}
               </Button>
             </form>
-
-            {/* Quick Demo Footer */}
-            <div className="pt-3 border-t border-border">
-              <div className="flex items-center justify-between text-[11px] text-muted-foreground">
-                <span className="flex items-center gap-1.5">
-                  <Zap className="size-3 text-primary" /> Demo credentials auto-filled
-                </span>
-                <span className="font-mono text-muted-foreground">v0.0.1</span>
-              </div>
-            </div>
           </CardContent>
         </Card>
       </div>
