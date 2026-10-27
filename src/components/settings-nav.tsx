@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Settings, History, FileText, ChevronLeft } from "lucide-react";
+import { Settings, History, FileText, CalendarDays, ChevronLeft } from "lucide-react";
 import { useI18n } from "@/lib/i18n/context";
 import { cn } from "@/lib/utils";
 
@@ -16,6 +16,12 @@ export function SettingsNav() {
       href: "/settings",
       icon: Settings,
       active: pathname === "/settings",
+    },
+    {
+      label: locale === "am" ? "የ2 ሳምንት እይታ" : "Two-Week Grid",
+      href: "/settings/overview",
+      icon: CalendarDays,
+      active: pathname.startsWith("/settings/overview"),
     },
     {
       label: locale === "am" ? "የመልእክት ታሪክ" : "Message History",

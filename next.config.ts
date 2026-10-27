@@ -63,6 +63,11 @@ const nextConfig: NextConfig = {
         destination: "/settings/templates",
         permanent: false,
       },
+      {
+        source: "/attendance/overview",
+        destination: "/settings/overview",
+        permanent: false,
+      },
     ];
   },
 };

@@ -164,12 +164,6 @@ function ShellInner({ user, children }: DashboardShellProps) {
           badge: null,
         },
         {
-          title: locale === "am" ? "የ2 ሳምንት እይታ" : "Two-Week Grid",
-          href: "/attendance/overview",
-          icon: CalendarDays,
-          badge: null,
-        },
-        {
           title: locale === "am" ? "ልዩነቶችና እርማቶች" : "Exceptions & Late",
           href: "/attendance/exceptions",
           icon: Clock,

@@ -6,6 +6,7 @@ import {
   Settings,
   History,
   FileText,
+  CalendarDays,
   ArrowRight,
   ShieldCheck,
   Send,
@@ -19,6 +20,19 @@ export function SchoolSettingsManager() {
   const { locale } = useI18n();
 
   const menuItems = [
+    {
+      title: locale === "am" ? "የ2 ሳምንት እይታ" : "Two-Week Grid",
+      subtitle: locale === "am" ? "የ14-ቀናት ተማሪዎች አቴንዳንስ ሠንጠረዥ" : "14-Day Attendance Matrix & Roster",
+      description:
+        locale === "am"
+          ? "የ14-ቀናት ክፍል አቀፍ የአቴንዳንስ ዝርዝር፣ የቀሪ ተማሪዎች ድግግሞሽ እና የCSV ኤክስፖርት ማውጫ።"
+          : "Audit classroom attendance trends, chronic absence patterns, and export official 14-day attendance matrices.",
+      href: "/settings/overview",
+      icon: CalendarDays,
+      badge: locale === "am" ? "የ14-ቀን እይታ" : "14-Day View",
+      badgeColor: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20",
+      cta: locale === "am" ? "የ2 ሳምንት እይታ ይክፈቱ" : "View Two-Week Grid",
+    },
     {
       title: locale === "am" ? "የመልእክት ታሪክ" : "Message History",
       subtitle: locale === "am" ? "የወላጅ ማሳወቂያዎች ክትትል" : "Parent Notifications & SMS Dispatch",
@@ -57,13 +71,13 @@ export function SchoolSettingsManager() {
         </h1>
         <p className="text-xs text-muted-foreground mt-0.5">
           {locale === "am"
-            ? "የመልእክት ስርጭት ታሪክ፣ የወላጅ ማሳወቂያ ቴምፕሌቶችና የግንኙነት ውቅሮች ማዕከል።"
-            : "Institutional communication center, SMS dispatch logs, and notification template settings."}
+            ? "የአቴንዳንስ ሠንጠረዥ፣ የመልእክት ስርጭት ታሪክና የወላጅ ማሳወቂያ ቴምፕሌቶች ማዕከል።"
+            : "Institutional attendance matrices, SMS dispatch logs, and notification template settings."}
         </p>
       </div>
 
       {/* Card-Based Menu */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {menuItems.map((item) => {
           const Icon = item.icon;
           return (

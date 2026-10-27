@@ -23,6 +23,7 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
+import { SettingsNav } from "@/components/settings-nav";
 import type { TwoWeekOverviewResult } from "@/lib/services/attendance.service";
 
 type Props = {
@@ -39,14 +40,14 @@ export function TwoWeekGrid({ data, selectedClassId }: Props) {
     if (data.startDate) {
       params.set("startDate", data.startDate);
     }
-    router.push(`/attendance/overview?${params.toString()}`);
+    router.push(`/settings/overview?${params.toString()}`);
   }
 
   function handleDateNav(targetStartDate: string) {
     const params = new URLSearchParams();
     params.set("classId", selectedClassId);
     params.set("startDate", targetStartDate);
-    router.push(`/attendance/overview?${params.toString()}`);
+    router.push(`/settings/overview?${params.toString()}`);
   }
 
   // Format date range for header
@@ -91,6 +92,8 @@ export function TwoWeekGrid({ data, selectedClassId }: Props) {
 
   return (
     <div className="space-y-6">
+      <SettingsNav />
+
       {/* Top Header & Navigation */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>

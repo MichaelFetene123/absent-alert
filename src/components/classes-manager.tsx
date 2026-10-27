@@ -516,7 +516,7 @@ export function ClassesManager({
                         </Link>
 
                         {/* Two-Week Overview Link */}
-                        <Link href={`/attendance/overview?classId=${cls.id}`}>
+                        <Link href={`/settings/overview?classId=${cls.id}`}>
                           <Button
                             variant="ghost"
                             size="sm"
