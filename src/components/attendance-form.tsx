@@ -34,7 +34,6 @@ import {
   FileQuestion,
   Users,
   Search,
-  CheckCheck,
   Save,
   Loader2,
   AlertTriangle,
@@ -151,7 +150,7 @@ export function AttendanceForm({
       updated[s.studentId] = "PRESENT";
     }
     setStatuses(updated);
-    toast.info("All students marked as Present");
+    toast.success("All students marked as Present");
   };
 
   const handleClassChange = (newClassId: string) => {
@@ -335,7 +334,7 @@ export function AttendanceForm({
             </div>
           </div>
 
-          {/* Status Indicator & Mark All Action */}
+          {/* Status Indicator */}
           <div className="flex items-center gap-2.5">
             {hasExistingRecords ? (
               <Badge variant="outline" className="text-xs font-medium text-muted-foreground gap-1.5 py-1 px-2.5">
@@ -347,29 +346,6 @@ export function AttendanceForm({
                 <span>New Session</span>
               </Badge>
             )}
-
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              onClick={() => window.print()}
-              className="text-xs font-medium gap-1.5 h-9 px-3 rounded-lg text-slate-700 dark:text-slate-300 border-slate-300 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800"
-              title="Print official classroom attendance sheet (Ctrl+P)"
-            >
-              <Printer className="size-3.5 text-slate-500" />
-              <span>Print Sheet</span>
-            </Button>
-
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              onClick={handleMarkAllPresent}
-              className="text-xs font-medium gap-1.5 h-9 px-3 rounded-lg"
-            >
-              <CheckCheck className="size-3.5" />
-              <span>Mark All Present</span>
-            </Button>
           </div>
         </div>
       </div>
