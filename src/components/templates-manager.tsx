@@ -384,8 +384,8 @@ export function TemplatesManager({ initialTemplates }: TemplatesManagerProps) {
                   </span>
                 </div>
                 <div>
-                  <span className="text-muted-foreground text-[11px] block">Total Chars</span>
-                  <span className="font-semibold text-foreground">
+                  <span className="text-muted-foreground text-[11px] block">Total Chars (With Sig)</span>
+                  <span className={`font-semibold ${totalLength > charLimit ? "text-amber-500 font-bold" : "text-foreground"}`}>
                     {totalLength} / {charLimit}
                   </span>
                 </div>
@@ -402,6 +402,18 @@ export function TemplatesManager({ initialTemplates }: TemplatesManagerProps) {
                   </span>
                 </div>
               </div>
+
+              {totalLength > charLimit && (
+                <div className="p-2.5 rounded-lg bg-amber-500/10 border border-amber-500/20 text-xs text-amber-600 dark:text-amber-400">
+                  <p className="font-semibold flex items-center gap-1.5">
+                    <Info className="size-3.5" />
+                    SMSHub Length Warning ({totalLength} / {charLimit} chars)
+                  </p>
+                  <p className="text-[11px] mt-0.5 opacity-90">
+                    Once the automatic SMSHub signature is appended, messages exceeding {charLimit} characters may be rejected by the telecom provider. Consider shortening the template pattern.
+                  </p>
+                </div>
+              )}
 
               <div className="flex items-center justify-end gap-2 pt-2">
                 <Button

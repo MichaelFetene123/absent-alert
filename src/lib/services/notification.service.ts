@@ -78,7 +78,7 @@ export async function queueAbsenceNotifications(
       continue;
     }
 
-    const messageBody = activeAbsenceTemplate
+    let messageBody = activeAbsenceTemplate
       ? renderSmsTemplate(activeAbsenceTemplate, {
           student_name: student.fullName,
           class_name: cls?.name || "Class",
@@ -88,6 +88,14 @@ export async function queueAbsenceNotifications(
           school_name: "Addis Academy",
         })
       : absenceMessage(student.fullName, cls?.name || "Class", date);
+
+    // Safeguard: SMSHub appends ~30 chars signature. Ensure body <= 130 chars (total <= 160)
+    if (messageBody.length > 130) {
+      messageBody = `AbsentAlert: ${student.fullName} (${cls?.name || "Class"}) was marked absent on ${date}. Contact school if unexpected.`;
+      if (messageBody.length > 130) {
+        messageBody = messageBody.slice(0, 127) + "...";
+      }
+    }
 
     try {
       const n = await db.orm.public.Notification.create({
@@ -150,8 +158,14 @@ export async function sendOne(notificationId: string): Promise<{
       status: "SENDING",
     });
 
+    // Safeguard against SMSHub 160-char limit including signature (~30 chars)
+    let textToSend = notif.body;
+    if (textToSend.length > 130) {
+      textToSend = textToSend.slice(0, 127) + "...";
+    }
+
     // Call SMS provider
-    const result: SendSmsResult = await sendSms(notif.guardianPhone, notif.body);
+    const result: SendSmsResult = await sendSms(notif.guardianPhone, textToSend);
 
     // Record attempt
     await db.orm.public.NotificationAttempt.create({

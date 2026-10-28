@@ -33,7 +33,7 @@ export const DEFAULT_TEMPLATES: SmsTemplate[] = [
     nameAm: "የተማሪ መቅረት ማሳወቂያ (እንግሊዝኛ)",
     triggerEvent: "ABSENCE",
     language: "en",
-    body: "Dear Parent/Guardian, your child {student_name} was marked absent from {class_name} on {date}. Please contact the school if this is unexpected.",
+    body: "AbsentAlert: {student_name} ({class_name}) was marked absent on {date}. Contact school if unexpected.",
     variables: ["student_name", "class_name", "date", "status", "school_name"],
     isActive: true,
   },
