@@ -66,9 +66,10 @@ export type TemplateContext = {
 };
 
 export function renderSmsTemplate(
-  templateBody: string,
+  templateOrBody: string | { body: string },
   variables: TemplateContext
 ): string {
+  const templateBody = typeof templateOrBody === "string" ? templateOrBody : templateOrBody?.body ?? "";
   if (!templateBody) return "";
 
   const map: Record<string, string> = {

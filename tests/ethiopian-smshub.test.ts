@@ -6,7 +6,7 @@ import {
   formatDualDate,
 } from "../src/lib/ethiopian-calendar";
 import { verifySmsHubWebhook } from "../src/lib/webhook-verify";
-import { renderSmsTemplate } from "../src/lib/services/templates.service";
+import { renderSmsTemplate } from "../src/lib/services/templates-shared";
 import crypto from "node:crypto";
 
 describe("Ethiopian Mobile Carrier & Credit Accounting", () => {

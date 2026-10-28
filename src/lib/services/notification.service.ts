@@ -61,6 +61,43 @@ export async function queueAbsenceNotifications(
     const guardian = guardians[0];
     if (!guardian || !guardian.phone) continue;
 
+    let messageBody = activeAbsenceTemplate
+      ? renderSmsTemplate(activeAbsenceTemplate, {
+          student_name: student.fullName,
+          class_name: cls?.name || "Class",
+          date,
+          status: "Absent",
+          admission_no: student.admissionNo,
+          school_name: "Addis Academy",
+        })
+      : absenceMessage(student.fullName, cls?.name || "Class", date);
+
+    // Safeguard limits: SMSHub appends ~18 chars signature.
+    // Amharic Unicode limit is 52 chars (70 - 18) to avoid signature_too_long. English Latin limit is 160.
+    const isAmharic = /[\u1200-\u137F]/.test(messageBody);
+    const maxBodyLen = isAmharic ? 52 : 160;
+
+    if (messageBody.length > maxBodyLen) {
+      if (isAmharic) {
+        messageBody = `ውድ ወላጅ፣ ${student.fullName} በ${date} አልተገኘም`;
+        if (messageBody.length > 52) {
+          const firstName = student.fullName.split(" ")[0] || "ተማሪ";
+          messageBody = `ውድ ወላጅ፣ ${firstName} አልተገኘም`;
+          if (messageBody.length > 52) {
+            messageBody = messageBody.slice(0, 49) + "...";
+          }
+        }
+      } else {
+        messageBody = `AbsentAlert: ${student.fullName} (${cls?.name || "Class"}) was marked absent on ${date}. Contact school if unexpected.`;
+        if (messageBody.length > 160) {
+          messageBody = `AbsentAlert: ${student.fullName} absent on ${date}.`;
+          if (messageBody.length > 160) {
+            messageBody = messageBody.slice(0, 157) + "...";
+          }
+        }
+      }
+    }
+
     // Check if notification already exists for this attendance record and guardian phone
     const existing = await db.orm.public.Notification.where({
       attendanceId: rec.id,
@@ -73,45 +110,12 @@ export async function queueAbsenceNotifications(
       if (existing.status === "ACCEPTED" || existing.status === "DELIVERED") {
         continue;
       }
-      // If failed or pending, include its ID for dispatch/retry
+      // If failed or pending, update body to latest active template content and queue for dispatch
+      await db.orm.public.Notification.where({ id: existing.id }).update({
+        body: messageBody,
+      });
       notificationIds.push(existing.id);
       continue;
-    }
-
-    let messageBody = activeAbsenceTemplate
-      ? renderSmsTemplate(activeAbsenceTemplate, {
-          student_name: student.fullName,
-          class_name: cls?.name || "Class",
-          date,
-          status: "Absent",
-          admission_no: student.admissionNo,
-          school_name: "Addis Academy",
-        })
-      : absenceMessage(student.fullName, cls?.name || "Class", date);
-
-    // Safeguard limits: strictly 70 chars for Unicode (Amharic) and 160 chars for Latin (English).
-    const isAmharic = /[\u1200-\u137F]/.test(messageBody);
-    const maxBodyLen = isAmharic ? 70 : 160;
-
-    if (messageBody.length > maxBodyLen) {
-      if (isAmharic) {
-        messageBody = `ውድ ወላጅ፣ ${student.fullName} በ${date} አልተገኘም`;
-        if (messageBody.length > 70) {
-          const firstName = student.fullName.split(" ")[0] || "ተማሪ";
-          messageBody = `ውድ ወላጅ፣ ${firstName} አልተገኘም`;
-          if (messageBody.length > 70) {
-            messageBody = messageBody.slice(0, 67) + "...";
-          }
-        }
-      } else {
-        messageBody = `AbsentAlert: ${student.fullName} (${cls?.name || "Class"}) was marked absent on ${date}. Contact school if unexpected.`;
-        if (messageBody.length > 160) {
-          messageBody = `AbsentAlert: ${student.fullName} absent on ${date}.`;
-          if (messageBody.length > 160) {
-            messageBody = messageBody.slice(0, 157) + "...";
-          }
-        }
-      }
     }
 
     try {
@@ -175,10 +179,42 @@ export async function sendOne(notificationId: string): Promise<{
       status: "SENDING",
     });
 
-    // Safeguard against SMSHub 160-char (GSM) or 70-char (Unicode) limit
+    // Re-render message body with the currently active template if retrying a failed notification
     let textToSend = notif.body;
+    if (notif.status === "FAILED") {
+      try {
+        const activeTpl = await getActiveTemplate(notif.type || "ABSENCE");
+        const attModel = (db.orm?.public as any)?.AttendanceRecord;
+        const studentModel = (db.orm?.public as any)?.Student;
+        const classModel = (db.orm?.public as any)?.Class;
+        if (attModel && studentModel) {
+          const att = await attModel.where({ id: notif.attendanceId }).first();
+          if (att && activeTpl) {
+            const student = await studentModel.where({ id: att.studentId }).first();
+            const cls = student && classModel ? await classModel.where({ id: student.classId }).first() : null;
+            if (student) {
+              textToSend = renderSmsTemplate(activeTpl.body, {
+                student_name: student.fullName,
+                class_name: cls?.name || "Class",
+                date: String(att.date),
+                status: att.status,
+                admission_no: student.admissionNo,
+                school_name: "Addis Academy",
+              });
+              await db.orm.public.Notification.where({ id: notificationId }).update({
+                body: textToSend,
+              });
+            }
+          }
+        }
+      } catch (err) {
+        console.warn("Could not re-render active template for retry:", err);
+      }
+    }
+
+    // Safeguard against SMSHub limits (18-char signature appended: 52 max for Unicode, 160 for GSM-7)
     const isAmharic = /[\u1200-\u137F]/.test(textToSend);
-    const maxLen = isAmharic ? 70 : 160;
+    const maxLen = isAmharic ? 52 : 160;
     if (textToSend.length > maxLen) {
       textToSend = textToSend.slice(0, maxLen - 3) + "...";
     }

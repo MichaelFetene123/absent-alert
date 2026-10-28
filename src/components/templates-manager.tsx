@@ -156,14 +156,14 @@ export function TemplatesManager({ initialTemplates }: TemplatesManagerProps) {
         body: draftBody,
         name: selectedTemplate.name,
         nameAm: selectedTemplate.nameAm,
-        isActive: selectedTemplate.isActive, // Preserves active state from DB; editing does not automatically activate
+        isActive: true, // Save and set as active template
       });
 
       if (res.success) {
         toast.success(
           locale === "am"
-            ? "የኤስኤምኤስ ቴምፕሌት ተቀምጧል!"
-            : "Template saved successfully!"
+            ? "ቴምፕሌቱ ተቀምጧል እንዲሁም ለቀጣይ መልእክቶች ነቅቷል!"
+            : "Template saved and set as active for outbound SMS!"
         );
       } else {
         toast.error(res.error || "Failed to save template");
@@ -422,7 +422,7 @@ export function TemplatesManager({ initialTemplates }: TemplatesManagerProps) {
                   disabled={isSaving}
                 >
                   {isSaving && <Loader2 className="size-3.5 mr-1.5 animate-spin" />}
-                  Save Template
+                  {locale === "am" ? "ቴምፕሌቱን አስቀምጥ" : "Save Template"}
                 </Button>
               </div>
             </CardContent>
