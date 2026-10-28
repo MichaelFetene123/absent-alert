@@ -39,6 +39,14 @@ export async function seedDefaultTemplatesIfEmpty(): Promise<void> {
 
     const existing = await model.all();
     const existingKeys = new Set(existing.map((t: any) => t.key));
+    const validKeys = new Set(DEFAULT_TEMPLATES.map((t) => t.key));
+
+    // Remove obsolete templates not in DEFAULT_TEMPLATES
+    for (const row of existing) {
+      if (!validKeys.has(row.key)) {
+        await model.where({ id: row.id }).delete();
+      }
+    }
 
     for (const def of DEFAULT_TEMPLATES) {
       if (!existingKeys.has(def.key)) {
@@ -222,6 +230,14 @@ export async function resetSmsTemplatesToDefaults(): Promise<SmsTemplate[]> {
   const model = getTemplateModel();
   if (!model) {
     return DEFAULT_TEMPLATES;
+  }
+
+  const validKeys = new Set(DEFAULT_TEMPLATES.map((t) => t.key));
+  const existingAll = await model.all();
+  for (const row of existingAll) {
+    if (!validKeys.has(row.key)) {
+      await model.where({ id: row.id }).delete();
+    }
   }
 
   for (const def of DEFAULT_TEMPLATES) {
