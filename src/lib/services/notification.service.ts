@@ -2,6 +2,7 @@ import "server-only";
 import { db } from "@/lib/db";
 import { sendSms, type SendSmsResult } from "@/lib/sms/smshub";
 import { updateTag, cacheTag, cacheLife, CACHE_TAGS, CACHE_PROFILES } from "@/components/cacheTag";
+import { getActiveTemplate, renderSmsTemplate } from "@/lib/services/templates.service";
 
 export type QueueNotificationInput = {
   attendanceId: string;
@@ -37,6 +38,17 @@ export async function queueAbsenceNotifications(
 ): Promise<string[]> {
   const notificationIds: string[] = [];
 
+  // Fetch active absence template from DB (fallback to hardcoded default if needed)
+  let activeAbsenceTemplate: string | null = null;
+  try {
+    const tpl = await getActiveTemplate("ABSENCE", "en");
+    if (tpl?.body) {
+      activeAbsenceTemplate = tpl.body;
+    }
+  } catch (err) {
+    console.error("Failed to load active absence SMS template from DB:", err);
+  }
+
   for (const rec of absentRecords) {
     const student = await db.orm.public.Student.where({ id: rec.studentId }).first();
     if (!student) continue;
@@ -66,12 +78,23 @@ export async function queueAbsenceNotifications(
       continue;
     }
 
+    const messageBody = activeAbsenceTemplate
+      ? renderSmsTemplate(activeAbsenceTemplate, {
+          student_name: student.fullName,
+          class_name: cls?.name || "Class",
+          date,
+          status: "Absent",
+          admission_no: student.admissionNo,
+          school_name: "Addis Academy",
+        })
+      : absenceMessage(student.fullName, cls?.name || "Class", date);
+
     try {
       const n = await db.orm.public.Notification.create({
         attendanceId: rec.id,
         guardianPhone: guardian.phone,
         type: "ABSENCE",
-        body: absenceMessage(student.fullName, cls?.name || "Class", date),
+        body: messageBody,
         status: "PENDING",
       });
       notificationIds.push(n.id);

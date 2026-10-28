@@ -18,9 +18,9 @@ import type {
 } from '@prisma/orm-postgres/contract/types';
 
 export type StorageHash =
-  StorageHashBase<'67b9b0c9f6a49b7c317a33926bef6ad01be668e04a47d0bd240a349e560f7132'>;
+  StorageHashBase<'662c61ca1b0a85dbc4ccf00463939ecfdc9ac844d5c381d034ca679302066b3a'>;
 export type ExecutionHash =
-  ExecutionHashBase<'174c2745cf01de554abd6e09fca1b3821e0adcb4c85768ad1e12883d4e8dccc1'>;
+  ExecutionHashBase<'69c7c0f83c3920b07de37d16e4453048954c425d3cb37ef2b3c5ba1386ab88f2'>;
 export type ProfileHash =
   ProfileHashBase<'3916f444a8a17ad749191acf9e08dad97d1a327b88c2f1d45d12f240296aa8b2'>;
 
@@ -272,6 +272,19 @@ export type FieldOutputTypes = {
       readonly rawResponse: CodecTypes['pg/json@1']['output'] | null;
       readonly success: CodecTypes['pg/bool@1']['output'];
     };
+    readonly SmsTemplate: {
+      readonly body: CodecTypes['pg/text@1']['output'];
+      readonly createdAt: CodecTypes['pg/timestamptz-temporal@1']['output'];
+      readonly id: CodecTypes['pg/text@1']['output'];
+      readonly isActive: CodecTypes['pg/bool@1']['output'];
+      readonly key: CodecTypes['pg/text@1']['output'];
+      readonly language: CodecTypes['pg/text@1']['output'];
+      readonly name: CodecTypes['pg/text@1']['output'];
+      readonly nameAm: CodecTypes['pg/text@1']['output'];
+      readonly triggerEvent: CodecTypes['pg/text@1']['output'];
+      readonly updatedAt: CodecTypes['pg/timestamptz-temporal@1']['output'];
+      readonly variables: CodecTypes['pg/text@1']['output'];
+    };
     readonly Student: {
       readonly active: CodecTypes['pg/bool@1']['output'];
       readonly admissionNo: CodecTypes['pg/text@1']['output'];
@@ -331,6 +344,19 @@ export type FieldInputTypes = {
       readonly notificationId: CodecTypes['pg/text@1']['input'];
       readonly rawResponse: CodecTypes['pg/json@1']['input'] | null;
       readonly success: CodecTypes['pg/bool@1']['input'];
+    };
+    readonly SmsTemplate: {
+      readonly body: CodecTypes['pg/text@1']['input'];
+      readonly createdAt: CodecTypes['pg/timestamptz-temporal@1']['input'];
+      readonly id: CodecTypes['pg/text@1']['input'];
+      readonly isActive: CodecTypes['pg/bool@1']['input'];
+      readonly key: CodecTypes['pg/text@1']['input'];
+      readonly language: CodecTypes['pg/text@1']['input'];
+      readonly name: CodecTypes['pg/text@1']['input'];
+      readonly nameAm: CodecTypes['pg/text@1']['input'];
+      readonly triggerEvent: CodecTypes['pg/text@1']['input'];
+      readonly updatedAt: CodecTypes['pg/timestamptz-temporal@1']['input'];
+      readonly variables: CodecTypes['pg/text@1']['input'];
     };
     readonly Student: {
       readonly active: CodecTypes['pg/bool@1']['input'];
@@ -392,6 +418,19 @@ export type StorageColumnTypes = {
       readonly rawResponse: CodecTypes['pg/json@1']['output'] | null;
       readonly success: CodecTypes['pg/bool@1']['output'];
     };
+    readonly SmsTemplate: {
+      readonly body: CodecTypes['pg/text@1']['output'];
+      readonly createdAt: CodecTypes['pg/timestamptz-temporal@1']['output'];
+      readonly id: CodecTypes['pg/text@1']['output'];
+      readonly isActive: CodecTypes['pg/bool@1']['output'];
+      readonly key: CodecTypes['pg/text@1']['output'];
+      readonly language: CodecTypes['pg/text@1']['output'];
+      readonly name: CodecTypes['pg/text@1']['output'];
+      readonly nameAm: CodecTypes['pg/text@1']['output'];
+      readonly triggerEvent: CodecTypes['pg/text@1']['output'];
+      readonly updatedAt: CodecTypes['pg/timestamptz-temporal@1']['output'];
+      readonly variables: CodecTypes['pg/text@1']['output'];
+    };
     readonly Student: {
       readonly active: CodecTypes['pg/bool@1']['output'];
       readonly admissionNo: CodecTypes['pg/text@1']['output'];
@@ -451,6 +490,19 @@ export type StorageColumnInputTypes = {
       readonly notificationId: CodecTypes['pg/text@1']['input'];
       readonly rawResponse: CodecTypes['pg/json@1']['input'] | null;
       readonly success: CodecTypes['pg/bool@1']['input'];
+    };
+    readonly SmsTemplate: {
+      readonly body: CodecTypes['pg/text@1']['input'];
+      readonly createdAt: CodecTypes['pg/timestamptz-temporal@1']['input'];
+      readonly id: CodecTypes['pg/text@1']['input'];
+      readonly isActive: CodecTypes['pg/bool@1']['input'];
+      readonly key: CodecTypes['pg/text@1']['input'];
+      readonly language: CodecTypes['pg/text@1']['input'];
+      readonly name: CodecTypes['pg/text@1']['input'];
+      readonly nameAm: CodecTypes['pg/text@1']['input'];
+      readonly triggerEvent: CodecTypes['pg/text@1']['input'];
+      readonly updatedAt: CodecTypes['pg/timestamptz-temporal@1']['input'];
+      readonly variables: CodecTypes['pg/text@1']['input'];
     };
     readonly Student: {
       readonly active: CodecTypes['pg/bool@1']['input'];
@@ -526,6 +578,20 @@ export namespace Models {
     notification: public_Notification;
     readonly [RelationKeys]?: 'notification';
   };
+  export type public_SmsTemplate = {
+    body: CodecTypes['pg/text@1']['output'];
+    createdAt: CodecTypes['pg/timestamptz-temporal@1']['output'];
+    id: CodecTypes['pg/text@1']['output'];
+    isActive: CodecTypes['pg/bool@1']['output'];
+    key: CodecTypes['pg/text@1']['output'];
+    language: CodecTypes['pg/text@1']['output'];
+    name: CodecTypes['pg/text@1']['output'];
+    nameAm: CodecTypes['pg/text@1']['output'];
+    triggerEvent: CodecTypes['pg/text@1']['output'];
+    updatedAt: CodecTypes['pg/timestamptz-temporal@1']['output'];
+    variables: CodecTypes['pg/text@1']['output'];
+    readonly [RelationKeys]?: never;
+  };
   export type public_Student = {
     active: CodecTypes['pg/bool@1']['output'];
     admissionNo: CodecTypes['pg/text@1']['output'];
@@ -563,6 +629,7 @@ export declare const models: {
     Guardian: Models.public_Guardian;
     Notification: Models.public_Notification;
     NotificationAttempt: Models.public_NotificationAttempt;
+    SmsTemplate: Models.public_SmsTemplate;
     Student: Models.public_Student;
     TeacherClass: Models.public_TeacherClass;
     User: Models.public_User;
@@ -909,6 +976,89 @@ type ContractBase = Omit<
                 },
               ];
             };
+            readonly SmsTemplate: {
+              columns: {
+                readonly body: {
+                  readonly dataType: 'pg/text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: false;
+                  readonly many: false;
+                };
+                readonly createdAt: {
+                  readonly dataType: 'pg/timestamptz';
+                  readonly codecId: 'pg/timestamptz-temporal@1';
+                  readonly nullable: false;
+                  readonly default: { readonly kind: 'function'; readonly expression: 'now()' };
+                  readonly many: false;
+                };
+                readonly id: {
+                  readonly dataType: 'pg/text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: false;
+                  readonly many: false;
+                };
+                readonly isActive: {
+                  readonly dataType: 'pg/bool';
+                  readonly codecId: 'pg/bool@1';
+                  readonly nullable: false;
+                  readonly default: {
+                    readonly kind: 'literal';
+                    readonly value: DefaultLiteralValue<'pg/bool@1', true>;
+                  };
+                  readonly many: false;
+                };
+                readonly key: {
+                  readonly dataType: 'pg/text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: false;
+                  readonly many: false;
+                };
+                readonly language: {
+                  readonly dataType: 'pg/text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: false;
+                  readonly many: false;
+                };
+                readonly name: {
+                  readonly dataType: 'pg/text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: false;
+                  readonly many: false;
+                };
+                readonly nameAm: {
+                  readonly dataType: 'pg/text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: false;
+                  readonly many: false;
+                };
+                readonly triggerEvent: {
+                  readonly dataType: 'pg/text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: false;
+                  readonly many: false;
+                };
+                readonly updatedAt: {
+                  readonly dataType: 'pg/timestamptz';
+                  readonly codecId: 'pg/timestamptz-temporal@1';
+                  readonly nullable: false;
+                  readonly many: false;
+                };
+                readonly variables: {
+                  readonly dataType: 'pg/text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: false;
+                  readonly default: {
+                    readonly kind: 'literal';
+                    readonly value: DefaultLiteralValue<'pg/text@1', '[]'>;
+                  };
+                  readonly many: false;
+                };
+              };
+              primaryKey: { readonly columns: readonly ['id'] };
+              uniques: readonly [{ readonly columns: readonly ['key'] }];
+              indexes: readonly [];
+              foreignKeys: readonly [];
+            };
             readonly Student: {
               columns: {
                 readonly active: {
@@ -1105,6 +1255,10 @@ type ContractBase = Omit<
     readonly NotificationAttempt: {
       readonly namespace: 'public' & NamespaceId;
       readonly model: 'NotificationAttempt';
+    };
+    readonly SmsTemplate: {
+      readonly namespace: 'public' & NamespaceId;
+      readonly model: 'SmsTemplate';
     };
     readonly Student: { readonly namespace: 'public' & NamespaceId; readonly model: 'Student' };
     readonly TeacherClass: {
@@ -1427,6 +1581,78 @@ type ContractBase = Omit<
               };
             };
           };
+          readonly SmsTemplate: {
+            readonly fields: {
+              readonly body: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
+              readonly createdAt: {
+                readonly nullable: false;
+                readonly type: {
+                  readonly kind: 'scalar';
+                  readonly codecId: 'pg/timestamptz-temporal@1';
+                };
+              };
+              readonly id: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
+              readonly isActive: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/bool@1' };
+              };
+              readonly key: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
+              readonly language: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
+              readonly name: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
+              readonly nameAm: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
+              readonly triggerEvent: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
+              readonly updatedAt: {
+                readonly nullable: false;
+                readonly type: {
+                  readonly kind: 'scalar';
+                  readonly codecId: 'pg/timestamptz-temporal@1';
+                };
+              };
+              readonly variables: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
+            };
+            readonly relations: Record<string, never>;
+            readonly storage: {
+              readonly table: 'SmsTemplate';
+              readonly namespaceId: 'public';
+              readonly fields: {
+                readonly body: { readonly column: 'body' };
+                readonly createdAt: { readonly column: 'createdAt' };
+                readonly id: { readonly column: 'id' };
+                readonly isActive: { readonly column: 'isActive' };
+                readonly key: { readonly column: 'key' };
+                readonly language: { readonly column: 'language' };
+                readonly name: { readonly column: 'name' };
+                readonly nameAm: { readonly column: 'nameAm' };
+                readonly triggerEvent: { readonly column: 'triggerEvent' };
+                readonly updatedAt: { readonly column: 'updatedAt' };
+                readonly variables: { readonly column: 'variables' };
+              };
+            };
+          };
           readonly Student: {
             readonly fields: {
               readonly active: {
@@ -1729,6 +1955,23 @@ type ContractBase = Omit<
           readonly ref: {
             readonly entry: 'NotificationAttempt';
             readonly field: 'id';
+            readonly namespace: 'public';
+          };
+        },
+        {
+          readonly onCreate: { readonly id: 'cuid2'; readonly kind: 'generator' };
+          readonly ref: {
+            readonly entry: 'SmsTemplate';
+            readonly field: 'id';
+            readonly namespace: 'public';
+          };
+        },
+        {
+          readonly onCreate: { readonly id: 'instantNow'; readonly kind: 'generator' };
+          readonly onUpdate: { readonly id: 'instantNow'; readonly kind: 'generator' };
+          readonly ref: {
+            readonly entry: 'SmsTemplate';
+            readonly field: 'updatedAt';
             readonly namespace: 'public';
           };
         },

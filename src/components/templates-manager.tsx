@@ -12,45 +12,78 @@ import {
   Eye,
   Info,
   Zap,
+  RotateCcw,
+  Loader2,
+  Tag,
 } from "lucide-react";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { useI18n } from "@/lib/i18n/context";
 import { SettingsNav } from "@/components/settings-nav";
 import {
   DEFAULT_TEMPLATES,
+  AVAILABLE_PLACEHOLDERS,
   renderSmsTemplate,
   type SmsTemplate,
-} from "@/lib/services/templates.service";
+} from "@/lib/services/templates-shared";
+import {
+  updateSmsTemplateAction,
+  resetSmsTemplatesAction,
+} from "@/actions/template.actions";
 
-export function TemplatesManager() {
+interface TemplatesManagerProps {
+  initialTemplates?: SmsTemplate[];
+}
+
+export function TemplatesManager({ initialTemplates }: TemplatesManagerProps) {
   const { t, locale } = useI18n();
 
-  const [templates, setTemplates] = React.useState<SmsTemplate[]>(DEFAULT_TEMPLATES);
-  const [selectedTemplate, setSelectedTemplate] = React.useState<SmsTemplate>(DEFAULT_TEMPLATES[0]);
+  const [templates, setTemplates] = React.useState<SmsTemplate[]>(
+    initialTemplates && initialTemplates.length > 0 ? initialTemplates : DEFAULT_TEMPLATES
+  );
+  const [selectedTemplate, setSelectedTemplate] = React.useState<SmsTemplate>(() => {
+    return (initialTemplates && initialTemplates.length > 0) ? initialTemplates[0] : DEFAULT_TEMPLATES[0];
+  });
   const [languageFilter, setLanguageFilter] = React.useState<"ALL" | "en" | "am">("ALL");
+  const [isSaving, setIsSaving] = React.useState(false);
+  const [isResetting, setIsResetting] = React.useState(false);
+
+  const textareaRef = React.useRef<HTMLTextAreaElement>(null);
+
+  // Keep selectedTemplate in sync if templates change from outside
+  React.useEffect(() => {
+    if (initialTemplates && initialTemplates.length > 0) {
+      setTemplates(initialTemplates);
+      setSelectedTemplate((prev) => {
+        const found = initialTemplates.find((t) => t.id === prev.id || t.key === prev.key);
+        return found || initialTemplates[0];
+      });
+    }
+  }, [initialTemplates]);
 
   // Sample dynamic values for preview
-  const sampleValues = {
+  const sampleValues = React.useMemo(() => ({
     student_name: "Almaz Kebede",
     class_name: "Class 7 B",
-    date: "Oct 25 (ጥቅምት 15)",
+    date: "Oct 28 (ጥቅምት 18)",
+    status: "Absent",
+    admission_no: "ADM-001",
     school_name: "Addis Academy",
-  };
+    time: "08:15 AM",
+  }), []);
 
   const renderedBody = React.useMemo(() => {
     return renderSmsTemplate(selectedTemplate.body, sampleValues);
-  }, [selectedTemplate]);
+  }, [selectedTemplate, sampleValues]);
 
   // Account signature automatically appended by SMSHub
   const accountSignature = "\n\n- Addis Academy | 0982428697";
   const fullTextWithSignature = renderedBody + accountSignature;
 
-  // Unicode detection for Amharic
+  // Unicode detection for Amharic or non-GSM chars
   const isUnicode = selectedTemplate.language === "am" || /[\u1200-\u137F]/.test(fullTextWithSignature);
   const charLimit = isUnicode ? 70 : 160;
   const totalLength = fullTextWithSignature.length;
@@ -60,6 +93,100 @@ export function TemplatesManager() {
     if (languageFilter === "ALL") return templates;
     return templates.filter((t) => t.language === languageFilter);
   }, [templates, languageFilter]);
+
+  // Insert placeholder token into textarea at current selection
+  const handleInsertPlaceholder = (placeholderKey: string) => {
+    const token = `{${placeholderKey}}`;
+    const textarea = textareaRef.current;
+    if (!textarea) {
+      const newBody = selectedTemplate.body + " " + token;
+      updateCurrentTemplateBody(newBody);
+      return;
+    }
+
+    const start = textarea.selectionStart ?? selectedTemplate.body.length;
+    const end = textarea.selectionEnd ?? selectedTemplate.body.length;
+    const current = selectedTemplate.body;
+    const updated = current.substring(0, start) + token + current.substring(end);
+
+    updateCurrentTemplateBody(updated);
+
+    // Re-focus and set cursor after inserted placeholder
+    requestAnimationFrame(() => {
+      textarea.focus();
+      const nextPos = start + token.length;
+      textarea.setSelectionRange(nextPos, nextPos);
+    });
+  };
+
+  const updateCurrentTemplateBody = (newBody: string) => {
+    setSelectedTemplate((prev) => ({ ...prev, body: newBody }));
+    setTemplates((prev) =>
+      prev.map((t) => (t.id === selectedTemplate.id ? { ...t, body: newBody } : t))
+    );
+  };
+
+  const handleSave = async () => {
+    if (!selectedTemplate.body.trim()) {
+      toast.error("Template body cannot be empty");
+      return;
+    }
+
+    setIsSaving(true);
+    try {
+      const res = await updateSmsTemplateAction({
+        id: selectedTemplate.id,
+        body: selectedTemplate.body,
+        name: selectedTemplate.name,
+        nameAm: selectedTemplate.nameAm,
+        isActive: selectedTemplate.isActive,
+      });
+
+      if (res.success) {
+        toast.success(
+          locale === "am"
+            ? "የኤስኤምኤስ ቴምፕሌት በተሳካ ሁኔታ ተቀምጧል!"
+            : "Template saved successfully! Future SMS dispatches will use this pattern."
+        );
+      } else {
+        toast.error(res.error || "Failed to save template");
+      }
+    } catch (err: any) {
+      toast.error(err?.message || "Failed to save template");
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleResetDefaults = async () => {
+    const confirmMessage =
+      locale === "am"
+        ? "ሁሉንም የኤስኤምኤስ ቴምፕሌቶች ወደ መጀመሪያው ይዘታቸው መመለስ ይፈልጋሉ?"
+        : "Are you sure you want to reset all SMS templates to their default patterns?";
+
+    if (!window.confirm(confirmMessage)) return;
+
+    setIsResetting(true);
+    try {
+      const res = await resetSmsTemplatesAction();
+      if (res.success && res.templates) {
+        setTemplates(res.templates);
+        const match = res.templates.find((t) => t.id === selectedTemplate.id) || res.templates[0];
+        setSelectedTemplate(match);
+        toast.success(
+          locale === "am"
+            ? "ቴምፕሌቶች ወደ ነባሪ ቅንብር ተመልሰዋል።"
+            : "Templates successfully reset to standard defaults."
+        );
+      } else {
+        toast.error(res.error || "Failed to reset templates");
+      }
+    } catch (err: any) {
+      toast.error(err?.message || "Failed to reset templates");
+    } finally {
+      setIsResetting(false);
+    }
+  };
 
   return (
     <div className="space-y-6 max-w-5xl">
@@ -74,46 +201,65 @@ export function TemplatesManager() {
           </h1>
           <p className="text-xs text-muted-foreground mt-0.5">
             {locale === "am"
-              ? "በእንግሊዝኛና በአማርኛ የተዘጋጁ የቀሪዎች፣ የማርፈድና የእርማት ማሳወቂያ መልእክቶች።"
-              : "Pre-configured and editable English and Amharic templates for student absence and attendance alerts."}
+              ? "በእንግሊዝኛና በአማርኛ የተዘጋጁ የቀሪዎች፣ የማርፈድና የእርማት ማሳወቂያ መልእክቶች። በዳታቤዝ ውስጥ ይቀመጣሉ።"
+              : "Dynamic, database-driven English and Amharic templates for student absence and attendance alerts."}
           </p>
         </div>
 
-        {/* Language Filter */}
-        <div className="flex items-center gap-1.5 bg-muted p-1 rounded-lg">
-          <button
+        {/* Controls: Reset to Defaults + Language Filter */}
+        <div className="flex items-center gap-2">
+          <Button
             type="button"
-            onClick={() => setLanguageFilter("ALL")}
-            className={`px-2.5 py-1 text-xs rounded-md font-medium transition-colors ${
-              languageFilter === "ALL"
-                ? "bg-background text-foreground shadow-xs font-semibold"
-                : "text-muted-foreground hover:text-foreground"
-            }`}
+            variant="outline"
+            size="sm"
+            onClick={handleResetDefaults}
+            disabled={isResetting || isSaving}
+            className="text-xs h-8 text-muted-foreground hover:text-foreground"
+            title="Reset all templates to initial defaults"
           >
-            All ({templates.length})
-          </button>
-          <button
-            type="button"
-            onClick={() => setLanguageFilter("en")}
-            className={`px-2.5 py-1 text-xs rounded-md font-medium transition-colors ${
-              languageFilter === "en"
-                ? "bg-background text-foreground shadow-xs font-semibold"
-                : "text-muted-foreground hover:text-foreground"
-            }`}
-          >
-            English
-          </button>
-          <button
-            type="button"
-            onClick={() => setLanguageFilter("am")}
-            className={`px-2.5 py-1 text-xs rounded-md font-medium transition-colors ${
-              languageFilter === "am"
-                ? "bg-background text-foreground shadow-xs font-semibold"
-                : "text-muted-foreground hover:text-foreground"
-            }`}
-          >
-            አማርኛ (Amharic)
-          </button>
+            {isResetting ? (
+              <Loader2 className="size-3.5 mr-1.5 animate-spin" />
+            ) : (
+              <RotateCcw className="size-3.5 mr-1.5" />
+            )}
+            {locale === "am" ? "ወደ ነባሪ መልስ" : "Reset Defaults"}
+          </Button>
+
+          <div className="flex items-center gap-1.5 bg-muted p-1 rounded-lg">
+            <button
+              type="button"
+              onClick={() => setLanguageFilter("ALL")}
+              className={`px-2.5 py-1 text-xs rounded-md font-medium transition-colors ${
+                languageFilter === "ALL"
+                  ? "bg-background text-foreground shadow-xs font-semibold"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              All ({templates.length})
+            </button>
+            <button
+              type="button"
+              onClick={() => setLanguageFilter("en")}
+              className={`px-2.5 py-1 text-xs rounded-md font-medium transition-colors ${
+                languageFilter === "en"
+                  ? "bg-background text-foreground shadow-xs font-semibold"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              English
+            </button>
+            <button
+              type="button"
+              onClick={() => setLanguageFilter("am")}
+              className={`px-2.5 py-1 text-xs rounded-md font-medium transition-colors ${
+                languageFilter === "am"
+                  ? "bg-background text-foreground shadow-xs font-semibold"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              አማርኛ (Amharic)
+            </button>
+          </div>
         </div>
       </div>
 
@@ -176,25 +322,41 @@ export function TemplatesManager() {
 
             <CardContent className="space-y-4 pt-4">
               {/* Editable Body */}
-              <div className="space-y-1.5">
+              <div className="space-y-2">
                 <div className="flex items-center justify-between">
                   <Label className="text-xs font-semibold text-foreground">Message Template Pattern</Label>
                   <span className="text-[11px] text-muted-foreground">
-                    Supports &#123;student_name&#125;, &#123;class_name&#125;, &#123;date&#125;
+                    Supports dynamic placeholders below
                   </span>
                 </div>
                 <textarea
-                  rows={3}
+                  ref={textareaRef}
+                  rows={4}
                   value={selectedTemplate.body}
-                  onChange={(e) => {
-                    const newBody = e.target.value;
-                    setSelectedTemplate((prev) => ({ ...prev, body: newBody }));
-                    setTemplates((prev) =>
-                      prev.map((t) => (t.id === selectedTemplate.id ? { ...t, body: newBody } : t))
-                    );
-                  }}
-                  className="w-full text-xs p-2.5 rounded-lg border border-border bg-background focus:outline-hidden focus:ring-2 focus:ring-ring text-foreground leading-relaxed"
+                  onChange={(e) => updateCurrentTemplateBody(e.target.value)}
+                  className="w-full text-xs p-3 rounded-lg border border-border bg-background focus:outline-hidden focus:ring-2 focus:ring-ring text-foreground leading-relaxed"
                 />
+
+                {/* Clickable Placeholder Chips */}
+                <div className="space-y-1.5 pt-1">
+                  <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground font-medium">
+                    <Tag className="size-3 text-primary" />
+                    <span>Click to insert placeholder:</span>
+                  </div>
+                  <div className="flex flex-wrap gap-1.5">
+                    {AVAILABLE_PLACEHOLDERS.map((ph) => (
+                      <button
+                        key={ph.key}
+                        type="button"
+                        onClick={() => handleInsertPlaceholder(ph.key)}
+                        className="text-[11px] font-mono px-2 py-0.5 rounded-md bg-muted hover:bg-primary/10 hover:text-primary border border-border transition-colors text-foreground"
+                        title={`Sample: ${ph.sample}`}
+                      >
+                        &#123;{ph.key}&#125;
+                      </button>
+                    ))}
+                  </div>
+                </div>
               </div>
 
               {/* Live Preview Box */}
@@ -244,9 +406,11 @@ export function TemplatesManager() {
               <div className="flex items-center justify-end gap-2 pt-2">
                 <Button
                   size="sm"
-                  className="text-xs h-8"
-                  onClick={() => toast.success("Template changes saved successfully.")}
+                  className="text-xs h-8 px-4"
+                  onClick={handleSave}
+                  disabled={isSaving || isResetting}
                 >
+                  {isSaving && <Loader2 className="size-3.5 mr-1.5 animate-spin" />}
                   Save Template
                 </Button>
               </div>

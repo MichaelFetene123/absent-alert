@@ -105,3 +105,17 @@ model NotificationAttempt {
   error          String?
   notification   Notification @relation(fields: [notificationId], references: [id])
 }
+
+model SmsTemplate {
+  id           String   @id @default(cuid(2))
+  key          String   @unique
+  name         String
+  nameAm       String
+  triggerEvent String
+  language     String
+  body         String
+  variables    String   @default("[]")
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    temporal.updatedAt()
+}

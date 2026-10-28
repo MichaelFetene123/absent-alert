@@ -26,6 +26,17 @@ export function getSanitizedDatabaseUrl(rawUrl?: string): string {
   return url;
 }
 
+// Invalidate cached client if new models were added to contractJson since last HMR cycle
+const contractModels = Object.keys(
+  (contractJson as any)?.domain?.namespaces?.public?.models || {}
+);
+if (
+  globalForDb.prismaDb &&
+  contractModels.some((m) => !(globalForDb.prismaDb as any)?.orm?.public?.[m])
+) {
+  globalForDb.prismaDb = undefined;
+}
+
 export const db =
   globalForDb.prismaDb ??
   postgres<Contract>({
