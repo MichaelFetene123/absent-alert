@@ -6,4 +6,5 @@ export * from "./use-attendance";
 export * from "./use-notifications";
 export * from "./use-profile";
 export * from "./use-smshub";
+export * from "./use-templates";
 export * from "./use-auth";

@@ -36,4 +36,8 @@ export const queryKeys = {
     all: ["smshub"] as const,
     balance: () => [...queryKeys.smshub.all, "balance"] as const,
   },
+  templates: {
+    all: ["templates"] as const,
+    list: () => [...queryKeys.templates.all, "list"] as const,
+  },
 } as const;

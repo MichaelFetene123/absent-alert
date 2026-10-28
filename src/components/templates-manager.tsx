@@ -29,9 +29,10 @@ import {
   type SmsTemplate,
 } from "@/lib/services/templates-shared";
 import {
-  updateSmsTemplateAction,
-  setActiveTemplateAction,
-} from "@/actions/template.actions";
+  useTemplatesQuery,
+  useUpdateTemplateMutation,
+  useSetActiveTemplateMutation,
+} from "@/hooks/use-templates";
 
 interface TemplatesManagerProps {
   initialTemplates?: SmsTemplate[];
@@ -40,42 +41,50 @@ interface TemplatesManagerProps {
 export function TemplatesManager({ initialTemplates }: TemplatesManagerProps) {
   const { t, locale } = useI18n();
 
-  const [templates, setTemplates] = React.useState<SmsTemplate[]>(
-    initialTemplates && initialTemplates.length > 0 ? initialTemplates : DEFAULT_TEMPLATES
-  );
-  const [selectedTemplate, setSelectedTemplate] = React.useState<SmsTemplate>(() => {
-    return (initialTemplates && initialTemplates.length > 0) ? initialTemplates[0] : DEFAULT_TEMPLATES[0];
+  // TanStack Query hooks for reading and mutating templates
+  const { data: templates = (initialTemplates && initialTemplates.length > 0 ? initialTemplates : DEFAULT_TEMPLATES) } =
+    useTemplatesQuery(initialTemplates);
+  const updateMutation = useUpdateTemplateMutation();
+  const setActiveMutation = useSetActiveTemplateMutation();
+
+  const isSaving = updateMutation.isPending || setActiveMutation.isPending;
+
+  const [selectedTemplateId, setSelectedTemplateId] = React.useState<string>(() => {
+    return initialTemplates && initialTemplates.length > 0 ? initialTemplates[0].id : DEFAULT_TEMPLATES[0].id;
   });
+
   const [languageFilter, setLanguageFilter] = React.useState<"ALL" | "en" | "am">("ALL");
-  const [isSaving, setIsSaving] = React.useState(false);
+
+  const selectedTemplate = React.useMemo(() => {
+    return templates.find((t) => t.id === selectedTemplateId) || templates[0] || DEFAULT_TEMPLATES[0];
+  }, [templates, selectedTemplateId]);
+
+  // Local draft state for the template text area
+  const [draftBody, setDraftBody] = React.useState<string>(selectedTemplate.body);
+
+  React.useEffect(() => {
+    setDraftBody(selectedTemplate.body);
+  }, [selectedTemplate.id, selectedTemplate.body]);
 
   const textareaRef = React.useRef<HTMLTextAreaElement>(null);
 
-  // Keep selectedTemplate in sync if templates change from outside
-  React.useEffect(() => {
-    if (initialTemplates && initialTemplates.length > 0) {
-      setTemplates(initialTemplates);
-      setSelectedTemplate((prev) => {
-        const found = initialTemplates.find((t) => t.id === prev.id || t.key === prev.key);
-        return found || initialTemplates[0];
-      });
-    }
-  }, [initialTemplates]);
-
   // Sample dynamic values for preview
-  const sampleValues = React.useMemo(() => ({
-    student_name: "Almaz Kebede",
-    class_name: "Class 7 B",
-    date: "Oct 28 (ጥቅምት 18)",
-    status: "Absent",
-    admission_no: "ADM-001",
-    school_name: "Addis Academy",
-    time: "08:15 AM",
-  }), []);
+  const sampleValues = React.useMemo(
+    () => ({
+      student_name: "Almaz Kebede",
+      class_name: "Class 7 B",
+      date: "Oct 28 (ጥቅምት 18)",
+      status: "Absent",
+      admission_no: "ADM-001",
+      school_name: "Addis Academy",
+      time: "08:15 AM",
+    }),
+    []
+  );
 
   const renderedBody = React.useMemo(() => {
-    return renderSmsTemplate(selectedTemplate.body, sampleValues);
-  }, [selectedTemplate, sampleValues]);
+    return renderSmsTemplate(draftBody, sampleValues);
+  }, [draftBody, sampleValues]);
 
   // Account signature automatically appended by SMSHub
   const accountSignature = "\n\n- Addis Academy | 0982428697";
@@ -97,19 +106,16 @@ export function TemplatesManager({ initialTemplates }: TemplatesManagerProps) {
     const token = `{${placeholderKey}}`;
     const textarea = textareaRef.current;
     if (!textarea) {
-      const newBody = selectedTemplate.body + " " + token;
-      updateCurrentTemplateBody(newBody);
+      setDraftBody((prev) => prev + " " + token);
       return;
     }
 
-    const start = textarea.selectionStart ?? selectedTemplate.body.length;
-    const end = textarea.selectionEnd ?? selectedTemplate.body.length;
-    const current = selectedTemplate.body;
-    const updated = current.substring(0, start) + token + current.substring(end);
+    const start = textarea.selectionStart ?? draftBody.length;
+    const end = textarea.selectionEnd ?? draftBody.length;
+    const updated = draftBody.substring(0, start) + token + draftBody.substring(end);
 
-    updateCurrentTemplateBody(updated);
+    setDraftBody(updated);
 
-    // Re-focus and set cursor after inserted placeholder
     requestAnimationFrame(() => {
       textarea.focus();
       const nextPos = start + token.length;
@@ -117,39 +123,22 @@ export function TemplatesManager({ initialTemplates }: TemplatesManagerProps) {
     });
   };
 
-  const updateCurrentTemplateBody = (newBody: string) => {
-    setSelectedTemplate((prev) => ({ ...prev, body: newBody }));
-    setTemplates((prev) =>
-      prev.map((t) => (t.id === selectedTemplate.id ? { ...t, body: newBody } : t))
-    );
-  };
-
   const handleSave = async () => {
-    if (!selectedTemplate.body.trim()) {
+    if (!draftBody.trim()) {
       toast.error("Template body cannot be empty");
       return;
     }
 
-    setIsSaving(true);
     try {
-      const res = await updateSmsTemplateAction({
+      const res = await updateMutation.mutateAsync({
         id: selectedTemplate.id,
-        body: selectedTemplate.body,
+        body: draftBody,
         name: selectedTemplate.name,
         nameAm: selectedTemplate.nameAm,
-        isActive: true, // Saving a template immediately activates it for outbound SMS
+        isActive: true, // Saving automatically activates this template
       });
 
-      if (res.success && res.template) {
-        setTemplates((prev) =>
-          prev.map((t) => ({
-            ...t,
-            body: t.id === selectedTemplate.id ? selectedTemplate.body : t.body,
-            isActive: t.id === selectedTemplate.id,
-          }))
-        );
-        setSelectedTemplate((prev) => ({ ...prev, isActive: true }));
-
+      if (res.success) {
         toast.success(
           locale === "am"
             ? "የኤስኤምኤስ ቴምፕሌት ተቀምጧል እንዲሁም ለቀጣይ መልእክቶች ነቅቷል!"
@@ -160,35 +149,25 @@ export function TemplatesManager({ initialTemplates }: TemplatesManagerProps) {
       }
     } catch (err: any) {
       toast.error(err?.message || "Failed to save template");
-    } finally {
-      setIsSaving(false);
     }
   };
 
   const handleSetActive = async () => {
-    setIsSaving(true);
     try {
-      const res = await setActiveTemplateAction(selectedTemplate.id);
-      if (res.success && res.templates) {
-        setTemplates(res.templates);
-        const match = res.templates.find((t) => t.id === selectedTemplate.id) || selectedTemplate;
-        setSelectedTemplate({ ...match, isActive: true });
+      const res = await setActiveMutation.mutateAsync(selectedTemplate.id);
+      if (res.success) {
         toast.success(
           locale === "am"
-            ? `ቴምፕሌት '${match.nameAm}' ለቀጣይ መልእክቶች ነቅቷል!`
-            : `Template '${match.name}' is now active for all outbound SMS notifications.`
+            ? `ቴምፕሌት '${selectedTemplate.nameAm}' ለቀጣይ መልእክቶች ነቅቷል!`
+            : `Template '${selectedTemplate.name}' is now active for all outbound SMS notifications.`
         );
       } else {
         toast.error(res.error || "Failed to activate template");
       }
     } catch (err: any) {
       toast.error(err?.message || "Failed to activate template");
-    } finally {
-      setIsSaving(false);
     }
   };
-
-
 
   return (
     <div className="space-y-6 max-w-5xl">
@@ -210,41 +189,41 @@ export function TemplatesManager({ initialTemplates }: TemplatesManagerProps) {
 
         {/* Language Filter */}
         <div className="flex items-center gap-1.5 bg-muted p-1 rounded-lg">
-            <button
-              type="button"
-              onClick={() => setLanguageFilter("ALL")}
-              className={`px-2.5 py-1 text-xs rounded-md font-medium transition-colors ${
-                languageFilter === "ALL"
-                  ? "bg-background text-foreground shadow-xs font-semibold"
-                  : "text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              All ({templates.length})
-            </button>
-            <button
-              type="button"
-              onClick={() => setLanguageFilter("en")}
-              className={`px-2.5 py-1 text-xs rounded-md font-medium transition-colors ${
-                languageFilter === "en"
-                  ? "bg-background text-foreground shadow-xs font-semibold"
-                  : "text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              English
-            </button>
-            <button
-              type="button"
-              onClick={() => setLanguageFilter("am")}
-              className={`px-2.5 py-1 text-xs rounded-md font-medium transition-colors ${
-                languageFilter === "am"
-                  ? "bg-background text-foreground shadow-xs font-semibold"
-                  : "text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              አማርኛ (Amharic)
-            </button>
-          </div>
+          <button
+            type="button"
+            onClick={() => setLanguageFilter("ALL")}
+            className={`px-2.5 py-1 text-xs rounded-md font-medium transition-colors ${
+              languageFilter === "ALL"
+                ? "bg-background text-foreground shadow-xs font-semibold"
+                : "text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            All ({templates.length})
+          </button>
+          <button
+            type="button"
+            onClick={() => setLanguageFilter("en")}
+            className={`px-2.5 py-1 text-xs rounded-md font-medium transition-colors ${
+              languageFilter === "en"
+                ? "bg-background text-foreground shadow-xs font-semibold"
+                : "text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            English
+          </button>
+          <button
+            type="button"
+            onClick={() => setLanguageFilter("am")}
+            className={`px-2.5 py-1 text-xs rounded-md font-medium transition-colors ${
+              languageFilter === "am"
+                ? "bg-background text-foreground shadow-xs font-semibold"
+                : "text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            አማርኛ (Amharic)
+          </button>
         </div>
+      </div>
 
       <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
         {/* Templates List */}
@@ -259,7 +238,7 @@ export function TemplatesManager({ initialTemplates }: TemplatesManagerProps) {
                 <button
                   key={tpl.id}
                   type="button"
-                  onClick={() => setSelectedTemplate(tpl)}
+                  onClick={() => setSelectedTemplateId(tpl.id)}
                   className={`w-full text-left p-3 rounded-xl border transition-all ${
                     isSelected
                       ? "border-primary bg-primary/10 ring-1 ring-primary/20"
@@ -343,8 +322,8 @@ export function TemplatesManager({ initialTemplates }: TemplatesManagerProps) {
                 <textarea
                   ref={textareaRef}
                   rows={4}
-                  value={selectedTemplate.body}
-                  onChange={(e) => updateCurrentTemplateBody(e.target.value)}
+                  value={draftBody}
+                  onChange={(e) => setDraftBody(e.target.value)}
                   className="w-full text-xs p-3 rounded-lg border border-border bg-background focus:outline-hidden focus:ring-2 focus:ring-ring text-foreground leading-relaxed"
                 />
 
