@@ -337,7 +337,7 @@ function ShellInner({ user, children }: DashboardShellProps) {
                             "flex items-center rounded-lg text-xs font-medium transition-colors",
                             collapsed
                               ? "justify-center size-9 mx-auto"
-                              : "justify-between px-2.5 py-1.5",
+                              : "justify-between px-2.5 py-2",
                             isActive
                               ? "bg-primary text-primary-foreground font-semibold shadow-xs"
                               : "text-muted-foreground hover:bg-muted hover:text-foreground"
@@ -385,7 +385,7 @@ function ShellInner({ user, children }: DashboardShellProps) {
                 "flex items-center gap-2 rounded-lg border border-border bg-muted/50 hover:bg-muted transition-colors text-xs",
                 collapsed
                   ? "size-9 mx-auto justify-center p-0"
-                  : "w-full p-1.5 justify-between"
+                  : "w-full px-2.5 py-2 justify-between"
               )}
               aria-expanded={userMenuOpen}
               aria-label="User account menu"
@@ -515,7 +515,7 @@ function ShellInner({ user, children }: DashboardShellProps) {
                             href={item.href}
                             onClick={() => setMobileMenuOpen(false)}
                             className={cn(
-                              "flex items-center justify-between px-2.5 py-1.5 rounded-lg text-xs font-medium",
+                              "flex items-center justify-between px-2.5 py-2 rounded-lg text-xs font-medium",
                               isActive
                                 ? "bg-primary text-primary-foreground font-semibold"
                                 : "text-muted-foreground hover:bg-muted hover:text-foreground"
