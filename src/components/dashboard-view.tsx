@@ -108,7 +108,7 @@ export function DashboardView({ data, reports, user }: Props) {
   const [trendMetric, setTrendMetric] = React.useState<"rate" | "count">("rate");
   const [searchQuery, setSearchQuery] = React.useState("");
   const [activeQuestionTab, setActiveQuestionTab] = React.useState<
-    "absent" | "missing" | "notified" | "failed" | "recurring"
+    "absent" | "missing" | "notified" | "failed"
   >("absent");
 
   React.useEffect(() => {
@@ -399,7 +399,7 @@ export function DashboardView({ data, reports, user }: Props) {
                 <span>Immediate School Operations Intelligence</span>
               </CardTitle>
               <CardDescription className="text-xs text-muted-foreground">
-                Answers to the 5 primary attendance and parent notification questions.
+                Answers to key attendance and parent notification questions.
               </CardDescription>
             </div>
 
@@ -448,17 +448,6 @@ export function DashboardView({ data, reports, user }: Props) {
                 }`}
               >
                 Retry SMS
-              </button>
-              <button
-                type="button"
-                onClick={() => setActiveQuestionTab("recurring")}
-                className={`px-2.5 py-1 text-xs rounded-md font-medium transition-all ${
-                  activeQuestionTab === "recurring"
-                    ? "bg-background text-foreground shadow-xs font-bold"
-                    : "text-muted-foreground hover:text-foreground"
-                }`}
-              >
-                Headcount
               </button>
             </div>
           </div>
@@ -687,37 +676,6 @@ export function DashboardView({ data, reports, user }: Props) {
                   </TableBody>
                 </Table>
               )}
-            </div>
-          )}
-
-          {/* Question 5: Which students have recurring attendance problems? */}
-          {activeQuestionTab === "recurring" && (
-            <div className="p-4 space-y-3">
-              <div>
-                <span className="text-xs text-muted-foreground">
-                  Students with 3 or more absences in the current evaluation window:
-                </span>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div className="p-3 rounded-lg border border-border bg-card text-card-foreground text-xs space-y-1">
-                  <div className="flex items-center justify-between font-bold text-foreground">
-                    <span>Almaz Kebede (ADM-001)</span>
-                    <Badge variant="secondary" className="text-[10px]">3 Absences</Badge>
-                  </div>
-                  <p className="text-[11px] text-muted-foreground">Class 7 B · Guardian: Kebede Tessema (0911223344)</p>
-                  <p className="text-[11px] text-primary font-medium">Flagged for homeroom teacher phone call</p>
-                </div>
-
-                <div className="p-3 rounded-lg border border-border bg-card text-card-foreground text-xs space-y-1">
-                  <div className="flex items-center justify-between font-bold text-foreground">
-                    <span>Yared Bekele (ADM-004)</span>
-                    <Badge variant="secondary" className="text-[10px]">3 Absences</Badge>
-                  </div>
-                  <p className="text-[11px] text-muted-foreground">Class 7 B · Guardian: Bekele Megersa (0944556677)</p>
-                  <p className="text-[11px] text-primary font-medium">Flagged for parent attendance meeting</p>
-                </div>
-              </div>
             </div>
           )}
         </CardContent>
