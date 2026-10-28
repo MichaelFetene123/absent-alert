@@ -19,7 +19,6 @@ import {
   GraduationCap,
   ArrowRight,
 } from "lucide-react";
-import { ThemeToggle } from "@/components/theme-toggle";
 import { cn } from "@/lib/utils";
 
 export default function LoginPage() {
@@ -49,12 +48,6 @@ export default function LoginPage() {
       <div className="absolute top-1/4 -left-40 size-96 rounded-full bg-primary/10 blur-3xl pointer-events-none" />
       <div className="absolute top-1/3 -right-40 size-96 rounded-full bg-primary/5 blur-3xl pointer-events-none" />
 
-      {/* Top Bar with Theme Toggle */}
-      <header className="absolute top-4 right-4 sm:top-6 sm:right-6 flex items-center gap-3 z-20">
-        <div className="p-1 rounded-xl bg-card/80 border border-border backdrop-blur-md shadow-xs">
-          <ThemeToggle />
-        </div>
-      </header>
 
       <div className="relative w-full max-w-md z-10 space-y-6">
         {/* Brand Header */}
