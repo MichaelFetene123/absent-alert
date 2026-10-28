@@ -6,6 +6,7 @@ import { requireUser } from "@/lib/guards";
 import {
   getSmsTemplates,
   saveSmsTemplate,
+  setActiveTemplate,
   resetSmsTemplatesToDefaults,
   type SmsTemplate,
 } from "@/lib/services/templates.service";
@@ -56,6 +57,20 @@ export async function resetSmsTemplatesAction(): Promise<{
     return { success: true, templates };
   } catch (err: any) {
     return { success: false, error: err?.message || "Failed to reset templates" };
+  }
+}
+
+export async function setActiveTemplateAction(idOrKey: string): Promise<{
+  success: boolean;
+  templates?: SmsTemplate[];
+  error?: string;
+}> {
+  try {
+    await requireUser();
+    const templates = await setActiveTemplate(idOrKey);
+    return { success: true, templates };
+  } catch (err: any) {
+    return { success: false, error: err?.message || "Failed to set active template" };
   }
 }
 

@@ -41,7 +41,7 @@ export async function queueAbsenceNotifications(
   // Fetch active absence template from DB (fallback to hardcoded default if needed)
   let activeAbsenceTemplate: string | null = null;
   try {
-    const tpl = await getActiveTemplate("ABSENCE", "en");
+    const tpl = await getActiveTemplate("ABSENCE");
     if (tpl?.body) {
       activeAbsenceTemplate = tpl.body;
     }
@@ -91,7 +91,12 @@ export async function queueAbsenceNotifications(
 
     // Safeguard: SMSHub appends ~30 chars signature. Ensure body <= 130 chars (total <= 160)
     if (messageBody.length > 130) {
-      messageBody = `AbsentAlert: ${student.fullName} (${cls?.name || "Class"}) was marked absent on ${date}. Contact school if unexpected.`;
+      const isAmharic = /[\u1200-\u137F]/.test(messageBody);
+      if (isAmharic) {
+        messageBody = `ማስታወቂያ፡ ${student.fullName} በ${date} በ${cls?.name || "ክፍል"} አልተገኘም። ካልታወቀ ት/ቤቱን ያነጋግሩ።`;
+      } else {
+        messageBody = `AbsentAlert: ${student.fullName} (${cls?.name || "Class"}) was marked absent on ${date}. Contact school if unexpected.`;
+      }
       if (messageBody.length > 130) {
         messageBody = messageBody.slice(0, 127) + "...";
       }

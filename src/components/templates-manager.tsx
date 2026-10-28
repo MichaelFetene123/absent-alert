@@ -30,6 +30,7 @@ import {
 } from "@/lib/services/templates-shared";
 import {
   updateSmsTemplateAction,
+  setActiveTemplateAction,
 } from "@/actions/template.actions";
 
 interface TemplatesManagerProps {
@@ -136,20 +137,52 @@ export function TemplatesManager({ initialTemplates }: TemplatesManagerProps) {
         body: selectedTemplate.body,
         name: selectedTemplate.name,
         nameAm: selectedTemplate.nameAm,
-        isActive: selectedTemplate.isActive,
+        isActive: true, // Saving a template immediately activates it for outbound SMS
       });
 
-      if (res.success) {
+      if (res.success && res.template) {
+        setTemplates((prev) =>
+          prev.map((t) => ({
+            ...t,
+            body: t.id === selectedTemplate.id ? selectedTemplate.body : t.body,
+            isActive: t.id === selectedTemplate.id,
+          }))
+        );
+        setSelectedTemplate((prev) => ({ ...prev, isActive: true }));
+
         toast.success(
           locale === "am"
-            ? "የኤስኤምኤስ ቴምፕሌት በተሳካ ሁኔታ ተቀምጧል!"
-            : "Template saved successfully! Future SMS dispatches will use this pattern."
+            ? "የኤስኤምኤስ ቴምፕሌት ተቀምጧል እንዲሁም ለቀጣይ መልእክቶች ነቅቷል!"
+            : "Template saved and activated for future SMS dispatches!"
         );
       } else {
         toast.error(res.error || "Failed to save template");
       }
     } catch (err: any) {
       toast.error(err?.message || "Failed to save template");
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleSetActive = async () => {
+    setIsSaving(true);
+    try {
+      const res = await setActiveTemplateAction(selectedTemplate.id);
+      if (res.success && res.templates) {
+        setTemplates(res.templates);
+        const match = res.templates.find((t) => t.id === selectedTemplate.id) || selectedTemplate;
+        setSelectedTemplate({ ...match, isActive: true });
+        toast.success(
+          locale === "am"
+            ? `ቴምፕሌት '${match.nameAm}' ለቀጣይ መልእክቶች ነቅቷል!`
+            : `Template '${match.name}' is now active for all outbound SMS notifications.`
+        );
+      } else {
+        toast.error(res.error || "Failed to activate template");
+      }
+    } catch (err: any) {
+      toast.error(err?.message || "Failed to activate template");
     } finally {
       setIsSaving(false);
     }
@@ -237,12 +270,23 @@ export function TemplatesManager({ initialTemplates }: TemplatesManagerProps) {
                     <span className="font-semibold text-xs text-foreground">
                       {locale === "am" ? tpl.nameAm : tpl.name}
                     </span>
-                    <Badge
-                      variant="outline"
-                      className="text-[10px] uppercase font-mono px-1.5 py-0"
-                    >
-                      {tpl.language}
-                    </Badge>
+                    <div className="flex items-center gap-1">
+                      {tpl.isActive ? (
+                        <span className="inline-flex items-center px-1.5 py-0 rounded text-[9px] font-semibold bg-emerald-600 text-white">
+                          Active
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center px-1.5 py-0 rounded text-[9px] font-medium text-muted-foreground bg-muted">
+                          Inactive
+                        </span>
+                      )}
+                      <Badge
+                        variant="outline"
+                        className="text-[10px] uppercase font-mono px-1.5 py-0"
+                      >
+                        {tpl.language}
+                      </Badge>
+                    </div>
                   </div>
                   <p className="text-[11px] text-muted-foreground line-clamp-2 leading-relaxed">
                     {tpl.body}
@@ -266,7 +310,24 @@ export function TemplatesManager({ initialTemplates }: TemplatesManagerProps) {
                     Trigger Event: {selectedTemplate.triggerEvent} · Language: {selectedTemplate.language.toUpperCase()}
                   </CardDescription>
                 </div>
-                <Badge variant="default" className="text-[10px]">Active</Badge>
+                <div className="flex items-center gap-2">
+                  {selectedTemplate.isActive ? (
+                    <Badge className="bg-emerald-600 hover:bg-emerald-600 text-white text-xs px-2.5 py-0.5 flex items-center gap-1 font-semibold">
+                      <Check className="size-3" /> Active (In Use)
+                    </Badge>
+                  ) : (
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      disabled={isSaving}
+                      onClick={handleSetActive}
+                      className="h-7 text-xs text-primary hover:text-primary font-medium"
+                    >
+                      Set as Active
+                    </Button>
+                  )}
+                </div>
               </div>
             </CardHeader>
 

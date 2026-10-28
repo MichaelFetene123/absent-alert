@@ -124,38 +124,83 @@ export async function getSmsTemplates(): Promise<SmsTemplate[]> {
 }
 
 /**
- * Returns the currently active template for a given trigger event and language.
- * Falls back to default hardcoded template if DB query fails or no template is found.
+ * Returns the currently active template for a given trigger event.
+ * If multiple are active, returns the most recently updated one.
+ * If preferredLanguage is provided, prioritizes matching that language.
  */
 export async function getActiveTemplate(
-  triggerEvent: TemplateTriggerEvent | string,
-  language: TemplateLanguage | string = "en"
+  triggerEvent: TemplateTriggerEvent | string = "ABSENCE",
+  preferredLanguage?: TemplateLanguage | string
 ): Promise<SmsTemplate> {
   try {
     const all = await getSmsTemplates();
-    const match = all.find(
-      (t) => t.triggerEvent === triggerEvent && t.language === language && t.isActive
-    );
-    if (match) return match;
 
-    // Fallback to English active if language requested isn't found
-    const fallbackLang = all.find(
+    // 1. If explicit language requested, try matching active with that language
+    if (preferredLanguage) {
+      const match = all.find(
+        (t) => t.triggerEvent === triggerEvent && t.language === preferredLanguage && t.isActive
+      );
+      if (match) return match;
+    }
+
+    // 2. Filter all active templates for this triggerEvent
+    const activeCandidates = all.filter(
       (t) => t.triggerEvent === triggerEvent && t.isActive
     );
-    if (fallbackLang) return fallbackLang;
+
+    if (activeCandidates.length === 1) {
+      return activeCandidates[0];
+    }
+
+    if (activeCandidates.length > 1) {
+      // Pick the most recently updated active template
+      activeCandidates.sort((a, b) => {
+        const timeA = a.updatedAt ? new Date(a.updatedAt).getTime() : 0;
+        const timeB = b.updatedAt ? new Date(b.updatedAt).getTime() : 0;
+        return timeB - timeA;
+      });
+      return activeCandidates[0];
+    }
+
+    // 3. Fallback to any template matching triggerEvent
+    const anyMatch = all.find((t) => t.triggerEvent === triggerEvent);
+    if (anyMatch) return anyMatch;
   } catch (err) {
     console.error("Error fetching active template:", err);
   }
 
   // Final fallback to hardcoded DEFAULT_TEMPLATES
-  const defaultMatch =
-    DEFAULT_TEMPLATES.find(
-      (t) => t.triggerEvent === triggerEvent && t.language === language
-    ) ||
-    DEFAULT_TEMPLATES.find((t) => t.triggerEvent === triggerEvent) ||
-    DEFAULT_TEMPLATES[0];
+  return DEFAULT_TEMPLATES[0];
+}
 
-  return defaultMatch;
+/**
+ * Activates a template for outbound dispatches and deactivates other templates for the same trigger event.
+ */
+export async function setActiveTemplate(idOrKey: string): Promise<SmsTemplate[]> {
+  const model = getTemplateModel();
+  if (!model) return DEFAULT_TEMPLATES;
+
+  const target =
+    (await model.where({ id: idOrKey }).first()) ??
+    (await model.where({ key: idOrKey }).first());
+
+  if (!target) throw new Error(`Template '${idOrKey}' not found.`);
+
+  const all = await model.all();
+  for (const t of all) {
+    if (t.triggerEvent === target.triggerEvent) {
+      await model.where({ id: t.id }).update({
+        isActive: t.id === target.id,
+      });
+    }
+  }
+
+  try {
+    updateTag(CACHE_TAGS.SETTINGS);
+    updateTag(CACHE_TAGS.NOTIFICATIONS);
+  } catch {}
+
+  return getSmsTemplates();
 }
 
 /**
@@ -190,6 +235,16 @@ export async function saveSmsTemplate(
   if (data.nameAm !== undefined) updates.nameAm = data.nameAm;
   if (data.isActive !== undefined) updates.isActive = data.isActive;
   if (data.variables !== undefined) updates.variables = JSON.stringify(data.variables);
+
+  // If this template is being set active, deactivate sibling templates of the same trigger event
+  if (data.isActive === true) {
+    const all = await model.all();
+    for (const t of all) {
+      if (t.triggerEvent === existing.triggerEvent && t.id !== existing.id && t.isActive) {
+        await model.where({ id: t.id }).update({ isActive: false });
+      }
+    }
+  }
 
   await model.where({ id: existing.id }).update(updates);
 
