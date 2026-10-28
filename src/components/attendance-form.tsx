@@ -658,7 +658,7 @@ export function AttendanceForm({
       </div>
 
       {/* Floating Bottom Sticky Save Action Bar */}
-      <div className="fixed bottom-4 left-0 right-0 md:left-[var(--sidebar-width,15rem)] z-30 px-3 sm:px-6 md:px-8 pointer-events-none flex justify-center transition-all duration-200 ease-in-out">
+      <div className="fixed bottom-4 left-0 right-0 md:left-(--sidebar-width,15rem) z-30 px-3 sm:px-6 md:px-8 pointer-events-none flex justify-center transition-all duration-200 ease-in-out">
         <div className="pointer-events-auto w-full max-w-4xl p-2.5 sm:p-3 rounded-xl bg-card/95 backdrop-blur-md border border-border shadow-lg flex flex-wrap sm:flex-nowrap items-center justify-between gap-2.5 sm:gap-4">
           <div className="flex flex-wrap items-center gap-1.5 text-xs">
             <span className="font-medium text-muted-foreground mr-1">Roster:</span>
