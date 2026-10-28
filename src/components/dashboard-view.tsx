@@ -447,7 +447,7 @@ export function DashboardView({ data, reports, user }: Props) {
                     : "text-muted-foreground hover:text-foreground"
                 }`}
               >
-                Rate (%)
+                Retry SMS
               </button>
               <button
                 type="button"
