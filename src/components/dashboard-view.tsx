@@ -269,17 +269,15 @@ export function DashboardView({ data, reports, user }: Props) {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-border">
         <div>
-          <div className="flex items-center gap-2.5">
-            <h1 className="text-xl font-bold tracking-tight text-foreground">
-              {locale === "am" ? "የትምህርት ቤት አቴንዳንስ ዳሽቦርድ" : "School Attendance & Alerts"}
-            </h1>
-            <p className="text-xs sm:text-sm text-slate-300 max-w-2xl leading-relaxed">
-              {locale === "am"
-                ? "የዕለት የሥራ አፈጻጸም፣ የቀሪ ተማሪዎች ማሳወቂያ ሁኔታ፣ የSMSHub መልእክት ስርጭትና የክፍል ደረጃ ንጽጽር።"
-                : "Real-time school attendance roll call, automated guardian SMS dispatch, and multi-classroom analytics."}
-            </p>
-          </div>
-          <p className="text-xs text-muted-foreground mt-1 font-medium">
+          <h1 className="text-xl font-bold tracking-tight text-foreground">
+            {locale === "am" ? "የትምህርት ቤት አቴንዳንስ ዳሽቦርድ" : "School Attendance & Alerts"}
+          </h1>
+          <p className="text-xs text-muted-foreground mt-0.5 max-w-xl">
+            {locale === "am"
+              ? "የዕለት የሥራ አፈጻጸም፣ የቀሪ ተማሪዎች ማሳወቂያ ሁኔታ፣ የSMSHub መልእክት ስርጭትና የክፍል ደረጃ ንጽጽር።"
+              : "Real-time school attendance roll call, automated guardian SMS dispatch, and multi-classroom analytics."}
+          </p>
+          <p className="text-[11px] text-muted-foreground/80 mt-1 font-medium">
             {new Date(data.todayDate).toLocaleDateString(locale === "am" ? "am-ET" : "en-US", {
               weekday: "long",
               year: "numeric",
