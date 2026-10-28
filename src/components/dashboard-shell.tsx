@@ -295,76 +295,6 @@ function ShellInner({ user, children }: DashboardShellProps) {
 
             {/* Dark / Light Mode Toggle */}
             <ThemeToggle />
-
-            {/* Header User Profile Dropdown Menu */}
-            <div className="relative" ref={userMenuRef}>
-              <button
-                type="button"
-                onClick={() => setUserMenuOpen((prev) => !prev)}
-                className="flex items-center gap-2 p-1 pl-1.5 pr-2 rounded-full md:rounded-lg border border-border bg-muted/50 hover:bg-muted transition-colors text-xs"
-                aria-expanded={userMenuOpen}
-                aria-label="User account menu"
-              >
-                <div className="size-7 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold text-xs shadow-xs shrink-0">
-                  {user.name ? user.name.slice(0, 2).toUpperCase() : user.role === "ADMIN" ? "AD" : "TC"}
-                </div>
-                <div className="hidden md:flex flex-col text-left leading-tight">
-                  <span className="font-semibold text-foreground max-w-25 truncate text-xs">
-                    {user.name || (user.role === "ADMIN" ? "Administrator" : "Teacher")}
-                  </span>
-                  <span className="text-[10px] text-muted-foreground capitalize">
-                    {user.role.toLowerCase()}
-                  </span>
-                </div>
-                <ChevronDown className="size-3 text-muted-foreground hidden md:block" />
-              </button>
-
-              {userMenuOpen && (
-                <div className="absolute right-0 mt-2 w-56 rounded-xl border border-border bg-popover text-popover-foreground shadow-xl py-1.5 z-50 text-xs">
-                  <div className="px-3 py-2 border-b border-border">
-                    <p className="font-semibold text-foreground truncate">
-                      {user.name || "User Account"}
-                    </p>
-                    <p className="text-[11px] text-muted-foreground truncate mt-0.5">
-                      {user.email || "No email"}
-                    </p>
-                    <div className="mt-1.5">
-                      <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded bg-primary/10 text-primary border border-primary/20">
-                        {user.role}
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className="py-1">
-                    <Link
-                      href="/profile"
-                      onClick={() => setUserMenuOpen(false)}
-                      className="flex items-center gap-2.5 px-3 py-2 text-foreground hover:bg-muted font-medium transition-colors"
-                    >
-                      <User className="size-4 text-primary shrink-0" />
-                      <div>
-                        <p className="leading-none">{locale === "am" ? "የግል መገለጫ" : "My Profile"}</p>
-                        <p className="text-[10px] text-muted-foreground mt-0.5">
-                          {locale === "am" ? "መለያና የይለፍ ቃል" : "Account details & security"}
-                        </p>
-                      </div>
-                    </Link>
-                  </div>
-
-                  <div className="border-t border-border pt-1">
-                    <button
-                      type="button"
-                      onClick={() => logoutMutation.mutate()}
-                      disabled={logoutMutation.isPending}
-                      className="w-full flex items-center gap-2.5 px-3 py-2 text-destructive hover:bg-destructive/10 font-medium transition-colors text-left disabled:opacity-50"
-                    >
-                      <LogOut className="size-4 shrink-0" />
-                      <span>{locale === "am" ? "መውጣት (Sign out)" : "Sign out"}</span>
-                    </button>
-                  </div>
-                </div>
-              )}
-            </div>
           </div>
         </div>
       </header>
@@ -438,7 +368,101 @@ function ShellInner({ user, children }: DashboardShellProps) {
                   </nav>
                 </div>
               ))}
-            </div>
+          </div>
+          </div>
+
+          {/* Bottom Sidebar User Profile */}
+          <div className="pt-2 border-t border-border relative mt-auto" ref={userMenuRef}>
+            <button
+              type="button"
+              onClick={() => setUserMenuOpen((prev) => !prev)}
+              className={cn(
+                "flex items-center gap-2 rounded-lg border border-border bg-muted/50 hover:bg-muted transition-colors text-xs",
+                collapsed
+                  ? "size-9 mx-auto justify-center p-0"
+                  : "w-full p-1.5 justify-between"
+              )}
+              aria-expanded={userMenuOpen}
+              aria-label="User account menu"
+              title={collapsed ? (user.name || "User account") : undefined}
+            >
+              <div className="flex items-center gap-2 min-w-0">
+                <div className="size-7 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold text-xs shadow-xs shrink-0">
+                  {user.name ? user.name.slice(0, 2).toUpperCase() : user.role === "ADMIN" ? "AD" : "TC"}
+                </div>
+                {!collapsed && (
+                  <div className="flex flex-col text-left leading-tight truncate">
+                    <span className="font-semibold text-foreground truncate text-xs">
+                      {user.name || (user.role === "ADMIN" ? "Administrator" : "Teacher")}
+                    </span>
+                    <span className="text-[10px] text-muted-foreground capitalize truncate">
+                      {user.role.toLowerCase()}
+                    </span>
+                  </div>
+                )}
+              </div>
+              {!collapsed && (
+                <ChevronDown
+                  className={cn(
+                    "size-3 text-muted-foreground shrink-0 transition-transform",
+                    userMenuOpen && "rotate-180"
+                  )}
+                />
+              )}
+            </button>
+
+            {userMenuOpen && (
+              <div
+                className={cn(
+                  "absolute rounded-xl border border-border bg-popover text-popover-foreground shadow-xl py-1.5 z-50 text-xs",
+                  collapsed
+                    ? "bottom-0 left-full ml-2 w-56"
+                    : "bottom-full left-0 mb-2 w-full min-w-50"
+                )}
+              >
+                <div className="px-3 py-2 border-b border-border">
+                  <p className="font-semibold text-foreground truncate">
+                    {user.name || "User Account"}
+                  </p>
+                  <p className="text-[11px] text-muted-foreground truncate mt-0.5">
+                    {user.email || "No email"}
+                  </p>
+                  <div className="mt-1.5">
+                    <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded bg-primary/10 text-primary border border-primary/20">
+                      {user.role}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="py-1">
+                  <Link
+                    href="/profile"
+                    onClick={() => setUserMenuOpen(false)}
+                    className="flex items-center gap-2.5 px-3 py-2 text-foreground hover:bg-muted font-medium transition-colors"
+                  >
+                    <User className="size-4 text-primary shrink-0" />
+                    <div>
+                      <p className="leading-none">{locale === "am" ? "የግል መገለጫ" : "My Profile"}</p>
+                      <p className="text-[10px] text-muted-foreground mt-0.5">
+                        {locale === "am" ? "መለያና የይለፍ ቃል" : "Account details & security"}
+                      </p>
+                    </div>
+                  </Link>
+                </div>
+
+                <div className="border-t border-border pt-1">
+                  <button
+                    type="button"
+                    onClick={() => logoutMutation.mutate()}
+                    disabled={logoutMutation.isPending}
+                    className="w-full flex items-center gap-2.5 px-3 py-2 text-destructive hover:bg-destructive/10 font-medium transition-colors text-left disabled:opacity-50"
+                  >
+                    <LogOut className="size-4 shrink-0" />
+                    <span>{locale === "am" ? "መውጣት (Sign out)" : "Sign out"}</span>
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         </aside>
 
@@ -509,7 +533,26 @@ function ShellInner({ user, children }: DashboardShellProps) {
                 ))}
               </div>
 
-              <div className="pt-3 border-t border-border">
+              <div className="pt-3 border-t border-border space-y-2">
+                <Link
+                  href="/profile"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center gap-2.5 p-2 rounded-lg border border-border bg-muted/50 hover:bg-muted transition-colors text-xs"
+                >
+                  <div className="size-7 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold text-xs shadow-xs shrink-0">
+                    {user.name ? user.name.slice(0, 2).toUpperCase() : user.role === "ADMIN" ? "AD" : "TC"}
+                  </div>
+                  <div className="flex flex-col text-left leading-tight truncate flex-1 min-w-0">
+                    <span className="font-semibold text-foreground truncate text-xs">
+                      {user.name || (user.role === "ADMIN" ? "Administrator" : "Teacher")}
+                    </span>
+                    <span className="text-[10px] text-muted-foreground truncate">
+                      {user.email || (user.role === "ADMIN" ? "admin" : "teacher")}
+                    </span>
+                  </div>
+                  <User className="size-3.5 text-muted-foreground shrink-0" />
+                </Link>
+
                 <Button
                   variant="ghost"
                   size="sm"
