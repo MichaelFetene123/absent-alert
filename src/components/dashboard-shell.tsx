@@ -327,6 +327,7 @@ function ShellInner({ user, children }: DashboardShellProps) {
                     {section.items.map((item) => {
                       const Icon = item.icon;
                       const isActive = checkIsActive(item.href);
+                      const isTakeAttendance = item.href === "/attendance";
 
                       return (
                         <Link
@@ -340,6 +341,8 @@ function ShellInner({ user, children }: DashboardShellProps) {
                               : "justify-between px-2.5 py-2",
                             isActive
                               ? "bg-primary text-primary-foreground font-semibold shadow-xs"
+                              : isTakeAttendance
+                              ? "bg-primary/[0.08] text-primary hover:bg-primary/15 hover:text-primary dark:bg-primary/15 dark:text-primary dark:hover:bg-primary/25 font-medium"
                               : "text-muted-foreground hover:bg-muted hover:text-foreground"
                           )}
                         >
@@ -349,6 +352,8 @@ function ShellInner({ user, children }: DashboardShellProps) {
                                 "size-4 shrink-0",
                                 isActive
                                   ? "text-primary-foreground"
+                                  : isTakeAttendance
+                                  ? "text-primary"
                                   : "text-muted-foreground"
                               )}
                             />
@@ -509,20 +514,32 @@ function ShellInner({ user, children }: DashboardShellProps) {
                       {sec.items.map((item) => {
                         const Icon = item.icon;
                         const isActive = checkIsActive(item.href);
+                        const isTakeAttendance = item.href === "/attendance";
                         return (
                           <Link
                             key={item.href}
                             href={item.href}
                             onClick={() => setMobileMenuOpen(false)}
                             className={cn(
-                              "flex items-center justify-between px-2.5 py-2 rounded-lg text-xs font-medium",
+                              "flex items-center justify-between px-2.5 py-2 rounded-lg text-xs font-medium transition-colors",
                               isActive
                                 ? "bg-primary text-primary-foreground font-semibold"
+                                : isTakeAttendance
+                                ? "bg-primary/[0.08] text-primary hover:bg-primary/15 hover:text-primary dark:bg-primary/15 dark:text-primary dark:hover:bg-primary/25 font-medium"
                                 : "text-muted-foreground hover:bg-muted hover:text-foreground"
                             )}
                           >
                             <div className="flex items-center gap-2">
-                              <Icon className="size-4 shrink-0" />
+                              <Icon
+                                className={cn(
+                                  "size-4 shrink-0",
+                                  isActive
+                                    ? "text-primary-foreground"
+                                    : isTakeAttendance
+                                    ? "text-primary"
+                                    : "text-muted-foreground"
+                                )}
+                              />
                               <span>{item.title}</span>
                             </div>
                             {item.badge && (
