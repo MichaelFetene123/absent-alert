@@ -658,8 +658,8 @@ export function AttendanceForm({
       </div>
 
       {/* Floating Bottom Sticky Save Action Bar */}
-      <div className="fixed bottom-4 left-0 right-0 z-30 px-4 md:px-8 max-w-4xl mx-auto pointer-events-none">
-        <div className="pointer-events-auto p-3 rounded-xl bg-card/95 backdrop-blur-md border border-border shadow-lg flex flex-col sm:flex-row items-center justify-between gap-3">
+      <div className="fixed bottom-4 left-0 right-0 md:left-[var(--sidebar-width,15rem)] z-30 px-3 sm:px-6 md:px-8 pointer-events-none flex justify-center transition-all duration-200 ease-in-out">
+        <div className="pointer-events-auto w-full max-w-4xl p-2.5 sm:p-3 rounded-xl bg-card/95 backdrop-blur-md border border-border shadow-lg flex flex-wrap sm:flex-nowrap items-center justify-between gap-2.5 sm:gap-4">
           <div className="flex flex-wrap items-center gap-1.5 text-xs">
             <span className="font-medium text-muted-foreground mr-1">Roster:</span>
             <span className="px-2 py-0.5 rounded-md bg-primary/10 text-primary font-semibold border border-primary/20">
@@ -676,17 +676,17 @@ export function AttendanceForm({
             </span>
           </div>
 
-          <div className="flex items-center gap-2 w-full sm:w-auto">
+          <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto justify-end">
             <Button
               type="button"
               variant="outline"
               size="sm"
               onClick={() => window.print()}
-              className="h-9 px-3 rounded-lg text-xs font-medium text-slate-700 dark:text-slate-300 border-slate-300 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800"
+              className="h-8.5 px-2.5 sm:px-3 rounded-lg text-xs font-medium text-foreground border-border hover:bg-muted"
               title="Print official classroom attendance sheet"
             >
-              <Printer className="size-3.5 text-slate-500" />
-              <span>Print</span>
+              <Printer className="size-3.5 text-muted-foreground" />
+              <span className="hidden sm:inline">Print</span>
             </Button>
 
             <Button
@@ -695,7 +695,7 @@ export function AttendanceForm({
               size="sm"
               onClick={handleMarkAllPresent}
               disabled={isPending || initialStudents.length === 0}
-              className="h-9 px-3 rounded-lg text-xs font-medium flex-1 sm:flex-initial"
+              className="h-8.5 px-2.5 sm:px-3 rounded-lg text-xs font-medium shrink-0"
             >
               Mark All Present
             </Button>
@@ -704,7 +704,7 @@ export function AttendanceForm({
               type="button"
               onClick={handleSaveClick}
               disabled={isPending || initialStudents.length === 0}
-              className="h-9 px-4 rounded-lg font-medium text-xs gap-1.5 flex-1 sm:flex-initial"
+              className="h-8.5 px-3 sm:px-4 rounded-lg font-medium text-xs gap-1.5 shrink-0"
             >
               {isPending ? (
                 <>

@@ -229,7 +229,12 @@ function ShellInner({ user, children }: DashboardShellProps) {
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground flex flex-col antialiased">
+    <div
+      className="min-h-screen bg-background text-foreground flex flex-col antialiased"
+      style={{
+        "--sidebar-width": collapsed ? "4rem" : "15rem",
+      } as React.CSSProperties}
+    >
       {/* Top Universal Navbar */}
       <header className="sticky top-0 z-40 w-full border-b border-border bg-card text-card-foreground">
         <div className="flex h-14 items-center justify-between px-3 sm:px-6">
