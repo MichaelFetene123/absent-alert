@@ -44,7 +44,7 @@ export const DEFAULT_TEMPLATES: SmsTemplate[] = [
     nameAm: "የተማሪ መቅረት ማሳወቂያ (አማርኛ)",
     triggerEvent: "ABSENCE",
     language: "am",
-    body: "ውድ ወላጅ፣ {student_name} በ{date} በ{class_name} አልተገኘም። ካልታወቀ ት/ቤቱን ያነጋግሩ።",
+    body: "ውድ ወላጅ፣ {student_name} በ{date} አልተገኘም",
     variables: ["student_name", "class_name", "date", "status", "school_name"],
     isActive: true,
   },

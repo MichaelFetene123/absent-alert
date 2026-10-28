@@ -89,16 +89,28 @@ export async function queueAbsenceNotifications(
         })
       : absenceMessage(student.fullName, cls?.name || "Class", date);
 
-    // Safeguard: SMSHub appends ~30 chars signature. Ensure body <= 130 chars (total <= 160)
-    if (messageBody.length > 130) {
-      const isAmharic = /[\u1200-\u137F]/.test(messageBody);
+    // Safeguard limits: strictly 70 chars for Unicode (Amharic) and 160 chars for Latin (English).
+    const isAmharic = /[\u1200-\u137F]/.test(messageBody);
+    const maxBodyLen = isAmharic ? 70 : 160;
+
+    if (messageBody.length > maxBodyLen) {
       if (isAmharic) {
-        messageBody = `ማስታወቂያ፡ ${student.fullName} በ${date} በ${cls?.name || "ክፍል"} አልተገኘም። ካልታወቀ ት/ቤቱን ያነጋግሩ።`;
+        messageBody = `ውድ ወላጅ፣ ${student.fullName} በ${date} አልተገኘም`;
+        if (messageBody.length > 70) {
+          const firstName = student.fullName.split(" ")[0] || "ተማሪ";
+          messageBody = `ውድ ወላጅ፣ ${firstName} አልተገኘም`;
+          if (messageBody.length > 70) {
+            messageBody = messageBody.slice(0, 67) + "...";
+          }
+        }
       } else {
         messageBody = `AbsentAlert: ${student.fullName} (${cls?.name || "Class"}) was marked absent on ${date}. Contact school if unexpected.`;
-      }
-      if (messageBody.length > 130) {
-        messageBody = messageBody.slice(0, 127) + "...";
+        if (messageBody.length > 160) {
+          messageBody = `AbsentAlert: ${student.fullName} absent on ${date}.`;
+          if (messageBody.length > 160) {
+            messageBody = messageBody.slice(0, 157) + "...";
+          }
+        }
       }
     }
 
@@ -163,10 +175,12 @@ export async function sendOne(notificationId: string): Promise<{
       status: "SENDING",
     });
 
-    // Safeguard against SMSHub 160-char limit including signature (~30 chars)
+    // Safeguard against SMSHub 160-char (GSM) or 70-char (Unicode) limit
     let textToSend = notif.body;
-    if (textToSend.length > 130) {
-      textToSend = textToSend.slice(0, 127) + "...";
+    const isAmharic = /[\u1200-\u137F]/.test(textToSend);
+    const maxLen = isAmharic ? 70 : 160;
+    if (textToSend.length > maxLen) {
+      textToSend = textToSend.slice(0, maxLen - 3) + "...";
     }
 
     // Call SMS provider

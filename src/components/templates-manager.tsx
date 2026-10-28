@@ -68,18 +68,18 @@ export function TemplatesManager({ initialTemplates }: TemplatesManagerProps) {
 
   const textareaRef = React.useRef<HTMLTextAreaElement>(null);
 
-  // Sample dynamic values for preview
+  // Sample dynamic values for preview based on template language
   const sampleValues = React.useMemo(
     () => ({
-      student_name: "Almaz Kebede",
-      class_name: "Class 7 B",
-      date: "Oct 28 (ጥቅምት 18)",
-      status: "Absent",
+      student_name: selectedTemplate.language === "am" ? "አልማዝ ከበደ" : "Almaz Kebede",
+      class_name: selectedTemplate.language === "am" ? "ክፍል 7ለ" : "Class 7 B",
+      date: selectedTemplate.language === "am" ? "ጥቅምት 18" : "Oct 28",
+      status: selectedTemplate.language === "am" ? "አልተገኘም" : "Absent",
       admission_no: "ADM-001",
-      school_name: "Addis Academy",
+      school_name: selectedTemplate.language === "am" ? "አዲስ አካዳሚ" : "Addis Academy",
       time: "08:15 AM",
     }),
-    []
+    [selectedTemplate.language]
   );
 
   const renderedBody = React.useMemo(() => {
@@ -87,11 +87,17 @@ export function TemplatesManager({ initialTemplates }: TemplatesManagerProps) {
   }, [draftBody, sampleValues]);
 
   // Account signature automatically appended by SMSHub
-  const accountSignature = "\n\n- Addis Academy | 0982428697";
+  const accountSignature =
+    selectedTemplate.language === "am"
+      ? "\n\n- አዲስ አካዳሚ | 0982428697"
+      : "\n\n- Addis Academy | 0982428697";
   const fullTextWithSignature = renderedBody + accountSignature;
 
-  // Unicode detection for Amharic or non-GSM chars
-  const isUnicode = selectedTemplate.language === "am" || /[\u1200-\u137F]/.test(fullTextWithSignature);
+  // Unicode detection: Amharic language template or text containing Ge'ez script
+  const isUnicode = selectedTemplate.language === "am" || /[\u1200-\u137F]/.test(draftBody);
+  const maxPatternChars = isUnicode ? 70 : 160;
+  const remainingChars = Math.max(0, maxPatternChars - draftBody.length);
+
   const charLimit = isUnicode ? 70 : 160;
   const totalLength = fullTextWithSignature.length;
   const segments = Math.ceil(totalLength / charLimit) || 1;
@@ -106,13 +112,30 @@ export function TemplatesManager({ initialTemplates }: TemplatesManagerProps) {
     const token = `{${placeholderKey}}`;
     const textarea = textareaRef.current;
     if (!textarea) {
-      setDraftBody((prev) => prev + " " + token);
+      if (draftBody.length + token.length + 1 > maxPatternChars) {
+        toast.warning(
+          locale === "am"
+            ? `የፊደላት ገደብ አልፏል (ቢበዛ ${maxPatternChars} ፊደላት)`
+            : `Cannot insert placeholder: would exceed ${maxPatternChars} character limit.`
+        );
+        return;
+      }
+      setDraftBody((prev) => (prev + " " + token).slice(0, maxPatternChars));
       return;
     }
 
     const start = textarea.selectionStart ?? draftBody.length;
     const end = textarea.selectionEnd ?? draftBody.length;
     const updated = draftBody.substring(0, start) + token + draftBody.substring(end);
+
+    if (updated.length > maxPatternChars) {
+      toast.warning(
+        locale === "am"
+          ? `የፊደላት ገደብ አልፏል (ቢበዛ ${maxPatternChars} ፊደላት)`
+          : `Cannot insert placeholder: would exceed ${maxPatternChars} character limit.`
+      );
+      return;
+    }
 
     setDraftBody(updated);
 
@@ -323,9 +346,31 @@ export function TemplatesManager({ initialTemplates }: TemplatesManagerProps) {
                   ref={textareaRef}
                   rows={4}
                   value={draftBody}
-                  onChange={(e) => setDraftBody(e.target.value)}
+                  maxLength={maxPatternChars}
+                  onChange={(e) => setDraftBody(e.target.value.slice(0, maxPatternChars))}
                   className="w-full text-xs p-3 rounded-lg border border-border bg-background focus:outline-hidden focus:ring-2 focus:ring-ring text-foreground leading-relaxed"
+                  placeholder={locale === "am" ? "የመልእክት ቴምፕሌትዎን እዚህ ይጻፉ..." : "Type your message template pattern..."}
                 />
+
+                {/* Character Counter & Encoding Row (matches reference design) */}
+                <div className="flex items-center justify-between text-xs text-muted-foreground pt-0.5 px-0.5">
+                  <span>
+                    {isUnicode
+                      ? (locale === "am" ? "የአማርኛ ዩኒኮድ · ቢበዛ 70 ፊደላት" : "Amharic Unicode · up to 70 characters")
+                      : (locale === "am" ? "የእንግሊዝኛ ጽሁፍ · ቢበዛ 160 ፊደላት" : "Latin text · up to 160 characters")}
+                  </span>
+                  <span
+                    className={`font-mono text-xs font-semibold ${
+                      remainingChars === 0
+                        ? "text-rose-500 font-bold"
+                        : remainingChars <= 5
+                        ? "text-amber-500 font-bold"
+                        : "text-muted-foreground"
+                    }`}
+                  >
+                    {draftBody.length} / {maxPatternChars}
+                  </span>
+                </div>
 
                 {/* Clickable Placeholder Chips */}
                 <div className="space-y-1.5 pt-1">
