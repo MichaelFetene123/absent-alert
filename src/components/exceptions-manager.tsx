@@ -27,8 +27,8 @@ import {
   TableHead,
   TableCell,
 } from "@/components/ui/table";
-import { toast } from "sonner";
 import { useI18n } from "@/lib/i18n/context";
+import { cn } from "@/lib/utils";
 import type { AttendanceExceptionItem } from "@/lib/services/exceptions.service";
 
 interface ExceptionsManagerProps {
@@ -65,13 +65,13 @@ export function ExceptionsManager({
   }, [exceptions, filterType, search]);
 
   return (
-    <div className="space-y-6 max-w-5xl">
+    <div className="space-y-6">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-border">
         <div>
           <h1 className="text-xl font-bold tracking-tight text-foreground flex items-center gap-2">
             <Clock className="size-5 text-primary" />
-            {locale === "am" ? "የአቴንዳንስ ልዩነቶችና እርማቶች (Exceptions)" : "Attendance Exceptions & Corrections"}
+            <span>{locale === "am" ? "የአቴንዳንስ ልዩነቶችና እርማቶች (Exceptions)" : "Attendance Exceptions & Corrections"}</span>
           </h1>
           <p className="text-xs text-muted-foreground mt-0.5">
             {locale === "am"
@@ -81,138 +81,229 @@ export function ExceptionsManager({
         </div>
 
         {/* Filter Pills */}
-        <div className="flex items-center gap-1.5 bg-muted p-1 rounded-lg">
+        <div className="flex items-center gap-1.5 bg-muted p-1 rounded-lg shrink-0">
           <button
             type="button"
             onClick={() => setFilterType("ALL")}
-            className={`px-2.5 py-1 text-xs rounded-md font-medium transition-colors ${
+            className={cn(
+              "px-2.5 py-1 text-xs rounded-md font-medium transition-all",
               filterType === "ALL"
-                ? "bg-background text-foreground shadow-xs"
+                ? "bg-background text-foreground shadow-xs font-semibold"
                 : "text-muted-foreground hover:text-foreground"
-            }`}
+            )}
           >
-            All Exceptions
+            All Exceptions ({initialExceptions.length})
           </button>
           <button
             type="button"
             onClick={() => setFilterType("LATE")}
-            className={`px-2.5 py-1 text-xs rounded-md font-medium transition-colors ${
+            className={cn(
+              "px-2.5 py-1 text-xs rounded-md font-medium transition-all",
               filterType === "LATE"
-                ? "bg-background text-foreground shadow-xs"
+                ? "bg-background text-foreground shadow-xs font-semibold"
                 : "text-muted-foreground hover:text-foreground"
-            }`}
+            )}
           >
             Late Arrivals ({lateCount})
           </button>
           <button
             type="button"
             onClick={() => setFilterType("LEAVE")}
-            className={`px-2.5 py-1 text-xs rounded-md font-medium transition-colors ${
+            className={cn(
+              "px-2.5 py-1 text-xs rounded-md font-medium transition-all",
               filterType === "LEAVE"
-                ? "bg-background text-foreground shadow-xs"
+                ? "bg-background text-foreground shadow-xs font-semibold"
                 : "text-muted-foreground hover:text-foreground"
-            }`}
+            )}
           >
             Approved Leave ({leaveCount})
           </button>
         </div>
       </div>
 
-      {/* KPI Cards */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-        <Card className="p-3 border-border bg-card shadow-xs">
-          <div className="text-[11px] text-muted-foreground">Late Arrivals</div>
-          <div className="text-xl font-bold mt-0.5 text-foreground">
-            {lateCount}
-          </div>
-          <p className="text-[10px] text-muted-foreground">Logged after gate cutoff</p>
+      {/* KPI Cards Grid */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3.5">
+        {/* Late Arrivals */}
+        <Card className="rounded-xl border border-border bg-card text-card-foreground shadow-xs">
+          <CardHeader className="p-3.5 pb-1 flex flex-row items-center justify-between space-y-0">
+            <CardTitle className="text-xs font-medium text-muted-foreground">
+              Late Arrivals
+            </CardTitle>
+            <Clock className="size-4 text-amber-500" />
+          </CardHeader>
+          <CardContent className="p-3.5 pt-0">
+            <div className="text-2xl font-bold text-foreground">
+              {lateCount}
+            </div>
+            <p className="text-[11px] text-muted-foreground mt-0.5">
+              Logged after gate cutoff
+            </p>
+          </CardContent>
         </Card>
 
-        <Card className="p-3 border-border bg-card shadow-xs">
-          <div className="text-[11px] text-muted-foreground">Approved Leave</div>
-          <div className="text-xl font-bold mt-0.5 text-foreground">
-            {leaveCount}
-          </div>
-          <p className="text-[10px] text-muted-foreground">SMS alert suppressed</p>
+        {/* Approved Leave */}
+        <Card className="rounded-xl border border-border bg-card text-card-foreground shadow-xs">
+          <CardHeader className="p-3.5 pb-1 flex flex-row items-center justify-between space-y-0">
+            <CardTitle className="text-xs font-medium text-muted-foreground">
+              Approved Leave
+            </CardTitle>
+            <FileText className="size-4 text-purple-500" />
+          </CardHeader>
+          <CardContent className="p-3.5 pt-0">
+            <div className="text-2xl font-bold text-foreground">
+              {leaveCount}
+            </div>
+            <p className="text-[11px] text-muted-foreground mt-0.5">
+              SMS alert suppressed
+            </p>
+          </CardContent>
         </Card>
 
-        <Card className="p-3 border-border bg-card shadow-xs">
-          <div className="text-[11px] text-muted-foreground">Audited Corrections</div>
-          <div className="text-xl font-bold mt-0.5 text-foreground">
-            {correctionsCount || 2}
-          </div>
-          <p className="text-[10px] text-muted-foreground">Status changes tracked</p>
+        {/* Audited Corrections */}
+        <Card className="rounded-xl border border-border bg-card text-card-foreground shadow-xs">
+          <CardHeader className="p-3.5 pb-1 flex flex-row items-center justify-between space-y-0">
+            <CardTitle className="text-xs font-medium text-muted-foreground">
+              Audited Corrections
+            </CardTitle>
+            <History className="size-4 text-blue-500" />
+          </CardHeader>
+          <CardContent className="p-3.5 pt-0">
+            <div className="text-2xl font-bold text-foreground">
+              {correctionsCount || 2}
+            </div>
+            <p className="text-[11px] text-muted-foreground mt-0.5">
+              Status changes tracked
+            </p>
+          </CardContent>
         </Card>
 
-        <Card className="p-3 border-border bg-card shadow-xs">
-          <div className="text-[11px] text-muted-foreground">Pending Review</div>
-          <div className="text-xl font-bold mt-0.5 text-primary">
-            0
-          </div>
-          <p className="text-[10px] text-muted-foreground">Queue is clear</p>
+        {/* Pending Review */}
+        <Card className="rounded-xl border border-border bg-card text-card-foreground shadow-xs">
+          <CardHeader className="p-3.5 pb-1 flex flex-row items-center justify-between space-y-0">
+            <CardTitle className="text-xs font-medium text-muted-foreground">
+              Pending Review
+            </CardTitle>
+            <ShieldCheck className="size-4 text-emerald-500" />
+          </CardHeader>
+          <CardContent className="p-3.5 pt-0">
+            <div className="text-2xl font-bold text-foreground">
+              0
+            </div>
+            <p className="text-[11px] text-muted-foreground mt-0.5">
+              Queue is clear
+            </p>
+          </CardContent>
         </Card>
       </div>
 
-      {/* Exceptions Table */}
-      <Card className="border-border shadow-xs overflow-hidden">
+      {/* Exceptions Table Card */}
+      <Card className="rounded-xl border border-border bg-card text-card-foreground shadow-xs overflow-hidden">
+        {/* Table Search & Toolbar */}
+        <div className="p-3.5 border-b border-border bg-muted/20 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="relative flex-1 max-w-sm">
+            <Search className="size-3.5 text-muted-foreground absolute left-3 top-1/2 -translate-y-1/2" />
+            <Input
+              type="text"
+              placeholder="Search by student, class, or admission no..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="pl-9 h-8.5 text-xs rounded-lg bg-background"
+            />
+          </div>
+          <div className="flex items-center gap-2">
+            {search && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setSearch("")}
+                className="h-8 text-xs text-muted-foreground hover:text-foreground px-2"
+              >
+                Clear
+              </Button>
+            )}
+            <span className="text-xs text-muted-foreground">
+              Showing <strong className="text-foreground">{filtered.length}</strong> of {exceptions.length} exceptions
+            </span>
+          </div>
+        </div>
+
         <div className="overflow-x-auto">
           <Table>
-            <TableHeader className="bg-muted/50 border-b border-border">
-              <TableRow>
-                <TableHead className="text-xs font-semibold py-3">Student Name</TableHead>
-                <TableHead className="text-xs font-semibold py-3">Class</TableHead>
-                <TableHead className="text-xs font-semibold py-3">Date &amp; Time</TableHead>
-                <TableHead className="text-xs font-semibold py-3">Exception Category</TableHead>
-                <TableHead className="text-xs font-semibold py-3">Reason / Details</TableHead>
-                <TableHead className="text-xs font-semibold py-3">Recorded By</TableHead>
-                <TableHead className="text-xs font-semibold py-3 text-right">Status</TableHead>
+            <TableHeader>
+              <TableRow className="border-b border-border bg-muted/40 text-xs">
+                <TableHead className="py-2.5 px-4 font-semibold">Student Name</TableHead>
+                <TableHead className="py-2.5 px-4 font-semibold">Class</TableHead>
+                <TableHead className="py-2.5 px-4 font-semibold">Date &amp; Time</TableHead>
+                <TableHead className="py-2.5 px-4 font-semibold">Exception Category</TableHead>
+                <TableHead className="py-2.5 px-4 font-semibold">Reason / Details</TableHead>
+                <TableHead className="py-2.5 px-4 font-semibold">Recorded By</TableHead>
+                <TableHead className="py-2.5 px-4 text-right font-semibold">Status</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filtered.map((item) => (
-                <TableRow key={item.id} className="hover:bg-muted/50 text-xs">
-                  <TableCell className="font-semibold text-foreground py-3">
-                    <div>
-                      <span>{item.studentName}</span>
-                      <span className="text-[11px] text-muted-foreground font-mono ml-1.5">
-                        ({item.admissionNo})
-                      </span>
+              {filtered.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={7} className="h-32 text-center text-muted-foreground">
+                    <div className="flex flex-col items-center justify-center gap-1.5 py-6">
+                      <Clock className="size-6 text-muted-foreground" />
+                      <p className="text-xs font-medium text-foreground">No attendance exceptions found</p>
+                      <p className="text-[11px] text-muted-foreground">
+                        {search ? "No records match your search filter." : "There are currently no logged exceptions."}
+                      </p>
                     </div>
                   </TableCell>
-
-                  <TableCell className="py-3 text-muted-foreground font-medium">
-                    {item.className}
-                  </TableCell>
-
-                  <TableCell className="py-3 font-mono text-muted-foreground">
-                    <div>{item.date}</div>
-                    <div className="text-[10px] text-muted-foreground/80">{item.timeReported}</div>
-                  </TableCell>
-
-                  <TableCell className="py-3">
-                    <Badge
-                      variant="outline"
-                      className="text-[10px] font-medium border-border bg-muted/50"
-                    >
-                      {item.type === "LATE" ? "Late Arrival" : "Approved Leave"}
-                    </Badge>
-                  </TableCell>
-
-                  <TableCell className="py-3 text-foreground">
-                    {item.reason || "Standard exception note"}
-                  </TableCell>
-
-                  <TableCell className="py-3 text-muted-foreground">
-                    {item.recordedBy}
-                  </TableCell>
-
-                  <TableCell className="py-3 text-right">
-                    <Badge variant="default" className="text-[10px] py-0 px-2">
-                      Approved
-                    </Badge>
-                  </TableCell>
                 </TableRow>
-              ))}
+              ) : (
+                filtered.map((item) => (
+                  <TableRow key={item.id} className="hover:bg-muted/50 text-xs">
+                    <TableCell className="py-2.5 px-4 font-semibold text-foreground">
+                      <div>
+                        <span>{item.studentName}</span>
+                        <span className="text-[11px] text-muted-foreground font-mono ml-1.5">
+                          ({item.admissionNo})
+                        </span>
+                      </div>
+                    </TableCell>
+
+                    <TableCell className="py-2.5 px-4 text-muted-foreground font-medium">
+                      {item.className}
+                    </TableCell>
+
+                    <TableCell className="py-2.5 px-4 font-mono text-muted-foreground">
+                      <div>{item.date}</div>
+                      <div className="text-[10px] text-muted-foreground/80">{item.timeReported}</div>
+                    </TableCell>
+
+                    <TableCell className="py-2.5 px-4">
+                      <Badge
+                        variant="outline"
+                        className={cn(
+                          "text-[10px] font-medium border",
+                          item.type === "LATE"
+                            ? "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20"
+                            : "bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-500/20"
+                        )}
+                      >
+                        {item.type === "LATE" ? "Late Arrival" : "Approved Leave"}
+                      </Badge>
+                    </TableCell>
+
+                    <TableCell className="py-2.5 px-4 text-foreground">
+                      {item.reason || "Standard exception note"}
+                    </TableCell>
+
+                    <TableCell className="py-2.5 px-4 text-muted-foreground">
+                      {item.recordedBy}
+                    </TableCell>
+
+                    <TableCell className="py-2.5 px-4 text-right">
+                      <Badge variant="default" className="text-[10px] py-0 px-2">
+                        Approved
+                      </Badge>
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
             </TableBody>
           </Table>
         </div>
