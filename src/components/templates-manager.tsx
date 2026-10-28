@@ -12,7 +12,6 @@ import {
   Eye,
   Info,
   Zap,
-  RotateCcw,
   Loader2,
   Tag,
 } from "lucide-react";
@@ -31,7 +30,6 @@ import {
 } from "@/lib/services/templates-shared";
 import {
   updateSmsTemplateAction,
-  resetSmsTemplatesAction,
 } from "@/actions/template.actions";
 
 interface TemplatesManagerProps {
@@ -49,7 +47,6 @@ export function TemplatesManager({ initialTemplates }: TemplatesManagerProps) {
   });
   const [languageFilter, setLanguageFilter] = React.useState<"ALL" | "en" | "am">("ALL");
   const [isSaving, setIsSaving] = React.useState(false);
-  const [isResetting, setIsResetting] = React.useState(false);
 
   const textareaRef = React.useRef<HTMLTextAreaElement>(null);
 
@@ -158,35 +155,7 @@ export function TemplatesManager({ initialTemplates }: TemplatesManagerProps) {
     }
   };
 
-  const handleResetDefaults = async () => {
-    const confirmMessage =
-      locale === "am"
-        ? "ሁሉንም የኤስኤምኤስ ቴምፕሌቶች ወደ መጀመሪያው ይዘታቸው መመለስ ይፈልጋሉ?"
-        : "Are you sure you want to reset all SMS templates to their default patterns?";
 
-    if (!window.confirm(confirmMessage)) return;
-
-    setIsResetting(true);
-    try {
-      const res = await resetSmsTemplatesAction();
-      if (res.success && res.templates) {
-        setTemplates(res.templates);
-        const match = res.templates.find((t) => t.id === selectedTemplate.id) || res.templates[0];
-        setSelectedTemplate(match);
-        toast.success(
-          locale === "am"
-            ? "ቴምፕሌቶች ወደ ነባሪ ቅንብር ተመልሰዋል።"
-            : "Templates successfully reset to standard defaults."
-        );
-      } else {
-        toast.error(res.error || "Failed to reset templates");
-      }
-    } catch (err: any) {
-      toast.error(err?.message || "Failed to reset templates");
-    } finally {
-      setIsResetting(false);
-    }
-  };
 
   return (
     <div className="space-y-6 max-w-5xl">
@@ -206,26 +175,8 @@ export function TemplatesManager({ initialTemplates }: TemplatesManagerProps) {
           </p>
         </div>
 
-        {/* Controls: Reset to Defaults + Language Filter */}
-        <div className="flex items-center gap-2">
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            onClick={handleResetDefaults}
-            disabled={isResetting || isSaving}
-            className="text-xs h-8 text-muted-foreground hover:text-foreground"
-            title="Reset all templates to initial defaults"
-          >
-            {isResetting ? (
-              <Loader2 className="size-3.5 mr-1.5 animate-spin" />
-            ) : (
-              <RotateCcw className="size-3.5 mr-1.5" />
-            )}
-            {locale === "am" ? "ወደ ነባሪ መልስ" : "Reset Defaults"}
-          </Button>
-
-          <div className="flex items-center gap-1.5 bg-muted p-1 rounded-lg">
+        {/* Language Filter */}
+        <div className="flex items-center gap-1.5 bg-muted p-1 rounded-lg">
             <button
               type="button"
               onClick={() => setLanguageFilter("ALL")}
@@ -261,7 +212,6 @@ export function TemplatesManager({ initialTemplates }: TemplatesManagerProps) {
             </button>
           </div>
         </div>
-      </div>
 
       <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
         {/* Templates List */}
@@ -420,7 +370,7 @@ export function TemplatesManager({ initialTemplates }: TemplatesManagerProps) {
                   size="sm"
                   className="text-xs h-8 px-4"
                   onClick={handleSave}
-                  disabled={isSaving || isResetting}
+                  disabled={isSaving}
                 >
                   {isSaving && <Loader2 className="size-3.5 mr-1.5 animate-spin" />}
                   Save Template
